@@ -9,6 +9,13 @@
     ]
   },
   {
+    "name": "dialog",
+    "type": "registry:ui",
+    "description": "promise-based confirm and alert dialogs.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
     "name": "theme",
     "type": "registry:theme",
     "description": "dark-only chrome.ui CSS variables and @theme inline tokens.",
