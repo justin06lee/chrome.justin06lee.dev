@@ -1,0 +1,18 @@
+{
+  "name": "button",
+  "type": "registry:ui",
+  "description": "a button. clicks like a button.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "button.tsx",
+      "content": "import * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ntype Variant = \"default\" | \"ghost\";\ntype Size = \"sm\" | \"md\";\n\nexport interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  variant?: Variant;\n  size?: Size;\n}\n\nconst variantClasses: Record<Variant, string> = {\n  default: \"bg-white text-black hover:bg-white/90\",\n  ghost: \"bg-transparent text-white border border-white/25 hover:bg-white/10\",\n};\n\nconst sizeClasses: Record<Size, string> = {\n  sm: \"px-3 py-1 text-xs\",\n  md: \"px-4 py-2 text-sm\",\n};\n\nexport const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\n  ({ className, variant = \"default\", size = \"md\", ...props }, ref) => (\n    <button\n      ref={ref}\n      className={cn(\n        \"inline-flex items-center justify-center font-mono transition-colors disabled:opacity-50\",\n        variantClasses[variant],\n        sizeClasses[size],\n        className,\n      )}\n      {...props}\n    />\n  ),\n);\nButton.displayName = \"Button\";\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}
