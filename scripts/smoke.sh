@@ -6,7 +6,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 echo "--> building cli"
-bun --filter 'chrome.ui' build
+bun --filter 'chromeui' build
 
 echo "--> creating temp next app"
 TMP="$(mktemp -d)"
@@ -19,10 +19,10 @@ echo "--> building registry into a local /r"
 mkdir -p public/r
 cp "$REPO_ROOT"/apps/site/public/r/*.json public/r/
 
-echo "--> running chrome.ui init via local cli"
+echo "--> running chromeui init via local cli"
 node "$REPO_ROOT/packages/cli/dist/cli.js" init --yes --registry "file://$(pwd)/public/r"
 
-echo "--> running chrome.ui add button"
+echo "--> running chromeui add button"
 node "$REPO_ROOT/packages/cli/dist/cli.js" add button --yes --registry "file://$(pwd)/public/r"
 
 echo "--> next build"

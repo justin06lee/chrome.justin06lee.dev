@@ -48,7 +48,7 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
         <h1 className="text-3xl font-bold">{name}</h1>
         {meta.description && <p className="text-white/65">{meta.description}</p>}
         <code className="inline-block font-mono text-[12.5px] border border-white/20 bg-white/[0.02] px-3 py-1.5 mt-2">
-          bunx chrome.ui@latest add {name}
+          bunx chromeui@latest add {name}
         </code>
         <div className="text-xs">
           <a className="text-white/55 hover:text-white underline" href={`${REPO_BASE}/${meta.type === "registry:ui" ? "" : "_shared/"}${name}`}>

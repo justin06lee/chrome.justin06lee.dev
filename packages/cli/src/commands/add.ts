@@ -28,7 +28,7 @@ export async function runAdd(opts: AddOptions): Promise<void> {
   const cfg = await readConfig(cwd);
   if (!cfg) {
     throw new Error(
-      `no chrome.ui.json found in ${cwd}\n  → run: bunx chrome.ui@latest init`,
+      `no chromeui.json found in ${cwd}\n  → run: bunx chromeui@latest init`,
     );
   }
   const project = detectProject(cwd);

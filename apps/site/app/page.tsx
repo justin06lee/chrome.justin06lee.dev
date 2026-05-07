@@ -36,7 +36,7 @@ function Hero() {
       </h1>
       <div className="mt-11 mb-7">
         <code className="font-mono text-[12.5px] border border-white/20 bg-white/[0.02] px-3.5 py-2 inline-flex items-center gap-3">
-          bunx chrome.ui@latest init
+          bunx chromeui@latest init
           <span className="text-white/40 text-[11px] border-l border-white/15 pl-3">copy</span>
         </code>
       </div>

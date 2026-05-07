@@ -1,12 +1,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 
-const START = "/* @chrome.ui:theme */";
-const END = "/* @chrome.ui:end */";
+const START = "/* @chromeui:theme */";
+const END = "/* @chromeui:end */";
 
 export async function patchGlobalsCss(path: string, block: string): Promise<void> {
   const trimmed = block
-    .replace(/^\/\*\s*@chrome\.ui:theme\s*\*\/\s*/, "")
-    .replace(/\s*\/\*\s*@chrome\.ui:end\s*\*\/\s*$/, "")
+    .replace(/^\/\*\s*@chromeui:theme\s*\*\/\s*/, "")
+    .replace(/\s*\/\*\s*@chromeui:end\s*\*\/\s*$/, "")
     .trim();
   const fenced = `${START}\n${trimmed}\n${END}`;
   let current = "";

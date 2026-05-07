@@ -17,8 +17,8 @@ test("appends fenced block when absent", async () => {
   const path = temp(`@import "tailwindcss";\n`);
   await patchGlobalsCss(path, BLOCK);
   const out = readFileSync(path, "utf8");
-  expect(out).toContain("/* @chrome.ui:theme */");
-  expect(out).toContain("/* @chrome.ui:end */");
+  expect(out).toContain("/* @chromeui:theme */");
+  expect(out).toContain("/* @chromeui:end */");
   expect(out).toContain("--background: #000");
   rmSync(path, { force: true });
 });
@@ -30,6 +30,6 @@ test("replaces block on second patch (idempotent)", async () => {
   const out = readFileSync(path, "utf8");
   expect(out).toContain("--background: #fff");
   expect(out).not.toContain("--background: #000");
-  expect((out.match(/@chrome\.ui:theme/g) ?? []).length).toBe(1);
+  expect((out.match(/@chromeui:theme/g) ?? []).length).toBe(1);
   rmSync(path, { force: true });
 });

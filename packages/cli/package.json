@@ -1,12 +1,14 @@
 {
-  "name": "chrome.ui",
+  "name": "chromeui",
   "version": "0.1.0",
   "description": "components for justin06lee.dev. install via bunx.",
   "type": "module",
   "bin": {
-    "chrome.ui": "./dist/cli.js"
+    "chromeui": "dist/cli.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist/cli.js"
+  ],
   "scripts": {
     "build": "bun build src/index.ts --target=node --outdir=dist --minify --entry-naming=cli.js",
     "dev": "bun run src/index.ts",

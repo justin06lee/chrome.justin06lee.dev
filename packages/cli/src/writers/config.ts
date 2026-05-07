@@ -22,7 +22,7 @@ export function defaultConfig(opts: { cssPath: string }): ChromeUiConfig {
   };
 }
 
-const CONFIG_FILE = "chrome.ui.json";
+const CONFIG_FILE = "chromeui.json";
 
 export async function readConfig(cwd: string): Promise<ChromeUiConfig | null> {
   const path = join(cwd, CONFIG_FILE);

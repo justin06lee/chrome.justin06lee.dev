@@ -45,7 +45,7 @@ export function detectProject(cwd: string): ProjectInfo {
   const tailwindMajor = parseMajor(all["tailwindcss"]);
   if (tailwindMajor !== 0 && tailwindMajor < 4) {
     throw new Error(
-      `chrome.ui requires tailwind v4. found tailwindcss "${all["tailwindcss"]}". upgrade or wait for v3 support in v1.1.`,
+      `chromeui requires tailwind v4. found tailwindcss "${all["tailwindcss"]}". upgrade or wait for v3 support in v1.1.`,
     );
   }
 

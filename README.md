@@ -1,10 +1,10 @@
-# chrome.ui
+# chromeui
 
 components for [justin06lee.dev](https://justin06lee.dev). install via cli, own the code.
 
 ```bash
-bunx chrome.ui@latest init
-bunx chrome.ui@latest add button
+bunx chromeui@latest init
+bunx chromeui@latest add button
 ```
 
 dark-only · tailwind v4 · next.js 16 + react 19.
@@ -16,7 +16,7 @@ dark-only · tailwind v4 · next.js 16 + react 19.
 | path                          | purpose                                                          |
 |-------------------------------|------------------------------------------------------------------|
 | `apps/site/`                  | the docs site at https://chrome.justin06lee.dev                  |
-| `packages/cli/`               | the `chrome.ui` cli published to npm                             |
+| `packages/cli/`               | the `chromeui` cli published to npm                              |
 | `packages/registry/`          | every component lives here, one folder each                      |
 | `packages/registry-builder/`  | walks `packages/registry/` and emits json + manifest             |
 

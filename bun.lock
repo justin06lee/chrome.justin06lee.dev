@@ -5,7 +5,7 @@
       "name": "chrome.justin06lee.dev",
     },
     "apps/site": {
-      "name": "@chrome.ui/site",
+      "name": "@chromeui/site",
       "version": "0.0.0",
       "dependencies": {
         "chrome-ui-registry-builder": "workspace:*",
@@ -27,10 +27,10 @@
       },
     },
     "packages/cli": {
-      "name": "chrome.ui",
+      "name": "chromeui",
       "version": "0.1.0",
       "bin": {
-        "chrome.ui": "./dist/cli.js",
+        "chromeui": "./dist/cli.js",
       },
       "dependencies": {
         "chrome-ui-registry-builder": "workspace:*",
@@ -43,7 +43,7 @@
       },
     },
     "packages/registry": {
-      "name": "@chrome.ui/registry",
+      "name": "@chromeui/registry",
       "version": "0.0.0",
       "dependencies": {
         "chrome-ui-registry-builder": "workspace:*",
@@ -108,9 +108,9 @@
 
     "@babel/types": ["@babel/types@7.29.0", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.28.5" } }, "sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A=="],
 
-    "@chrome.ui/registry": ["@chrome.ui/registry@workspace:packages/registry"],
+    "@chromeui/registry": ["@chromeui/registry@workspace:packages/registry"],
 
-    "@chrome.ui/site": ["@chrome.ui/site@workspace:apps/site"],
+    "@chromeui/site": ["@chromeui/site@workspace:apps/site"],
 
     "@emnapi/core": ["@emnapi/core@1.10.0", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.1", "tslib": "^2.4.0" } }, "sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw=="],
 
@@ -408,7 +408,7 @@
 
     "chrome-ui-registry-builder": ["chrome-ui-registry-builder@workspace:packages/registry-builder"],
 
-    "chrome.ui": ["chrome.ui@workspace:packages/cli"],
+    "chromeui": ["chromeui@workspace:packages/cli"],
 
     "citty": ["citty@0.1.6", "", { "dependencies": { "consola": "^3.2.3" } }, "sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ=="],
 
