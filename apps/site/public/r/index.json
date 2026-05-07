@@ -32,6 +32,17 @@
     "registryDependencies": []
   },
   {
+    "name": "socials",
+    "type": "registry:ui",
+    "description": "social-link bar with tooltip + email-copy support.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "theme",
     "type": "registry:theme",
     "description": "dark-only chrome.ui CSS variables and @theme inline tokens.",

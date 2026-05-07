@@ -3,7 +3,8 @@ import button from "../../packages/registry/button/meta";
 import dialog from "../../packages/registry/dialog/meta";
 import input from "../../packages/registry/input/meta";
 import select from "../../packages/registry/select/meta";
+import socials from "../../packages/registry/socials/meta";
 import theme from "../../packages/registry/_shared/theme/meta";
 import utils from "../../packages/registry/_shared/utils/meta";
 
-export const REGISTRY = [button, dialog, input, select, theme, utils];
+export const REGISTRY = [button, dialog, input, select, socials, theme, utils];
