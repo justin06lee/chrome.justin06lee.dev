@@ -1,12 +1,15 @@
 import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative, dirname } from "node:path";
 import { walkRegistry } from "./walker";
 import { compileItem } from "./compile";
 import { validateRegistry } from "./validate";
+import { writeManifest } from "./manifest";
 
 export interface BuildOptions {
   registryDir: string;
   outDir: string;
+  /** Optional path to write a TS manifest module re-exporting all component metas as `REGISTRY`. */
+  manifestPath?: string;
 }
 
 export async function build(opts: BuildOptions): Promise<void> {
@@ -36,6 +39,18 @@ export async function build(opts: BuildOptions): Promise<void> {
       dependencies: compiled.dependencies,
       registryDependencies: compiled.registryDependencies,
     });
+  }
+
+  if (opts.manifestPath) {
+    const entries = items.map((item) => {
+      const fromDir = dirname(opts.manifestPath!);
+      const importPath = relative(fromDir, join(item.dir, "meta")).replace(/\\/g, "/");
+      return {
+        name: item.meta.name,
+        relativeImportPath: importPath.startsWith(".") ? importPath : `./${importPath}`,
+      };
+    });
+    await writeManifest(opts.manifestPath, entries);
   }
 
   await writeFile(
