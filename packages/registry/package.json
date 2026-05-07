@@ -1,0 +1,9 @@
+{
+  "name": "@chrome.ui/registry",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "chrome-ui-registry-builder": "workspace:*"
+  }
+}
