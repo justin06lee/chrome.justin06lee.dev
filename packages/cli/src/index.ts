@@ -8,7 +8,7 @@ import { diffCommand } from "./commands/diff";
 const main = defineCommand({
   meta: {
     name: "chrome.ui",
-    version: "0.0.0",
+    version: "0.1.0",
     description: "components for justin06lee.dev. install via bunx.",
   },
   subCommands: {

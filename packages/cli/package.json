@@ -1,6 +1,6 @@
 {
   "name": "chrome.ui",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "components for justin06lee.dev. install via bunx.",
   "type": "module",
   "bin": {
