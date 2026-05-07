@@ -1,34 +1,16 @@
 {
-  "name": "chrome.justin06lee.dev",
-  "version": "0.1.0",
+  "name": "chrome-ui-monorepo",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "next": "16.2.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.4",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  },
-  "ignoreScripts": [
-    "sharp",
-    "unrs-resolver"
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
   ],
-  "trustedDependencies": [
-    "sharp",
-    "unrs-resolver"
-  ]
+  "scripts": {
+    "dev": "bun --filter '@chrome.ui/site' dev",
+    "build": "bun --filter '@chrome.ui/site' build",
+    "typecheck": "bun --filter '*' typecheck",
+    "test": "bun test"
+  },
+  "trustedDependencies": ["sharp", "unrs-resolver"]
 }
