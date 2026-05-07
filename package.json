@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "bun --filter '@chrome.ui/site' dev",
     "build": "bun --filter '@chrome.ui/site' build",
+    "build:registry": "bun --filter 'chrome-ui-registry-builder' build",
     "typecheck": "bun --filter '*' typecheck",
     "test": "bun test"
   },
