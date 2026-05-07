@@ -16,6 +16,15 @@
     "registryDependencies": []
   },
   {
+    "name": "input",
+    "type": "registry:ui",
+    "description": "minimal text input. thin border, no corners.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "select",
     "type": "registry:ui",
     "description": "headless dropdown with palette swatch support.",
