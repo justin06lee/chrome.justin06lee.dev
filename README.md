@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# chrome.ui
 
-## Getting Started
-
-First, run the development server:
+components for [justin06lee.dev](https://justin06lee.dev). install via cli, own the code.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bunx chrome.ui@latest init
+bunx chrome.ui@latest add button
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+dark-only · tailwind v4 · next.js 16 + react 19.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## what's where
 
-## Learn More
+| path                          | purpose                                                          |
+|-------------------------------|------------------------------------------------------------------|
+| `apps/site/`                  | the docs site at https://chrome.justin06lee.dev                  |
+| `packages/cli/`               | the `chrome.ui` cli published to npm                             |
+| `packages/registry/`          | every component lives here, one folder each                      |
+| `packages/registry-builder/`  | walks `packages/registry/` and emits json + manifest             |
 
-To learn more about Next.js, take a look at the following resources:
+## adding a component
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+mkdir -p packages/registry/my-thing
+# write my-thing.tsx, demo.tsx, meta.ts
+bun run build:registry
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+see [`docs/superpowers/specs/2026-05-06-chrome-ui-design.md`](docs/superpowers/specs/2026-05-06-chrome-ui-design.md) for the full design.
 
-## Deploy on Vercel
+## scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+bun install
+bun run dev               # apps/site dev server
+bun run build             # apps/site production build (regenerates /r before)
+bun run build:registry    # regenerate /r and registry-manifest.ts only
+bun run typecheck         # all packages
+bun test                  # all packages
+```
