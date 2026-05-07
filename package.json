@@ -7,8 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "bun --filter '@chromeui/site' dev",
-    "build": "bun --filter '@chromeui/site' build",
+    "dev": "bun --filter '@justin06lee/site' dev",
+    "build": "bun --filter '@justin06lee/site' build",
     "build:registry": "bun --filter 'chrome-ui-registry-builder' build",
     "typecheck": "bun --filter '*' typecheck",
     "test": "bun test"

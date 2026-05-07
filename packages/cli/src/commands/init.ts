@@ -41,7 +41,7 @@ export async function runInit(opts: InitOptions): Promise<void> {
   cfg.registry = opts.registry ?? DEFAULT_REGISTRY;
 
   await writeConfig(cwd, cfg);
-  console.log(`✓ wrote chromeui.json`);
+  console.log(`✓ wrote chrome.json`);
 
   if (!opts.skipInstall) {
     await runInstall(project.packageManager, PEER_DEPS, cwd);
@@ -109,7 +109,7 @@ function localThemeFetcher(): Fetcher {
 }
 
 export const initCommand = defineCommand({
-  meta: { name: "init", description: "bootstrap chromeui in this project" },
+  meta: { name: "init", description: "bootstrap @justin06lee/chrome in this project" },
   args: {
     cwd: { type: "string", default: "." },
     yes: { type: "boolean", default: false },

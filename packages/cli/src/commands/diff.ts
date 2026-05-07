@@ -32,7 +32,7 @@ export const diffCommand = defineCommand({
     const cwd = resolve(".");
     const cfg = await readConfig(cwd);
     if (!cfg) {
-      console.error("no chromeui.json — run `bunx chromeui@latest init`");
+      console.error("no chrome.json — run `bunx @justin06lee/chrome@latest init`");
       process.exit(1);
     }
     const fetcher = makeHttpFetcher(cfg.registry);

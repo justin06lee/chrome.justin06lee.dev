@@ -28,7 +28,7 @@ function makeProject(): string {
   mkdirSync(join(dir, "app"));
   writeFileSync(join(dir, "app/globals.css"), `@import "tailwindcss";\n`);
   writeFileSync(
-    join(dir, "chromeui.json"),
+    join(dir, "chrome.json"),
     JSON.stringify({
       $schema: "x", registry: "x", style: "default", tsx: true,
       tailwind: { css: "app/globals.css", baseColor: "black" },
@@ -54,11 +54,11 @@ test("add writes the requested component and its registryDependency", async () =
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("add errors when chromeui.json missing", async () => {
+test("add errors when chrome.json missing", async () => {
   const dir = mkdtempSync(join(tmpdir(), "chrome-ui-add-"));
   writeFileSync(join(dir, "package.json"), '{"name":"x"}');
   await expect(
     runAdd({ cwd: dir, names: ["button"], skipInstall: true, yes: true, fetch: async () => { throw new Error("x"); } }),
-  ).rejects.toThrow(/chromeui\.json/);
+  ).rejects.toThrow(/chrome\.json/);
   rmSync(dir, { recursive: true, force: true });
 });

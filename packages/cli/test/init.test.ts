@@ -23,9 +23,9 @@ function fakeNextProject(): string {
 test("init writes config, patches globals.css, accepts --yes", async () => {
   const dir = fakeNextProject();
   await runInit({ cwd: dir, yes: true, skipInstall: true });
-  expect(existsSync(join(dir, "chromeui.json"))).toBe(true);
+  expect(existsSync(join(dir, "chrome.json"))).toBe(true);
   const css = readFileSync(join(dir, "app/globals.css"), "utf8");
-  expect(css).toContain("/* @chromeui:theme */");
+  expect(css).toContain("/* @chrome:theme */");
   expect(css).toContain("--background: #000000");
   rmSync(dir, { recursive: true, force: true });
 });
@@ -35,6 +35,6 @@ test("init is idempotent", async () => {
   await runInit({ cwd: dir, yes: true, skipInstall: true });
   await runInit({ cwd: dir, yes: true, skipInstall: true });
   const css = readFileSync(join(dir, "app/globals.css"), "utf8");
-  expect((css.match(/@chromeui:theme/g) ?? []).length).toBe(1);
+  expect((css.match(/@chrome:theme/g) ?? []).length).toBe(1);
   rmSync(dir, { recursive: true, force: true });
 });

@@ -1,10 +1,10 @@
 {
-  "name": "chromeui",
+  "name": "@justin06lee/chrome",
   "version": "0.1.0",
   "description": "components for justin06lee.dev. install via bunx.",
   "type": "module",
   "bin": {
-    "chromeui": "dist/cli.js"
+    "chrome": "dist/cli.js"
   },
   "files": [
     "dist/cli.js"
