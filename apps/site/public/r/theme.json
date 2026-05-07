@@ -1,0 +1,16 @@
+{
+  "name": "theme",
+  "type": "registry:theme",
+  "description": "dark-only chrome.ui CSS variables and @theme inline tokens.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "theme.css",
+      "content": "/* @chrome.ui:theme */\n@theme inline {\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-surface: var(--surface);\n  --color-surface-alt: var(--surface-alt);\n  --color-border: var(--border);\n  --color-muted: var(--muted);\n  --color-accent: var(--accent);\n}\n\n:root,\n.dark {\n  --background: #000000;\n  --foreground: #ffffff;\n  --surface: #0a0a0a;\n  --surface-alt: #141414;\n  --border: rgba(255, 255, 255, 0.12);\n  --muted: rgba(255, 255, 255, 0.6);\n  --accent: #ffffff;\n}\n/* @chrome.ui:end */\n",
+      "type": "registry:theme",
+      "target": ""
+    }
+  ]
+}

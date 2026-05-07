@@ -1,5 +1,12 @@
 [
   {
+    "name": "theme",
+    "type": "registry:theme",
+    "description": "dark-only chrome.ui CSS variables and @theme inline tokens.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
     "name": "utils",
     "type": "registry:lib",
     "description": "the cn() helper. clsx + tailwind-merge.",
