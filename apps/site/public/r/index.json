@@ -16,6 +16,13 @@
     "registryDependencies": []
   },
   {
+    "name": "select",
+    "type": "registry:ui",
+    "description": "headless dropdown with palette swatch support.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
     "name": "theme",
     "type": "registry:theme",
     "description": "dark-only chrome.ui CSS variables and @theme inline tokens.",
