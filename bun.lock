@@ -33,6 +33,7 @@
         "chrome.ui": "./dist/cli.js",
       },
       "dependencies": {
+        "chrome-ui-registry-builder": "workspace:*",
         "citty": "^0.1.6",
       },
       "devDependencies": {

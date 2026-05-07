@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "chrome-ui-registry-builder": "workspace:*",
     "citty": "^0.1.6"
   },
   "devDependencies": {
