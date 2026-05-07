@@ -12,8 +12,10 @@ test("compileItem reads source files and produces RegistryItem JSON", async () =
   expect(compiled.name).toBe("button");
   expect(compiled.type).toBe("registry:ui");
   expect(compiled.files).toHaveLength(1);
-  expect(compiled.files[0].path).toBe("button.tsx");
-  expect(compiled.files[0].content).toContain("export function Button");
+  const file = compiled.files[0];
+  expect(file).toBeDefined();
+  expect(file!.path).toBe("button.tsx");
+  expect(file!.content).toContain("export function Button");
   expect(compiled.registryDependencies).toEqual(["utils"]);
   expect(compiled.dependencies).toEqual([]);
 });

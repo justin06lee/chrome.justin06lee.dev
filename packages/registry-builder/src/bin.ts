@@ -5,7 +5,9 @@ import { resolve } from "node:path";
 const args = process.argv.slice(2);
 function flag(name: string, fallback: string): string {
   const i = args.indexOf(name);
-  return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
+  if (i < 0) return fallback;
+  const next = args[i + 1];
+  return next ?? fallback;
 }
 
 const repoRoot = resolve(import.meta.dir, "../../..");

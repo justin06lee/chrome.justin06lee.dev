@@ -11,6 +11,7 @@
     "build": "bun run src/bin.ts"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/node": "^20",
     "typescript": "^5"
   }

@@ -7,6 +7,8 @@ import { defaultConfig, writeConfig } from "../writers/config";
 import { patchGlobalsCss } from "../writers/css";
 import { runInstall } from "../writers/deps";
 import { makeHttpFetcher, resolveItems } from "../registry";
+import type { Fetcher } from "../registry";
+import type { RegistryItem } from "../types";
 import { writeFileSafe } from "../writers/tsx";
 
 const PEER_DEPS = ["clsx", "tailwind-merge", "motion", "lucide-react"];
@@ -72,15 +74,17 @@ export async function runInit(opts: InitOptions): Promise<void> {
 }
 
 /** Used in tests so we don't hit the network. */
-function localThemeFetcher() {
-  return async (name: string) => {
+function localThemeFetcher(): Fetcher {
+  return async (name: string): Promise<RegistryItem> => {
     if (name === "theme") {
       return {
-        name: "theme", type: "registry:theme",
-        dependencies: [], registryDependencies: [],
+        name: "theme",
+        type: "registry:theme",
+        dependencies: [],
+        registryDependencies: [],
         files: [{
           path: "theme.css",
-          type: "registry:theme" as const,
+          type: "registry:theme",
           target: "",
           content: ":root, .dark {\n  --background: #000000;\n  --foreground: #ffffff;\n}\n",
         }],
@@ -88,11 +92,13 @@ function localThemeFetcher() {
     }
     if (name === "utils") {
       return {
-        name: "utils", type: "registry:lib",
-        dependencies: [], registryDependencies: [],
+        name: "utils",
+        type: "registry:lib",
+        dependencies: [],
+        registryDependencies: [],
         files: [{
           path: "utils.ts",
-          type: "registry:lib" as const,
+          type: "registry:lib",
           target: "",
           content: "export const cn = (...c: string[]) => c.join(' ');\n",
         }],
