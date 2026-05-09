@@ -1,0 +1,16 @@
+{
+  "name": "scramble",
+  "type": "registry:ui",
+  "description": "per-character text scramble effect on hover.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "scramble.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nconst LETTERS = \"abcdefghijklmnopqrstuvwxyz\";\n\nfunction ScrambleWord({ text, speed = 30, step = 1 / 3 }: { text: string; speed?: number; step?: number }) {\n  const visRef = React.useRef<HTMLSpanElement | null>(null);\n  const sizerRef = React.useRef<HTMLSpanElement | null>(null);\n  const intervalRef = React.useRef<number | null>(null);\n  const [widthPx, setWidthPx] = React.useState<number | null>(null);\n\n  React.useLayoutEffect(() => {\n    const measure = () => {\n      if (!sizerRef.current) return;\n      const w = sizerRef.current.getBoundingClientRect().width;\n      if (w) setWidthPx(Math.ceil(w));\n    };\n    measure();\n    const ro = new ResizeObserver(measure);\n    if (sizerRef.current) ro.observe(sizerRef.current);\n    return () => ro.disconnect();\n  }, [text]);\n\n  React.useEffect(() => {\n    return () => {\n      if (intervalRef.current) window.clearInterval(intervalRef.current);\n    };\n  }, []);\n\n  const handleEnter = () => {\n    let iteration = 0;\n    if (intervalRef.current) window.clearInterval(intervalRef.current);\n    intervalRef.current = window.setInterval(() => {\n      const node = visRef.current;\n      if (!node) return;\n      const scrambled = text\n        .split(\"\")\n        .map((_, idx) =>\n          idx < iteration ? text[idx] : LETTERS[Math.floor(Math.random() * 26)],\n        )\n        .join(\"\");\n      node.textContent = scrambled;\n      iteration += step;\n      if (iteration >= text.length) {\n        window.clearInterval(intervalRef.current!);\n        intervalRef.current = null;\n        node.textContent = text;\n      }\n    }, speed);\n  };\n\n  return (\n    <>\n      <span\n        ref={sizerRef}\n        className=\"absolute -left-[9999px] -top-[9999px] whitespace-pre\"\n        aria-hidden\n      >\n        {text}\n      </span>\n      <span\n        className=\"inline-block whitespace-nowrap align-baseline cursor-default\"\n        style={widthPx ? { minWidth: `${widthPx}px` } : undefined}\n        onMouseEnter={handleEnter}\n      >\n        <span ref={visRef}>{text}</span>\n      </span>\n    </>\n  );\n}\n\nexport interface ScrambleProps {\n  text: string;\n  speed?: number;\n  step?: number;\n}\n\nexport function Scramble({ text, speed, step }: ScrambleProps) {\n  const parts = text.split(/(\\s+)/);\n  return (\n    <>\n      {parts.map((p, i) =>\n        /\\s+/.test(p) ? (\n          <span key={i}>{p}</span>\n        ) : (\n          <ScrambleWord key={i} text={p} speed={speed} step={step} />\n        ),\n      )}\n    </>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}

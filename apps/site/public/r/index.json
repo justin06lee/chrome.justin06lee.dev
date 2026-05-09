@@ -2,16 +2,37 @@
   {
     "name": "button",
     "type": "registry:ui",
-    "description": "a button. clicks like a button.",
+    "description": "polymorphic button. renders as an anchor when given href, a button otherwise.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
     ]
   },
   {
+    "name": "chrome",
+    "type": "registry:ui",
+    "description": "shimmering chrome holographic foil text effect.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
+    "name": "copy-button",
+    "type": "registry:ui",
+    "description": "copy-to-clipboard button with copied/error feedback states.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
     "name": "dialog",
     "type": "registry:ui",
     "description": "promise-based confirm and alert dialogs.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
+    "name": "donut",
+    "type": "registry:ui",
+    "description": "spinning ascii torus rendered with luminance shading.",
     "dependencies": [],
     "registryDependencies": []
   },
@@ -23,6 +44,20 @@
     "registryDependencies": [
       "utils"
     ]
+  },
+  {
+    "name": "rainbow",
+    "type": "registry:ui",
+    "description": "per-character cycling rainbow text with staggered animation.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
+    "name": "scramble",
+    "type": "registry:ui",
+    "description": "per-character text scramble effect on hover.",
+    "dependencies": [],
+    "registryDependencies": []
   },
   {
     "name": "select",
@@ -43,9 +78,23 @@
     ]
   },
   {
+    "name": "stack",
+    "type": "registry:ui",
+    "description": "stacked paper card with hovered fan-out spring animation.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
     "name": "theme",
     "type": "registry:theme",
     "description": "dark-only chrome CSS variables and @theme inline tokens.",
+    "dependencies": [],
+    "registryDependencies": []
+  },
+  {
+    "name": "tilt",
+    "type": "registry:ui",
+    "description": "3d perspective tilt card with sweeping shine on hover.",
     "dependencies": [],
     "registryDependencies": []
   },

@@ -1,0 +1,16 @@
+{
+  "name": "rainbow",
+  "type": "registry:ui",
+  "description": "per-character cycling rainbow text with staggered animation.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "rainbow.tsx",
+      "content": "import * as React from \"react\";\n\nconst KEYFRAMES = `@keyframes chrome-rainbow-cycle {\n  0%   { color: hsl(0,   95%, 65%); }\n  20%  { color: hsl(60,  95%, 65%); }\n  40%  { color: hsl(120, 80%, 60%); }\n  60%  { color: hsl(200, 95%, 65%); }\n  80%  { color: hsl(280, 90%, 70%); }\n  100% { color: hsl(360, 95%, 65%); }\n}`;\n\nexport interface RainbowProps extends React.HTMLAttributes<HTMLElement> {\n  as?: React.ElementType;\n  text: string;\n  duration?: number;\n  stagger?: number;\n}\n\nexport function Rainbow({\n  as: Tag = \"span\",\n  text,\n  duration = 3,\n  stagger = 0.25,\n  ...rest\n}: RainbowProps) {\n  const chars = Array.from(text);\n  return (\n    <>\n      <style precedence=\"default\" href=\"chrome-rainbow-keyframes\">\n        {KEYFRAMES}\n      </style>\n      <Tag aria-label={text} {...rest}>\n        {chars.map((c, i) => (\n          <span\n            key={i}\n            style={{\n              display: \"inline-block\",\n              animation: `chrome-rainbow-cycle ${duration}s linear infinite`,\n              animationDelay: `${-stagger * i}s`,\n            }}\n            aria-hidden\n          >\n            {c === \" \" ? \" \" : c}\n          </span>\n        ))}\n      </Tag>\n    </>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}
