@@ -10,5 +10,10 @@ export default defineComponent({
     { name: "onChange", type: "(value: T) => void", required: true },
     { name: "options", type: "SelectOption<T>[]", required: true },
     { name: "size", type: "'default' | 'compact'", default: "'default'" },
+    {
+      name: "background",
+      type: "string",
+      description: "CSS background applied to the root element. transparent by default.",
+    },
   ],
 });

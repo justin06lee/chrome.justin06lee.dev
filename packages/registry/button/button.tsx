@@ -1,63 +1,159 @@
-import * as React from "react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Variant = "default" | "ghost";
-type Size = "sm" | "md";
+export type ButtonVariant = "solid" | "outline" | "dashed" | "ghost" | "link";
 
-const variantClasses: Record<Variant, string> = {
-  default: "bg-white text-black border border-white hover:bg-white/90",
-  ghost: "bg-transparent text-white border border-white/25 hover:bg-white/10",
-};
-
-const sizeClasses: Record<Size, string> = {
-  sm: "px-3 py-1 text-[11px]",
-  md: "px-[18px] py-2 text-xs",
-};
-
-const baseClasses =
-  "inline-flex items-center justify-center font-mono transition-colors disabled:opacity-50";
-
-type CommonProps = {
-  variant?: Variant;
-  size?: Size;
+export type ButtonProps = {
+  variant?: ButtonVariant;
+  size?: "sm" | "md";
+  icon?: LucideIcon;
+  iconRight?: LucideIcon;
+  /** White slide-up pill shown on hover. */
+  tooltip?: string;
+  /** aria-label override; required for icon-only buttons. */
+  label?: string;
+  /** Renders as <a>; external URLs (http(s)://) get target="_blank" auto-applied. */
+  href?: string;
+  onClick?: () => void;
   className?: string;
+  children?: React.ReactNode;
+  type?: "button" | "submit";
+  disabled?: boolean;
+  fullWidth?: boolean;
+  /** CSS background applied to the root element. Transparent by default. */
+  background?: string;
+  /** When set, click copies this string to the clipboard. */
+  copy?: string;
+  /** Swaps into tooltip (and into children if children is a string) for 1.5s after copy. Defaults to "Copied!". */
+  copyFeedback?: string;
+  ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
 };
 
-type ButtonAsButton = CommonProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "size"> & {
-    href?: undefined;
-  };
+const SIZE = {
+  sm: { icon: "size-9", text: "px-3 py-1.5 text-sm" },
+  md: { icon: "size-10", text: "px-4 py-2 text-sm" },
+} as const;
 
-type ButtonAsAnchor = CommonProps &
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "size"> & {
-    href: string;
-  };
+const variantClass: Record<ButtonVariant, string> = {
+  solid: "bg-white text-black hover:bg-white/90",
+  outline: "border border-white/20 text-white hover:bg-white/5",
+  dashed:
+    "border border-dashed border-white/20 text-white/70 hover:text-white hover:bg-white/5",
+  ghost: "text-white hover:bg-white/10 hover:shadow-sm",
+  link: "text-white underline-offset-4 hover:underline",
+};
 
-export type ButtonProps = ButtonAsButton | ButtonAsAnchor;
+export function Button({
+  variant = "outline",
+  size = "md",
+  icon: Icon,
+  iconRight: IconRight,
+  tooltip,
+  label,
+  href,
+  onClick,
+  className,
+  children,
+  type = "button",
+  disabled,
+  fullWidth,
+  background,
+  copy,
+  copyFeedback = "Copied!",
+  ref,
+}: ButtonProps) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
 
-export const Button = React.forwardRef<HTMLElement, ButtonProps>(
-  ({ className, variant = "default", size = "md", ...props }, ref) => {
-    const classes = cn(baseClasses, variantClasses[variant], sizeClasses[size], className);
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    };
+  }, []);
 
-    if (props.href !== undefined) {
-      const { href, ...anchorProps } = props;
-      return (
-        <a
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          href={href}
-          className={classes}
-          {...anchorProps}
-        />
-      );
+  const iconOnly = !children;
+  const isLink = variant === "link";
+  const hasIcon = Boolean(Icon || IconRight);
+  const iconPx = !isLink && iconOnly ? (size === "sm" ? 20 : 18) : 16;
+
+  const showFeedback = copy && copied;
+  const tooltipShown = showFeedback ? copyFeedback : tooltip;
+  const childrenShown =
+    showFeedback && typeof children === "string" ? copyFeedback : children;
+
+  const handleClick = async () => {
+    if (copy) {
+      try {
+        await navigator.clipboard.writeText(copy);
+        setCopied(true);
+        if (timerRef.current) window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => setCopied(false), 1500);
+      } catch {
+        /* clipboard blocked */
+      }
     }
+    onClick?.();
+  };
 
+  const cls = cn(
+    "group relative inline-flex items-center transition",
+    disabled
+      ? "opacity-60 cursor-not-allowed pointer-events-none"
+      : "cursor-pointer",
+    !isLink && SIZE[size][iconOnly ? "icon" : "text"],
+    iconOnly && !isLink && "justify-center",
+    hasIcon && !iconOnly && (isLink ? "gap-1.5" : "gap-2"),
+    fullWidth && "w-full justify-center",
+    variantClass[variant],
+    className,
+  );
+
+  const ariaLabel = iconOnly
+    ? (label ?? (typeof children === "string" ? children : undefined))
+    : undefined;
+
+  const content = (
+    <>
+      {tooltipShown && (
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-10 whitespace-nowrap bg-white px-2 py-1 text-[11px] text-black opacity-0 [transform:translate(-50%,4px)] transition-[opacity,transform] duration-150 group-hover:opacity-100 group-hover:[transform:translate(-50%,-4px)]">
+          {tooltipShown}
+        </span>
+      )}
+      {Icon && <Icon size={iconPx} aria-hidden />}
+      {childrenShown}
+      {IconRight && <IconRight size={iconPx} aria-hidden />}
+    </>
+  );
+
+  if (href && !copy && !disabled) {
+    const external = /^https?:\/\//.test(href);
     return (
-      <button
-        ref={ref as React.Ref<HTMLButtonElement>}
-        className={classes}
-        {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
-      />
+      <a
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        href={href}
+        aria-label={ariaLabel}
+        className={cls}
+        style={{ background }}
+        {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+      >
+        {content}
+      </a>
     );
-  },
-);
-Button.displayName = "Button";
+  }
+  return (
+    <button
+      ref={ref as React.Ref<HTMLButtonElement>}
+      type={type}
+      onClick={handleClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      className={cls}
+      style={{ background }}
+    >
+      {content}
+    </button>
+  );
+}

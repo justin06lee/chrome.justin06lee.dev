@@ -6,6 +6,8 @@ export interface CopyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   text: string;
   resetMs?: number;
   labels?: { idle: string; copied: string; error: string };
+  /** CSS background applied to the root element. Transparent by default. */
+  background?: string;
 }
 
 export function CopyButton({
@@ -14,6 +16,8 @@ export function CopyButton({
   labels = { idle: "copy", copied: "copied", error: "failed" },
   className = "",
   children,
+  background,
+  style,
   ...rest
 }: CopyButtonProps) {
   const [state, setState] = React.useState<"idle" | "copied" | "error">("idle");
@@ -48,6 +52,7 @@ export function CopyButton({
         "font-mono text-[11px] text-white/55 hover:text-white transition-colors " +
         className
       }
+      style={{ background, ...style }}
       {...rest}
     >
       {children ?? label}

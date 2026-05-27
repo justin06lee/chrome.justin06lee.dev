@@ -6,6 +6,8 @@ export interface TiltProps extends React.HTMLAttributes<HTMLDivElement> {
   rotate?: number;
   shine?: boolean;
   duration?: number;
+  /** CSS background applied to the root element. Transparent by default. */
+  background?: string;
 }
 
 export function Tilt({
@@ -14,14 +16,17 @@ export function Tilt({
   rotate = 14,
   shine = true,
   duration = 900,
+  background,
   ...rest
 }: TiltProps) {
   const [hover, setHover] = React.useState(false);
   const shineRef = React.useRef<HTMLDivElement>(null);
+  const animRef = React.useRef<Animation | null>(null);
 
   React.useEffect(() => {
     if (!hover || !shine || !shineRef.current) return;
-    const anim = shineRef.current.animate(
+    if (animRef.current) animRef.current.cancel();
+    animRef.current = shineRef.current.animate(
       [
         { transform: "translateX(-220%)", opacity: 0, offset: 0 },
         { opacity: 1, offset: 0.15 },
@@ -30,11 +35,11 @@ export function Tilt({
       ],
       { duration, easing: "ease-in-out", fill: "forwards" },
     );
-    return () => anim.cancel();
+    return () => animRef.current?.cancel();
   }, [hover, shine, duration]);
 
   return (
-    <div style={{ perspective: "500px" }}>
+    <div style={{ background, perspective: "500px" }}>
       <div
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}

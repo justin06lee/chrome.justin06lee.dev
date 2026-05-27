@@ -10,5 +10,10 @@ export default defineComponent({
     { name: "shine", type: "boolean", default: "true" },
     { name: "duration", type: "number", default: "900", description: "shine duration in ms" },
     { name: "children", type: "ReactNode", required: true },
+    {
+      name: "background",
+      type: "string",
+      description: "CSS background applied to the root element. transparent by default.",
+    },
   ],
 });

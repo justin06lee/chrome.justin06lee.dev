@@ -16,6 +16,8 @@ export interface DonutProps {
   speed?: number;
   yScaleOverride?: number;
   className?: string;
+  /** CSS background applied to the root element. Transparent by default. */
+  background?: string;
 }
 
 export function Donut({
@@ -32,6 +34,7 @@ export function Donut({
   speed = 0.75,
   yScaleOverride,
   className = "font-mono text-xs leading-[1] whitespace-pre cursor-default select-none",
+  background,
 }: DonutProps) {
   const preRef = React.useRef<HTMLPreElement | null>(null);
   const [yScale, setYScale] = React.useState<number>(yScaleOverride ?? 0.55);
@@ -188,5 +191,12 @@ export function Donut({
     return () => cancelAnimationFrame(rafId);
   }, [width, height, R, r, K, D, du, dv, luminanceChars, speed, lx, ly, lz, yScale]);
 
-  return <pre ref={preRef} className={className} aria-label="ASCII donut" />;
+  return (
+    <pre
+      ref={preRef}
+      className={className}
+      style={{ background }}
+      aria-label="ASCII donut"
+    />
+  );
 }

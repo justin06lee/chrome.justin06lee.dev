@@ -26,7 +26,7 @@ function ScrambleWord({ text, speed = 30, step = 1 / 3 }: { text: string; speed?
     return () => {
       if (intervalRef.current) window.clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [text]);
 
   const handleEnter = () => {
     let iteration = 0;
@@ -60,33 +60,70 @@ function ScrambleWord({ text, speed = 30, step = 1 / 3 }: { text: string; speed?
         {text}
       </span>
       <span
+        aria-label={text}
         className="inline-block whitespace-nowrap align-baseline cursor-default"
         style={widthPx ? { minWidth: `${widthPx}px` } : undefined}
         onMouseEnter={handleEnter}
       >
-        <span ref={visRef}>{text}</span>
+        <span ref={visRef} aria-hidden>{text}</span>
       </span>
     </>
   );
 }
 
-export interface ScrambleProps {
-  text: string;
+export interface ScrambleProps extends React.HTMLAttributes<HTMLElement> {
+  as?: React.ElementType;
   speed?: number;
   step?: number;
+  /** CSS background applied to the root element. Transparent by default. */
+  background?: string;
 }
 
-export function Scramble({ text, speed, step }: ScrambleProps) {
-  const parts = text.split(/(\s+)/);
-  return (
-    <>
-      {parts.map((p, i) =>
-        /\s+/.test(p) ? (
+// Recursively rebuild the child tree, splitting every text node into
+// hover-scramble words (whitespace runs kept as plain spans). Element
+// wrappers (links, spans, etc.) are preserved.
+function scrambleify(
+  node: React.ReactNode,
+  speed: number | undefined,
+  step: number | undefined,
+): React.ReactNode {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node)
+      .split(/(\s+)/)
+      .map((p, i) =>
+        p === "" || /\s+/.test(p) ? (
           <span key={i}>{p}</span>
         ) : (
           <ScrambleWord key={i} text={p} speed={speed} step={step} />
         ),
-      )}
-    </>
+      );
+  }
+  if (Array.isArray(node)) {
+    return node.map((n, i) => (
+      <React.Fragment key={i}>{scrambleify(n, speed, step)}</React.Fragment>
+    ));
+  }
+  if (React.isValidElement(node)) {
+    const el = node as React.ReactElement<{ children?: React.ReactNode }>;
+    if (el.props.children == null) return node;
+    return React.cloneElement(el, undefined, scrambleify(el.props.children, speed, step));
+  }
+  return node;
+}
+
+/** Wrap any content — every word inside scrambles on hover. */
+export function Scramble({
+  as: Tag = "span",
+  speed,
+  step,
+  background,
+  style,
+  children,
+  ...rest
+}: ScrambleProps) {
+  return (
+    <Tag style={{ background, ...style }} {...rest}>
+      {scrambleify(children, speed, step)}
+    </Tag>
   );
 }

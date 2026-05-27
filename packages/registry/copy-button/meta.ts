@@ -9,5 +9,10 @@ export default defineComponent({
     { name: "text", type: "string", required: true, description: "string to copy" },
     { name: "resetMs", type: "number", default: "2000", description: "ms before reverting" },
     { name: "labels", type: "{ idle, copied, error }", default: "copy/copied/failed" },
+    {
+      name: "background",
+      type: "string",
+      description: "CSS background applied to the root element. transparent by default.",
+    },
   ],
 });

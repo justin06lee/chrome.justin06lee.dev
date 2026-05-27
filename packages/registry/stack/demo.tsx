@@ -2,7 +2,7 @@ import { Stack } from "./stack";
 
 export default function StackDemo() {
   return (
-    <Stack className="h-44 w-40">
+    <Stack>
       <div className="flex h-full flex-col justify-between p-4">
         <div className="space-y-2">
           <div className="h-px w-full bg-white/15" />

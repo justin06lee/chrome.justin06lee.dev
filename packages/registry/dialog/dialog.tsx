@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 type ConfirmOptions = {
   title: string;
@@ -29,6 +29,16 @@ export function useDialog(): DialogContextValue {
   return ctx;
 }
 
+// Subtle entrance — just enough to avoid a hard flicker, not a showy animation.
+const DIALOG_KEYFRAMES = `@keyframes chrome-dialog-overlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes chrome-dialog-panel {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}`;
+
 export function DialogProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<DialogState>(null);
   const confirm = useCallback(
@@ -41,6 +51,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
       new Promise<void>((resolve) => setState({ kind: "alert", options, resolve })),
     [],
   );
+  const panelRef = useRef<HTMLDivElement>(null);
   const close = useCallback(
     (resolved: boolean) => {
       if (!state) return;
@@ -54,7 +65,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
     if (!state) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") close(false);
-      if (e.key === "Enter") close(true);
+      if (e.key === "Enter" && panelRef.current?.contains(e.target as Node)) close(true);
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -64,13 +75,29 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
     <DialogContext.Provider value={{ confirm, alert }}>
       {children}
       {state && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4" onClick={() => close(false)}>
-          <div className="w-full max-w-sm border border-white/20 bg-black p-5 space-y-4" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+        <>
+          <style precedence="default" href="chrome-dialog-keyframes">
+            {DIALOG_KEYFRAMES}
+          </style>
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4"
+            style={{ animation: "chrome-dialog-overlay 120ms ease-out" }}
+            onClick={() => close(false)}
+          >
+            <div
+              ref={panelRef}
+              className="w-full max-w-sm border border-white/20 bg-black p-5 space-y-4"
+              style={{ animation: "chrome-dialog-panel 150ms cubic-bezier(0.2, 0.8, 0.2, 1)" }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="chrome-dialog-title"
+            >
             <div className="space-y-2">
               <div className="text-xs font-mono uppercase tracking-widest text-white/50">
                 {state.kind === "confirm" ? "Confirm" : "Notice"}
               </div>
-              <div className="text-sm text-white">{state.options.title}</div>
+              <div id="chrome-dialog-title" className="text-sm text-white">{state.options.title}</div>
               {state.options.message && (
                 <div className="text-xs text-white/60 whitespace-pre-line">{state.options.message}</div>
               )}
@@ -95,7 +122,8 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </div>
-        </div>
+          </div>
+        </>
       )}
     </DialogContext.Provider>
   );

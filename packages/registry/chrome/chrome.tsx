@@ -36,22 +36,29 @@ const CHROME_STYLE: React.CSSProperties = {
   animation: "chrome-shine 5s cubic-bezier(.4,0,.6,1) infinite",
 };
 
+// `background-clip: text` clips the wrapper's gradient to every glyph it
+// contains, descendants included — so Chrome works as a wrapper around any
+// content. But a nested element with its own `color` would paint opaque text
+// over that clipped gradient; force every descendant transparent so the
+// chrome shows through all text inside.
 const KEYFRAMES = `@keyframes chrome-shine {
   0%   { background-position: -50% 0, 0 0, 0 0; }
   100% { background-position: 250% 0, 0 0, 0 0; }
-}`;
+}
+[data-chrome] * { color: transparent !important; }`;
 
 export interface ChromeProps extends React.HTMLAttributes<HTMLElement> {
   as?: React.ElementType;
 }
 
+/** Wrap any content — every text glyph inside renders with the chrome foil effect. */
 export function Chrome({ as: Tag = "span", style, children, ...rest }: ChromeProps) {
   return (
     <>
       <style precedence="default" href="chrome-shine-keyframes">
         {KEYFRAMES}
       </style>
-      <Tag style={{ ...CHROME_STYLE, ...style }} {...rest}>
+      <Tag data-chrome style={{ ...CHROME_STYLE, ...style }} {...rest}>
         {children}
       </Tag>
     </>

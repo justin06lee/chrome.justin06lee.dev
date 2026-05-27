@@ -20,6 +20,8 @@ type Props<T extends string | number> = {
   className?: string;
   /** Match the visual size of the trigger to e.g. an inline table cell. */
   size?: "default" | "compact";
+  /** CSS background applied to the root element. Transparent by default. */
+  background?: string;
 };
 
 export default function Select<T extends string | number>({
@@ -31,6 +33,7 @@ export default function Select<T extends string | number>({
   ariaLabel,
   className,
   size = "default",
+  background,
 }: Props<T>) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +61,7 @@ export default function Select<T extends string | number>({
   const optionPad = size === "compact" ? "px-2 py-1 text-xs" : "px-3 py-2 text-sm";
 
   return (
-    <div ref={containerRef} className={`relative ${className ?? ""}`}>
+    <div ref={containerRef} className={`relative ${className ?? ""}`} style={{ background }}>
       <button
         type="button"
         disabled={disabled}

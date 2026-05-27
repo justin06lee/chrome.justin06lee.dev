@@ -6,7 +6,12 @@ export default defineComponent({
   description: "stacked paper card with hovered fan-out spring animation.",
   files: [{ source: "stack.tsx", target: "stack.tsx" }],
   props: [
-    { name: "layers", type: "number", default: "2", description: "background paper layers" },
+    { name: "layers", type: "number", default: "1", description: "paper layers behind the front card" },
     { name: "children", type: "ReactNode", required: true },
+    {
+      name: "background",
+      type: "string",
+      description: "CSS background applied to the root element. transparent by default.",
+    },
   ],
 });

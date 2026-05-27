@@ -11,5 +11,10 @@ export default defineComponent({
     { name: "speed", type: "number", default: "0.75" },
     { name: "luminanceChars", type: "string", default: "' ,-~:;=!*#$@'" },
     { name: "lightDirection", type: "[number, number, number]", default: "[0, 1, -1]" },
+    {
+      name: "background",
+      type: "string",
+      description: "CSS background applied to the root element. transparent by default.",
+    },
   ],
 });
