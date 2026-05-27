@@ -7,15 +7,7 @@ type Example = {
   status: "live" | "soon";
 };
 
-const EXAMPLES: Example[] = [
-  {
-    slug: "cyberware",
-    name: "cyberware spine",
-    tagline:
-      "david from edgerunners as a navigation surface — chrome implants on the spine become category ports.",
-    status: "live",
-  },
-];
+const EXAMPLES: Example[] = [];
 
 export default function ExamplesIndex() {
   return (
@@ -29,26 +21,32 @@ export default function ExamplesIndex() {
         code lets you do.
       </p>
 
-      <div className="border border-white/10">
-        {EXAMPLES.map((ex, i) => (
-          <Link
-            key={ex.slug}
-            href={`/examples/${ex.slug}`}
-            className={
-              "flex items-baseline justify-between px-5 py-4 hover:bg-white/[0.03] transition-colors " +
-              (i < EXAMPLES.length - 1 ? "border-b border-white/10" : "")
-            }
-          >
-            <div className="flex-1 pr-6">
-              <div className="text-[15px] font-medium">{ex.name}</div>
-              <div className="text-[12px] text-white/55 mt-0.5">{ex.tagline}</div>
-            </div>
-            <div className="font-mono text-[11px] text-white/40 shrink-0">
-              {ex.status === "live" ? "view →" : "soon"}
-            </div>
-          </Link>
-        ))}
-      </div>
+      {EXAMPLES.length === 0 ? (
+        <div className="border border-dashed border-white/15 px-5 py-10 text-center text-[13px] text-white/45">
+          nothing here yet.
+        </div>
+      ) : (
+        <div className="border border-white/10">
+          {EXAMPLES.map((ex, i) => (
+            <Link
+              key={ex.slug}
+              href={`/examples/${ex.slug}`}
+              className={
+                "flex items-baseline justify-between px-5 py-4 hover:bg-white/[0.03] transition-colors " +
+                (i < EXAMPLES.length - 1 ? "border-b border-white/10" : "")
+              }
+            >
+              <div className="flex-1 pr-6">
+                <div className="text-[15px] font-medium">{ex.name}</div>
+                <div className="text-[12px] text-white/55 mt-0.5">{ex.tagline}</div>
+              </div>
+              <div className="font-mono text-[11px] text-white/40 shrink-0">
+                {ex.status === "live" ? "view →" : "soon"}
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

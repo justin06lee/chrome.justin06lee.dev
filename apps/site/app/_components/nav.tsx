@@ -1,18 +1,46 @@
-import Link from "next/link";
+import { Button } from "../../../../packages/registry/button/button";
 import { Chrome } from "../../../../packages/registry/chrome/chrome";
 
 export function Nav() {
   return (
-    <nav className="flex items-center px-7 py-3.5 border-b border-white/10 text-[13px]">
-      <Link href="/" className="font-bold tracking-tight inline-flex items-baseline">
+    <nav aria-label="main navigation" className="flex items-center px-7 py-3.5 border-b border-white/10 text-[13px]">
+      <Button
+        variant="link"
+        href="/"
+        className="font-bold tracking-tight items-baseline hover:no-underline"
+      >
         <Chrome className="italic font-serif">chrome</Chrome>
         <span className="ml-px font-mono text-white/35 not-italic">.justin06lee.dev</span>
-      </Link>
-      <div className="ml-auto flex items-center gap-[22px] text-white/65">
-        <Link href="/docs" className="hover:text-white">docs</Link>
-        <Link href="/components" className="hover:text-white">components</Link>
-        <Link href="/examples" className="hover:text-white">examples</Link>
-        <a href="https://github.com/justin06lee/chrome.justin06lee.dev" className="hover:text-white">github</a>
+      </Button>
+      <div className="ml-auto flex items-center gap-[22px]">
+        <Button
+          variant="link"
+          href="/docs"
+          className="text-white/65 hover:text-white hover:no-underline"
+        >
+          docs
+        </Button>
+        <Button
+          variant="link"
+          href="/components"
+          className="text-white/65 hover:text-white hover:no-underline"
+        >
+          components
+        </Button>
+        <Button
+          variant="link"
+          href="/examples"
+          className="text-white/65 hover:text-white hover:no-underline"
+        >
+          examples
+        </Button>
+        <Button
+          variant="link"
+          href="https://github.com/justin06lee/chrome.justin06lee.dev"
+          className="text-white/65 hover:text-white hover:no-underline"
+        >
+          github
+        </Button>
       </div>
     </nav>
   );

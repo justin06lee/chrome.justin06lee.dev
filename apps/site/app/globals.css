@@ -1,39 +1,9 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-alt: var(--surface-alt);
-  --color-border: var(--border);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-}
+/* The site renders registry components straight from packages/registry.
+   Tailwind v4 only auto-detects content under apps/site, so without this
+   the classes used solely in those components (e.g. gap-4) get purged. */
+@source "../../../packages/registry";
 
 :root,
 .dark {
@@ -46,8 +16,79 @@ body {
   --accent: #ffffff;
 }
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-poppins);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
 }
 
+/* Hide scrollbars site-wide while keeping scroll functional. */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/legacy Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* range component — mirrors packages/registry/range/range.css so the docs
+   preview renders styled (consumers get this via `chrome add range`). */
+.chrome-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+}
+.chrome-range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.chrome-range::-moz-range-track {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+}
+.chrome-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.chrome-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.chrome-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.chrome-range::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+.chrome-range:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

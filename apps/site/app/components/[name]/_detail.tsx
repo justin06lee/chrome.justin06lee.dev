@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "../../../../../packages/registry/button/button";
+import { CodeBlock } from "../../../../../packages/registry/code-block/code-block";
+import { Showcase } from "../../../../../packages/registry/showcase/showcase";
+import { USAGE_EXAMPLES } from "./_examples";
 
 export function ComponentDetail({
   name,
@@ -8,6 +12,9 @@ export function ComponentDetail({
   source,
   installCommand,
   title,
+  /** When true, the preview tab drops its bordered+dotted frame so the demo
+   *  doesn't appear "inside another showcase". Use for container-type components. */
+  barePreview,
   children,
 }: {
   name: string;
@@ -15,20 +22,11 @@ export function ComponentDetail({
   source: string;
   installCommand: string;
   title?: React.ReactNode;
+  barePreview?: boolean;
   children: React.ReactNode;
 }) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(installCommand);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* clipboard blocked — silently ignore */
-    }
-  };
+  const examples = USAGE_EXAMPLES[name] ?? [];
 
   return (
     <>
@@ -46,37 +44,30 @@ export function ComponentDetail({
 
       <div className="flex items-center gap-6 border-b border-white/10 mb-6">
         {(["preview", "code"] as const).map((t) => (
-          <button
+          <Button
             key={t}
+            variant="link"
             onClick={() => setTab(t)}
             className={
-              "py-3 text-[13px] -mb-px border-b-2 transition-colors " +
+              "py-3 px-0 text-[13px] -mb-px border-b-2 hover:no-underline " +
               (tab === t
                 ? "border-white text-white"
                 : "border-transparent text-white/55 hover:text-white")
             }
           >
             {t}
-          </button>
+          </Button>
         ))}
       </div>
 
       {tab === "preview" ? (
-        <div
-          className="border border-white/10 min-h-[260px] flex items-center justify-center p-10 mb-12"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px)",
-            backgroundSize: "14px 14px",
-            backgroundPosition: "0 0",
-          }}
-        >
-          {children}
-        </div>
+        barePreview ? (
+          <div className="min-h-[260px] mb-12">{children}</div>
+        ) : (
+          <Showcase className="mb-12">{children}</Showcase>
+        )
       ) : (
-        <pre className="border border-white/10 bg-white/[0.02] p-5 text-[12px] leading-[1.65] overflow-x-auto whitespace-pre mb-12">
-          {source}
-        </pre>
+        <CodeBlock code={source} language="tsx" className="mb-12" />
       )}
 
       <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3">
@@ -84,13 +75,34 @@ export function ComponentDetail({
       </div>
       <div className="flex items-center gap-3 border border-white/10 px-4 py-3 bg-white/[0.02] mb-12">
         <code className="font-mono text-[13px] flex-1">{installCommand}</code>
-        <button
-          onClick={copy}
-          className="font-mono text-[11px] text-white/55 hover:text-white border-l border-white/15 pl-3"
+        <Button
+          variant="link"
+          copy={installCommand}
+          copyFeedback="copied"
+          className="text-[11px] font-mono text-white/55 hover:text-white hover:no-underline border-l border-white/15 pl-3"
         >
-          {copied ? "copied" : "copy"}
-        </button>
+          copy
+        </Button>
       </div>
+
+      {examples.length > 0 && (
+        <>
+          <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-4">
+            usage
+          </div>
+          <div className="flex flex-col gap-8 mb-12">
+            {examples.map((ex) => (
+              <div key={ex.label}>
+                <div className="text-[13px] text-white/70 mb-2">{ex.label}</div>
+                <div className="flex min-h-[150px] items-center justify-center border border-white/10 border-b-0 p-8 bg-white/[0.01]">
+                  {ex.render}
+                </div>
+                <CodeBlock code={ex.code} language="tsx" />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 }

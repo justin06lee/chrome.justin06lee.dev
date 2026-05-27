@@ -11,18 +11,36 @@ import { Chrome } from "../../../../../packages/registry/chrome/chrome";
 // a fully dynamic import path through packages/registry/<name>/demo.tsx
 // (the parent contains non-component dirs), so we enumerate explicitly.
 const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
+  accordion: () => import("../../../../../packages/registry/accordion/demo"),
+  article: () => import("../../../../../packages/registry/article/demo"),
+  badge: () => import("../../../../../packages/registry/badge/demo"),
   button: () => import("../../../../../packages/registry/button/demo"),
+  calendar: () => import("../../../../../packages/registry/calendar/demo"),
+  card: () => import("../../../../../packages/registry/card/demo"),
   chrome: () => import("../../../../../packages/registry/chrome/demo"),
+  "code-block": () => import("../../../../../packages/registry/code-block/demo"),
+  combobox: () => import("../../../../../packages/registry/combobox/demo"),
   "copy-button": () => import("../../../../../packages/registry/copy-button/demo"),
   dialog: () => import("../../../../../packages/registry/dialog/demo"),
   donut: () => import("../../../../../packages/registry/donut/demo"),
+  heatmap: () => import("../../../../../packages/registry/heatmap/demo"),
   input: () => import("../../../../../packages/registry/input/demo"),
+  menu: () => import("../../../../../packages/registry/menu/demo"),
+  navbar: () => import("../../../../../packages/registry/navbar/demo"),
+  prose: () => import("../../../../../packages/registry/prose/demo"),
   rainbow: () => import("../../../../../packages/registry/rainbow/demo"),
+  range: () => import("../../../../../packages/registry/range/demo"),
   scramble: () => import("../../../../../packages/registry/scramble/demo"),
+  segmented: () => import("../../../../../packages/registry/segmented/demo"),
   select: () => import("../../../../../packages/registry/select/demo"),
-  socials: () => import("../../../../../packages/registry/socials/demo"),
+  showcase: () => import("../../../../../packages/registry/showcase/demo"),
   stack: () => import("../../../../../packages/registry/stack/demo"),
+  tabs: () => import("../../../../../packages/registry/tabs/demo"),
+  textarea: () => import("../../../../../packages/registry/textarea/demo"),
   tilt: () => import("../../../../../packages/registry/tilt/demo"),
+  timeline: () => import("../../../../../packages/registry/timeline/demo"),
+  toc: () => import("../../../../../packages/registry/toc/demo"),
+  tooltip: () => import("../../../../../packages/registry/tooltip/demo"),
 };
 
 export async function generateStaticParams() {
@@ -38,7 +56,12 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
     ? join(process.cwd(), "..", "..", "packages", "registry", name)
     : join(process.cwd(), "..", "..", "packages", "registry", "_shared", name);
   const sourceFile = meta.files[0]?.source ?? `${name}.tsx`;
-  const source = await readFile(join(folder, sourceFile), "utf8");
+  let source: string;
+  try {
+    source = await readFile(join(folder, sourceFile), "utf8");
+  } catch {
+    notFound();
+  }
 
   const Demo: ComponentType | null = meta.type === "registry:ui" && DEMOS[name]
     ? (await DEMOS[name]()).default
@@ -61,6 +84,7 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
       source={source}
       installCommand={`bunx @justin06lee/chrome@latest add ${name}`}
       title={title}
+      barePreview={name === "showcase"}
     >
       {Demo ? <Demo /> : null}
     </ComponentDetail>

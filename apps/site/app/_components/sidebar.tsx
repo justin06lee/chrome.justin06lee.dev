@@ -2,11 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { REGISTRY } from "../../registry-manifest";
 
 type Group = {
   label: string;
   items: { name: string; href: string }[];
 };
+
+// Components are sourced from the registry manifest so the sidebar lists every
+// component that exists and never drifts from what's been built.
+const COMPONENT_ITEMS = REGISTRY.filter((m) => m.type === "registry:ui")
+  .map((m) => ({ name: m.name, href: `/components/${m.name}` }))
+  .sort((a, b) => a.name.localeCompare(b.name));
 
 const GROUPS: Group[] = [
   {
@@ -19,20 +26,7 @@ const GROUPS: Group[] = [
   },
   {
     label: "components",
-    items: [
-      { name: "button", href: "/components/button" },
-      { name: "chrome", href: "/components/chrome" },
-      { name: "copy-button", href: "/components/copy-button" },
-      { name: "dialog", href: "/components/dialog" },
-      { name: "donut", href: "/components/donut" },
-      { name: "input", href: "/components/input" },
-      { name: "rainbow", href: "/components/rainbow" },
-      { name: "scramble", href: "/components/scramble" },
-      { name: "select", href: "/components/select" },
-      { name: "socials", href: "/components/socials" },
-      { name: "stack", href: "/components/stack" },
-      { name: "tilt", href: "/components/tilt" },
-    ],
+    items: COMPONENT_ITEMS,
   },
 ];
 

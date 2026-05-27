@@ -14,7 +14,6 @@ export default function Home() {
 function Hero() {
   return (
     <section className="relative flex-1 flex flex-col items-center justify-center px-10 py-32 overflow-hidden">
-      <div className="pointer-events-none absolute top-1/2 left-1/2 w-[80%] h-[120%] -translate-x-1/2 -translate-y-1/2 [background:radial-gradient(ellipse_at_center,rgba(150,200,255,0.08)_0%,rgba(255,200,230,0.05)_40%,transparent_70%)]" />
       <span className="text-lg text-white/70 mb-1">justin06lee&apos;s</span>
       <Chrome
         as="h1"
@@ -23,14 +22,26 @@ function Hero() {
         chrome.
       </Chrome>
       <div className="mt-11 mb-7">
-        <code className="font-mono text-[12.5px] border border-white/20 bg-white/[0.02] px-3.5 py-2 inline-flex items-center gap-3">
-          bunx @justin06lee/chrome@latest init
-          <span className="text-white/40 text-[11px] border-l border-white/15 pl-3">copy</span>
-        </code>
+        <div className="font-mono text-[12.5px] border border-white/20 bg-white/[0.02] px-3.5 py-2 inline-flex items-center gap-3">
+          <code>bunx @justin06lee/chrome@latest init</code>
+          <Button
+            variant="link"
+            copy="bunx @justin06lee/chrome@latest init"
+            copyFeedback="copied"
+            className="text-[11px] text-white/40 hover:text-white hover:no-underline border-l border-white/15 pl-3"
+          >
+            copy
+          </Button>
+        </div>
       </div>
       <div className="flex gap-2.5">
-        <Button href="/components">browse components →</Button>
-        <Button href="https://github.com/justin06lee/chrome.justin06lee.dev" variant="ghost">
+        <Button href="/components" variant="solid">
+          browse components →
+        </Button>
+        <Button
+          href="https://github.com/justin06lee/chrome.justin06lee.dev"
+          variant="outline"
+        >
           view on github
         </Button>
       </div>
