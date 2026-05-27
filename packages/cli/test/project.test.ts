@@ -24,9 +24,17 @@ test("detects bun via bun.lock", () => {
 
 test("falls back to npm when no lockfile", () => {
   const dir = tempProject((d) => {
-    writeFileSync(join(d, "package.json"), '{"name":"x"}');
+    writeFileSync(join(d, "package.json"), '{"name":"x","devDependencies":{"tailwindcss":"^4"}}');
   });
   expect(detectProject(dir).packageManager).toBe("npm");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("throws when tailwindcss is absent", () => {
+  const dir = tempProject((d) => {
+    writeFileSync(join(d, "package.json"), '{"name":"x","dependencies":{"next":"16.0.0"}}');
+  });
+  expect(() => detectProject(dir)).toThrow(/tailwindcss not found/);
   rmSync(dir, { recursive: true, force: true });
 });
 

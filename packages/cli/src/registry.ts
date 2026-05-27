@@ -20,9 +20,16 @@ export async function resolveItems(roots: string[], fetch: Fetcher): Promise<Reg
   return order.map((n) => seen.get(n)!);
 }
 
+const VALID_NAME = /^[a-z0-9][a-z0-9-]*$/;
+
 export function makeHttpFetcher(baseUrl: string): Fetcher {
   const base = baseUrl.replace(/\/$/, "");
   return async (name: string): Promise<RegistryItem> => {
+    if (!VALID_NAME.test(name)) {
+      throw new Error(
+        `invalid component name "${name}": names must match /^[a-z0-9][a-z0-9-]*$/`,
+      );
+    }
     const url = `${base}/${name}.json`;
     let res: Response;
     try {
@@ -36,6 +43,25 @@ export function makeHttpFetcher(baseUrl: string): Fetcher {
       }
       throw new Error(`registry returned ${res.status} for ${url}`);
     }
-    return (await res.json()) as RegistryItem;
+    const data = await res.json();
+    if (
+      typeof data !== "object" || data === null ||
+      typeof (data as Record<string, unknown>).name !== "string" ||
+      typeof (data as Record<string, unknown>).type !== "string" ||
+      !Array.isArray((data as Record<string, unknown>).files)
+    ) {
+      throw new Error(`registry returned invalid item shape for "${name}" (${url})`);
+    }
+    const files: unknown[] = (data as Record<string, unknown>).files as unknown[];
+    for (const f of files) {
+      if (
+        typeof f !== "object" || f === null ||
+        typeof (f as Record<string, unknown>).path !== "string" ||
+        typeof (f as Record<string, unknown>).content !== "string"
+      ) {
+        throw new Error(`registry item "${name}" contains invalid file entry (${url})`);
+      }
+    }
+    return data as RegistryItem;
   };
 }

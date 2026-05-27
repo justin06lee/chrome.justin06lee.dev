@@ -24,7 +24,17 @@ function readPkg(cwd: string): { dependencies?: Record<string, string>; devDepen
   if (!existsSync(pkgPath)) {
     throw new Error(`no package.json at ${cwd}`);
   }
-  return JSON.parse(readFileSync(pkgPath, "utf8"));
+  let raw: string;
+  try {
+    raw = readFileSync(pkgPath, "utf8");
+  } catch (err) {
+    throw new Error(`failed to read package.json at ${pkgPath}: ${(err as Error).message}`);
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    throw new Error(`malformed package.json at ${pkgPath}: ${(err as Error).message}`);
+  }
 }
 
 function parseMajor(range: string | undefined): number {
@@ -43,7 +53,12 @@ export function detectProject(cwd: string): ProjectInfo {
   else if (all["react"]) framework = "react";
 
   const tailwindMajor = parseMajor(all["tailwindcss"]);
-  if (tailwindMajor !== 0 && tailwindMajor < 4) {
+  if (tailwindMajor === 0) {
+    throw new Error(
+      `tailwindcss not found in package.json dependencies. @justin06lee/chrome requires tailwind v4.`,
+    );
+  }
+  if (tailwindMajor < 4) {
     throw new Error(
       `@justin06lee/chrome requires tailwind v4. found tailwindcss "${all["tailwindcss"]}". upgrade or wait for v3 support in v1.1.`,
     );
@@ -55,7 +70,7 @@ export function detectProject(cwd: string): ProjectInfo {
     cwd,
     packageManager: detectPackageManager(cwd),
     framework,
-    tailwindMajor: tailwindMajor || 4,
+    tailwindMajor,
     hasTypeScript,
   };
 }

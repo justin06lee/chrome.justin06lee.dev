@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { detectProject } from "../project";
 import { defaultConfig, writeConfig } from "../writers/config";
@@ -10,9 +9,11 @@ import { makeHttpFetcher, resolveItems } from "../registry";
 import type { Fetcher } from "../registry";
 import type { RegistryItem } from "../types";
 import { writeFileSafe } from "../writers/tsx";
+import { DEFAULT_REGISTRY } from "../constants";
 
-const PEER_DEPS = ["clsx", "tailwind-merge", "motion", "lucide-react"];
-const DEFAULT_REGISTRY = "https://chrome.justin06lee.dev/r";
+// Components declare their own runtime deps (e.g. motion) so `add` installs them
+// per-component. init only seeds the deps every component assumes present.
+const PEER_DEPS = ["clsx", "tailwind-merge", "lucide-react"];
 
 function findGlobalsCss(cwd: string): string {
   for (const candidate of ["app/globals.css", "src/app/globals.css", "styles/globals.css"]) {
@@ -55,17 +56,15 @@ export async function runInit(opts: InitOptions): Promise<void> {
   const items = await resolveItems(["theme", "utils"], fetcher);
   for (const item of items) {
     if (item.type === "registry:theme") {
-      const themeFile = item.files[0];
-      if (themeFile) {
+      for (const themeFile of item.files) {
         await patchGlobalsCss(join(cwd, cssPath), themeFile.content);
         console.log(`✓ patched ${cssPath}`);
       }
     } else if (item.type === "registry:lib") {
       // Each lib file lands at the utils alias (lib/utils.ts).
-      const file = item.files[0];
-      if (file) {
+      for (const file of item.files) {
         const dest = join(cwd, "lib", file.path);
-        const result = await writeFileSafe(dest, file.content);
+        const result = await writeFileSafe(dest, file.content, { cwdGuard: cwd });
         if (result.action === "written") console.log(`✓ wrote lib/${file.path}`);
         else console.log(`✓ skipped lib/${file.path} (already present)`);
       }

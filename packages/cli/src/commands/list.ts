@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
-
-const DEFAULT_REGISTRY = "https://chrome.justin06lee.dev/r";
+import { DEFAULT_REGISTRY } from "../constants";
 
 interface IndexEntry {
   name: string;
@@ -19,7 +18,12 @@ export const listCommand = defineCommand({
       console.error(`✗ failed to load ${url} (${res.status})`);
       process.exit(1);
     }
-    const items = (await res.json()) as IndexEntry[];
+    const data = await res.json();
+    if (!Array.isArray(data)) {
+      console.error(`✗ registry returned unexpected index format from ${url}`);
+      process.exit(1);
+    }
+    const items = data as IndexEntry[];
     const grouped = new Map<string, IndexEntry[]>();
     for (const i of items) {
       const k = i.type;
