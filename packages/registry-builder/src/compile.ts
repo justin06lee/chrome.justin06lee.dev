@@ -19,11 +19,23 @@ export async function compileItem(item: WalkedItem): Promise<RegistryItem> {
       return {
         path: f.target,
         content,
-        type: meta.type,
+        type: f.type ?? meta.type,
         target: "",
       };
     }),
   );
+  let css: string | undefined;
+  if (meta.cssFile) {
+    const cssPath = join(dir, meta.cssFile);
+    try {
+      css = await readFile(cssPath, "utf8");
+    } catch (err) {
+      throw new Error(
+        `[${meta.name}] cannot read source file ${meta.cssFile} at ${cssPath}: ${(err as Error).message}`,
+      );
+    }
+  }
+
   return {
     name: meta.name,
     type: meta.type,
@@ -33,5 +45,6 @@ export async function compileItem(item: WalkedItem): Promise<RegistryItem> {
     registryDependencies: meta.registryDependencies ?? [],
     files,
     cssVars: meta.cssVars,
+    css,
   };
 }

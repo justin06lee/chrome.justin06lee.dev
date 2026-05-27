@@ -21,6 +21,8 @@ export interface RegistryItem {
   files: RegistryFile[];
   cssVars?: Record<string, Record<string, string>>;
   tailwind?: Record<string, unknown>;
+  /** Content of the component's CSS file, if it ships one. */
+  css?: string;
 }
 
 export interface PropDoc {
@@ -34,6 +36,9 @@ export interface PropDoc {
 export interface MetaFile {
   source: string;
   target: string;
+  /** Per-file type override. Defaults to the component's `type`. Use `registry:hook`
+   *  to ship a headless hook alongside a `registry:ui` styled component. */
+  type?: RegistryItemType;
 }
 
 export interface ComponentMeta {
@@ -46,4 +51,6 @@ export interface ComponentMeta {
   files: MetaFile[];
   cssVars?: Record<string, Record<string, string>>;
   props?: PropDoc[];
+  /** Source filename of a CSS file (relative to the component dir) to ship alongside the component. */
+  cssFile?: string;
 }

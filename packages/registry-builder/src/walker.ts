@@ -1,6 +1,13 @@
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import type { ComponentMeta } from "./schema";
+import type { ComponentMeta, RegistryItemType } from "./schema";
+
+const KNOWN_TYPES: ReadonlyArray<RegistryItemType> = [
+  "registry:ui",
+  "registry:lib",
+  "registry:theme",
+  "registry:hook",
+];
 
 export interface WalkedItem {
   dir: string;
@@ -32,6 +39,16 @@ export async function walkRegistry(root: string): Promise<WalkedItem[]> {
     const meta = mod.default as ComponentMeta;
     if (!meta || typeof meta !== "object" || !meta.name) {
       throw new Error(`Invalid meta.ts at ${metaPath}: missing default export or name`);
+    }
+    if (!KNOWN_TYPES.includes(meta.type as RegistryItemType)) {
+      throw new Error(
+        `Invalid meta.ts at ${metaPath}: "type" must be one of ${KNOWN_TYPES.join(", ")} (got ${JSON.stringify(meta.type)})`,
+      );
+    }
+    if (!Array.isArray(meta.files) || meta.files.length === 0) {
+      throw new Error(
+        `Invalid meta.ts at ${metaPath}: "files" must be a non-empty array`,
+      );
     }
     items.push({ dir: metaPath.slice(0, -"meta.ts".length - 1), meta });
   }

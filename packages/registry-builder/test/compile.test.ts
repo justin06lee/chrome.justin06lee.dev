@@ -1,4 +1,6 @@
 import { test, expect } from "bun:test";
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { walkRegistry } from "../src/walker";
 import { compileItem } from "../src/compile";
@@ -20,6 +22,28 @@ test("compileItem reads source files and produces RegistryItem JSON", async () =
   expect(compiled.dependencies).toEqual([]);
 });
 
+test("compileItem honors a per-file type override, defaulting to meta.type", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-compile-hook-"));
+  writeFileSync(join(dir, "use-tabs.ts"), "export const useTabs = () => ({});\n");
+  writeFileSync(join(dir, "tabs.tsx"), "export function Tabs() { return null; }\n");
+  const compiled = await compileItem({
+    dir,
+    meta: {
+      name: "tabs",
+      type: "registry:ui" as const,
+      files: [
+        { source: "use-tabs.ts", target: "use-tabs.ts", type: "registry:hook" as const },
+        { source: "tabs.tsx", target: "tabs.tsx" },
+      ],
+    },
+  });
+  const hook = compiled.files.find((f) => f.path === "use-tabs.ts")!;
+  const styled = compiled.files.find((f) => f.path === "tabs.tsx")!;
+  expect(hook.type).toBe("registry:hook");
+  expect(styled.type).toBe("registry:ui");
+  rmSync(dir, { recursive: true, force: true });
+});
+
 test("compileItem fails clearly when source file is missing", async () => {
   const item = {
     dir: join(FIXTURE, "button"),
@@ -30,4 +54,41 @@ test("compileItem fails clearly when source file is missing", async () => {
     },
   };
   await expect(compileItem(item)).rejects.toThrow(/missing\.tsx/);
+});
+
+test("compileItem emits css when meta.cssFile is set", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-compile-css-"));
+  writeFileSync(join(dir, "socials.tsx"), "export function Socials() { return null; }\n");
+  writeFileSync(join(dir, "socials.css"), ".socials { display: flex; }\n");
+  const compiled = await compileItem({
+    dir,
+    meta: {
+      name: "socials",
+      type: "registry:ui" as const,
+      files: [{ source: "socials.tsx", target: "socials.tsx" }],
+      cssFile: "socials.css",
+    },
+  });
+  expect(compiled.css).toBe(".socials { display: flex; }\n");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("compileItem omits css when meta.cssFile is unset", async () => {
+  const items = await walkRegistry(FIXTURE);
+  const button = items.find((i) => i.meta.name === "button")!;
+  const compiled = await compileItem(button);
+  expect(compiled.css).toBeUndefined();
+});
+
+test("compileItem fails clearly when cssFile is missing", async () => {
+  const item = {
+    dir: join(FIXTURE, "button"),
+    meta: {
+      name: "button",
+      type: "registry:ui" as const,
+      files: [{ source: "button.tsx", target: "button.tsx" }],
+      cssFile: "missing.css",
+    },
+  };
+  await expect(compileItem(item)).rejects.toThrow(/missing\.css/);
 });
