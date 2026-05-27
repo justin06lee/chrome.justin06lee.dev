@@ -1,0 +1,18 @@
+{
+  "name": "textarea",
+  "type": "registry:ui",
+  "description": "minimal multiline input. matches input — thin border, square corners, vertical resize.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "textarea.tsx",
+      "content": "import * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface TextareaProps\n  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {\n  /** CSS background applied to the element. Transparent by default. */\n  background?: string;\n}\n\n/** Minimal multiline input. Matches Input — thin border, square corners. */\nexport const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(\n  ({ className, background, style, rows = 4, ...props }, ref) => (\n    <textarea\n      ref={ref}\n      rows={rows}\n      className={cn(\n        \"w-full resize-y bg-transparent border border-white/20 px-3 py-2 text-sm text-white\",\n        \"placeholder:text-white/30 focus:outline-none focus:border-white/50\",\n        \"disabled:opacity-50\",\n        className,\n      )}\n      style={{ background, ...style }}\n      {...props}\n    />\n  ),\n);\nTextarea.displayName = \"Textarea\";\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}

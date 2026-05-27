@@ -1,0 +1,24 @@
+{
+  "name": "toc",
+  "type": "registry:ui",
+  "description": "sticky table-of-contents with scroll-spy highlighting via IntersectionObserver. give it the page headings; the active row tracks scroll. behavior split into a headless useToc hook.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "toc.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\nimport { useToc, type TocHeading } from \"@/hooks/use-toc\";\n\nexport type { TocHeading } from \"@/hooks/use-toc\";\n\nexport type TocProps = {\n  headings: TocHeading[];\n  /** Heading shown above the list. Defaults to \"on this page\". */\n  label?: string;\n  className?: string;\n};\n\n/**\n * Sticky table-of-contents with scroll-spy highlighting. Give it the page's\n * headings ({ id, text }); the active row tracks scroll position via the\n * headless useToc hook. Sticks below a --sticky-header-offset CSS var.\n */\nexport function Toc({ headings, label = \"on this page\", className }: TocProps) {\n  const activeId = useToc(headings);\n  if (headings.length === 0) return null;\n\n  return (\n    <nav\n      className={cn(\"sticky overflow-y-auto\", className)}\n      style={{\n        top: \"var(--sticky-header-offset, 80px)\",\n        maxHeight: \"calc(100vh - var(--sticky-header-offset, 80px) - 2rem)\",\n      }}\n    >\n      <p className=\"mb-3 font-mono text-xs uppercase tracking-widest text-white/40\">\n        {label}\n      </p>\n      <ul className=\"space-y-0.5\">\n        {headings.map((h) => (\n          <li key={h.id}>\n            <a\n              href={`#${h.id}`}\n              className={cn(\n                \"block py-1 text-sm leading-5 transition-colors\",\n                activeId === h.id ? \"text-white\" : \"text-white/50 hover:text-white\",\n              )}\n            >\n              {h.text}\n            </a>\n          </li>\n        ))}\n      </ul>\n    </nav>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": ""
+    },
+    {
+      "path": "use-toc.ts",
+      "content": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\nexport type TocHeading = {\n  id: string;\n  text: string;\n};\n\n/**\n * Headless scroll-spy: observes the elements whose ids are given and returns\n * the id of the one currently in view. No styling. The rootMargin keeps a\n * heading \"active\" until it scrolls into the top ~30% of the viewport.\n */\nexport function useToc(headings: TocHeading[], rootMargin = \"-80px 0px -70% 0px\"): string {\n  const [activeId, setActiveId] = useState(\"\");\n\n  useEffect(() => {\n    if (headings.length === 0) return;\n    const observer = new IntersectionObserver(\n      (entries) => {\n        for (const entry of entries) {\n          if (entry.isIntersecting) setActiveId(entry.target.id);\n        }\n      },\n      { rootMargin },\n    );\n    for (const h of headings) {\n      const el = document.getElementById(h.id);\n      if (el) observer.observe(el);\n    }\n    return () => observer.disconnect();\n  }, [headings, rootMargin]);\n\n  return activeId;\n}\n",
+      "type": "registry:hook",
+      "target": ""
+    }
+  ]
+}

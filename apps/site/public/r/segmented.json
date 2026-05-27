@@ -1,0 +1,18 @@
+{
+  "name": "segmented",
+  "type": "registry:ui",
+  "description": "controlled segmented control — a row of mutually exclusive options, active one bordered. compact uppercase variant for mode toggles.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "segmented.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\n\nexport type SegmentedOption<T extends string> = {\n  value: T;\n  label: string;\n};\n\nexport type SegmentedProps<T extends string> = {\n  value: T;\n  onChange: (value: T) => void;\n  options: SegmentedOption<T>[];\n  /** Smaller, uppercase tracking variant (mode toggle). */\n  size?: \"default\" | \"compact\";\n  className?: string;\n  ariaLabel?: string;\n};\n\n/**\n * Controlled segmented control — a row of mutually exclusive options. The\n * active segment gets a border; the rest stay muted. Generalized from the\n * justin06lee.dev \"now / backfill\" mode toggle.\n */\nexport function Segmented<T extends string>({\n  value,\n  onChange,\n  options,\n  size = \"default\",\n  className,\n  ariaLabel,\n}: SegmentedProps<T>) {\n  const pad =\n    size === \"compact\"\n      ? \"px-1.5 py-0.5 text-[10px] uppercase tracking-widest\"\n      : \"px-3 py-1.5 text-sm\";\n\n  return (\n    <div role=\"group\" aria-label={ariaLabel} className={cn(\"inline-flex items-center gap-1\", className)}>\n      {options.map((o) => {\n        const active = o.value === value;\n        return (\n          <button\n            key={o.value}\n            type=\"button\"\n            aria-pressed={active}\n            onClick={() => onChange(o.value)}\n            className={cn(\n              \"border transition-colors\",\n              pad,\n              active\n                ? \"border-white/40 text-white\"\n                : \"border-transparent text-white/40 hover:text-white/70\",\n            )}\n          >\n            {o.label}\n          </button>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "accordion",
+  "type": "registry:ui",
+  "description": "collapsible rows on native <details>/<summary> with a rotating chevron. share a name across items for one-open-at-a-time behavior. zero javascript state.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "accordion.tsx",
+      "content": "import { ChevronRight } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type AccordionProps = {\n  className?: string;\n  children?: React.ReactNode;\n};\n\n/** Container for AccordionItem rows. */\nexport function Accordion({ className, children }: AccordionProps) {\n  return (\n    <div className={cn(\"flex flex-col\", className)}>\n      {/* Subtle open/close animation on native <details>. ::details-content +\n          interpolate-size lets height: auto transition; browsers without\n          interpolate-size just snap (graceful degradation). */}\n      <style precedence=\"default\" href=\"chrome-accordion-styles\">{`\n        .chrome-accordion {\n          interpolate-size: allow-keywords;\n        }\n        .chrome-accordion::details-content {\n          height: 0;\n          overflow: hidden;\n          transition: height 180ms ease-out, content-visibility 180ms allow-discrete;\n        }\n        .chrome-accordion[open]::details-content {\n          height: auto;\n        }\n      `}</style>\n      {children}\n    </div>\n  );\n}\n\nexport type AccordionItemProps = {\n  title: React.ReactNode;\n  /** Open on first render. */\n  defaultOpen?: boolean;\n  /** Group name — set the same value on sibling items to make them exclusive. */\n  name?: string;\n  className?: string;\n  children?: React.ReactNode;\n};\n\n/**\n * Single collapsible row built on native <details>/<summary> — open state is the\n * browser's, no JS. The chevron rotates via `group-open`. Pass the same `name`\n * to several items for accordion (one-open-at-a-time) behavior.\n */\nexport function AccordionItem({\n  title,\n  defaultOpen,\n  name,\n  className,\n  children,\n}: AccordionItemProps) {\n  return (\n    <details name={name} open={defaultOpen} className={cn(\"chrome-accordion group border-b border-white/10\", className)}>\n      <summary className=\"flex cursor-pointer select-none list-none items-center gap-3 py-3 [&::-webkit-details-marker]:hidden\">\n        <ChevronRight\n          className=\"size-4 shrink-0 text-white/40 transition-transform group-hover:text-white/70 group-open:rotate-90\"\n          aria-hidden\n        />\n        <span className=\"flex-1 text-sm font-medium text-white\">{title}</span>\n      </summary>\n      <div className=\"pb-3 pl-7 text-sm leading-7 text-white/70\">{children}</div>\n    </details>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}

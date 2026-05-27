@@ -1,0 +1,18 @@
+{
+  "name": "timeline",
+  "type": "registry:ui",
+  "description": "day schedule — a 24h vertical axis with positioned event blocks and an optional live now-line. blocks placed by minutes-of-day. generalized from the justin06lee.dev day view.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "timeline.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type TimelineEvent = {\n  /** Minutes since midnight, 0–1440. */\n  startMin: number;\n  endMin: number;\n  label?: string;\n  /** CSS color for the block's left border + tint. Defaults to white. */\n  color?: string;\n};\n\nexport type TimelineProps = {\n  events: TimelineEvent[];\n  /** Draw a live red \"now\" line that ticks each minute. */\n  showNow?: boolean;\n  /** Override the now-line position (minutes of day). Implies the line shows. */\n  nowMinutes?: number;\n  className?: string;\n};\n\nconst HOURS = Array.from({ length: 24 }, (_, i) => i);\n\nfunction HourGrid() {\n  return (\n    <>\n      {HOURS.map((h) => (\n        <div\n          key={h}\n          className=\"absolute left-0 right-0 flex items-start border-t border-white/5 pl-2\"\n          style={{ top: `${(h / 24) * 100}%`, height: `${100 / 24}%` }}\n        >\n          <span className=\"mt-[-6px] font-mono text-[10px] text-white/40\">\n            {String(h).padStart(2, \"0\")}:00\n          </span>\n        </div>\n      ))}\n    </>\n  );\n}\n\nfunction NowLine({ minutes }: { minutes: number }) {\n  return (\n    <div\n      className=\"pointer-events-none absolute left-0 right-0 z-10 flex items-center\"\n      style={{ top: `${(minutes / 1440) * 100}%` }}\n    >\n      <div className=\"-ml-1 size-2 shrink-0 rounded-full bg-red-500\" />\n      <div className=\"h-px flex-1 bg-red-500\" />\n    </div>\n  );\n}\n\n/**\n * Day schedule — a 24h vertical axis with positioned event blocks and an\n * optional live now-line. Blocks are placed by minutes-of-day. Generalized\n * from the justin06lee.dev calendar day view.\n */\nexport function Timeline({ events, showNow, nowMinutes, className }: TimelineProps) {\n  const [liveNow, setLiveNow] = useState<number | null>(null);\n\n  useEffect(() => {\n    if (!showNow || nowMinutes != null) return;\n    const tick = () => {\n      const d = new Date();\n      setLiveNow(d.getHours() * 60 + d.getMinutes());\n    };\n    tick();\n    const id = setInterval(tick, 60_000);\n    return () => clearInterval(id);\n  }, [showNow, nowMinutes]);\n\n  const now = nowMinutes ?? liveNow;\n\n  return (\n    <div className={cn(\"relative min-h-[960px] border border-white/10 bg-white/[0.02] pl-12\", className)}>\n      <HourGrid />\n      {now != null && <NowLine minutes={now} />}\n      {events.map((e, i) => {\n        const top = (Math.max(0, e.startMin) / 1440) * 100;\n        const height = (Math.max(1, e.endMin - e.startMin) / 1440) * 100;\n        const color = e.color ?? \"#ffffff\";\n        return (\n          <div\n            key={i}\n            className=\"absolute left-12 right-1 overflow-hidden border-l-2 px-2 py-1\"\n            style={{\n              top: `${top}%`,\n              height: `${height}%`,\n              borderLeftColor: color,\n              background: `color-mix(in srgb, ${color} 15%, transparent)`,\n            }}\n          >\n            {e.label && (\n              <span className=\"line-clamp-2 text-[11px] leading-tight text-white/80\">{e.label}</span>\n            )}\n          </div>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": ""
+    }
+  ]
+}

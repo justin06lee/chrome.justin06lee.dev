@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://chrome.justin06lee.dev/schema.json",
+  "title": "chrome.json",
+  "description": "Configuration for the @justin06lee/chrome component CLI.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registry", "style", "tsx", "tailwind", "aliases"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of this JSON Schema."
+    },
+    "registry": {
+      "type": "string",
+      "format": "uri",
+      "description": "Base URL the CLI fetches component JSON from."
+    },
+    "style": {
+      "type": "string",
+      "enum": ["default"],
+      "description": "Registry style. Only \"default\" exists today."
+    },
+    "tsx": {
+      "type": "boolean",
+      "description": "Whether components are written as TypeScript (.tsx)."
+    },
+    "tailwind": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["css", "baseColor"],
+      "properties": {
+        "css": {
+          "type": "string",
+          "description": "Path to the globals CSS file the CLI patches (e.g. app/globals.css)."
+        },
+        "baseColor": {
+          "type": "string",
+          "enum": ["black"],
+          "description": "Base color. chrome is dark-only."
+        }
+      }
+    },
+    "aliases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["components", "utils", "hooks"],
+      "properties": {
+        "components": {
+          "type": "string",
+          "description": "Import alias for installed components (e.g. @/components/chrome)."
+        },
+        "utils": {
+          "type": "string",
+          "description": "Import alias for the utils/cn helper (e.g. @/lib/utils)."
+        },
+        "hooks": {
+          "type": "string",
+          "description": "Import alias for installed headless hooks (e.g. @/hooks)."
+        }
+      }
+    }
+  }
+}

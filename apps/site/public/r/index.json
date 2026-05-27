@@ -1,8 +1,60 @@
 [
   {
+    "name": "accordion",
+    "type": "registry:ui",
+    "description": "collapsible rows on native <details>/<summary> with a rotating chevron. share a name across items for one-open-at-a-time behavior. zero javascript state.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "article",
+    "type": "registry:ui",
+    "description": "article reading layout — back link, banner, title, date + tags, then a body slot with staggered fade-ins. pair with prose for the markdown body.",
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "badge",
+    "type": "registry:ui",
+    "description": "small chip. static label by default; pass onClick to make it a toggle/filter chip, with active swapping to the solid look.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "button",
     "type": "registry:ui",
-    "description": "polymorphic button. renders as an anchor when given href, a button otherwise.",
+    "description": "polymorphic button with five variants. supports icon-only / text-only / icon+text, an optional hover tooltip, and click-to-clipboard. renders as an anchor when given href, a button otherwise.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "calendar",
+    "type": "registry:ui",
+    "description": "month date grid — selectable days, today ring, prev/next header, Sunday-aligned. pass renderDay to layer dots or counts onto cells. generalized from the justin06lee.dev calendar.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "card",
+    "type": "registry:ui",
+    "description": "compositional bordered card: Card shell plus CardHeader / CardTitle / CardMeta / CardBody / CardActions slots.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -11,9 +63,29 @@
   {
     "name": "chrome",
     "type": "registry:ui",
-    "description": "shimmering chrome holographic foil text effect.",
+    "description": "wrapper that renders every text glyph inside it as shimmering chrome foil.",
     "dependencies": [],
     "registryDependencies": []
+  },
+  {
+    "name": "code-block",
+    "type": "registry:ui",
+    "description": "syntax-highlighted code box with a built-in copy button. monochrome prism theme tuned for a black background; common languages bundled (tsx, ts, jsx, js, bash, json, css, markup).",
+    "dependencies": [
+      "prism-react-renderer"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "combobox",
+    "type": "registry:ui",
+    "description": "searchable select with optional color swatches, inline create, and clear. behavior split into a headless useCombobox hook. generalized from the calendar category picker.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "copy-button",
@@ -37,6 +109,15 @@
     "registryDependencies": []
   },
   {
+    "name": "heatmap",
+    "type": "registry:ui",
+    "description": "year activity grid — 12 mini month grids of day cells tinted by value (contribution-graph style), with a less→more legend. generalized from the justin06lee.dev year view.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "input",
     "type": "registry:ui",
     "description": "minimal text input. thin border, no corners.",
@@ -46,18 +127,74 @@
     ]
   },
   {
+    "name": "menu",
+    "type": "registry:ui",
+    "description": "action dropdown: a trigger opening a list of items, each running its onSelect. optional selected markers (e.g. a sort menu). behavior split into a headless useMenu hook.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "navbar",
+    "type": "registry:ui",
+    "description": "fixed top nav with inline desktop links and a hamburger-driven slide-in panel below md. routes are caller-supplied; behavior split into a headless useNavbar hook.",
+    "dependencies": [
+      "lucide-react",
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "prose",
+    "type": "registry:ui",
+    "description": "markdown renderer with the justin06lee.dev prose styling — GFM, KaTeX math, heading slugs, and copy-on-hover code blocks. dark-only. pass markdown as the string child.",
+    "dependencies": [
+      "react-markdown",
+      "remark-gfm",
+      "remark-math",
+      "rehype-katex",
+      "rehype-slug",
+      "katex",
+      "lucide-react"
+    ],
+    "registryDependencies": []
+  },
+  {
     "name": "rainbow",
     "type": "registry:ui",
-    "description": "per-character cycling rainbow text with staggered animation.",
+    "description": "wrapper that cycles every text character inside it through a staggered rainbow.",
     "dependencies": [],
     "registryDependencies": []
   },
   {
+    "name": "range",
+    "type": "registry:ui",
+    "description": "thin minimal slider. native input with a custom 12px thumb on a 2px track; thumb scales on hover.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "scramble",
     "type": "registry:ui",
-    "description": "per-character text scramble effect on hover.",
+    "description": "wrapper that scrambles every word inside it on hover.",
     "dependencies": [],
     "registryDependencies": []
+  },
+  {
+    "name": "segmented",
+    "type": "registry:ui",
+    "description": "controlled segmented control — a row of mutually exclusive options, active one bordered. compact uppercase variant for mode toggles.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "select",
@@ -67,12 +204,10 @@
     "registryDependencies": []
   },
   {
-    "name": "socials",
+    "name": "showcase",
     "type": "registry:ui",
-    "description": "social-link bar with tooltip + email-copy support.",
-    "dependencies": [
-      "lucide-react"
-    ],
+    "description": "framed preview container with a dotted background. holds component demos with optional label, source caption, and note. exports a Row helper for explicit row breaks; bare children get auto-wrapped into one centered row.",
+    "dependencies": [],
     "registryDependencies": [
       "utils"
     ]
@@ -83,6 +218,24 @@
     "description": "stacked paper card with hovered fan-out spring animation.",
     "dependencies": [],
     "registryDependencies": []
+  },
+  {
+    "name": "tabs",
+    "type": "registry:ui",
+    "description": "bordered pill tab-strip. controlled selection with roving-tabindex arrow-key nav and ARIA, split into a headless useTabs hook.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "textarea",
+    "type": "registry:ui",
+    "description": "minimal multiline input. matches input — thin border, square corners, vertical resize.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "theme",
@@ -97,6 +250,33 @@
     "description": "3d perspective tilt card with sweeping shine on hover.",
     "dependencies": [],
     "registryDependencies": []
+  },
+  {
+    "name": "timeline",
+    "type": "registry:ui",
+    "description": "day schedule — a 24h vertical axis with positioned event blocks and an optional live now-line. blocks placed by minutes-of-day. generalized from the justin06lee.dev day view.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "toc",
+    "type": "registry:ui",
+    "description": "sticky table-of-contents with scroll-spy highlighting via IntersectionObserver. give it the page headings; the active row tracks scroll. behavior split into a headless useToc hook.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "tooltip",
+    "type": "registry:ui",
+    "description": "white slide-up pill shown on hover or keyboard focus. pure CSS, wraps any trigger. aria-hidden — label the trigger itself.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "utils",
