@@ -43,7 +43,7 @@ export function Donut({
   dv,
   luminanceChars = " ,-~:;=!*#$@",
   lightDirection = [0, 1, -1],
-  speed = 0.75,
+  speed = 0.5625,
   yScaleOverride,
   className = "font-mono text-xs leading-[1] whitespace-pre cursor-default select-none",
   background,
