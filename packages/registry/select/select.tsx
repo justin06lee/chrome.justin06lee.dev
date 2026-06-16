@@ -46,13 +46,20 @@ export default function Select<T extends string | number>({
       }
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        // Capture-phase + stopImmediatePropagation so that an open select nested
+        // inside a dialog swallows the Escape and only closes itself, rather than
+        // letting the same press bubble up and dismiss the dialog too.
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        setOpen(false);
+      }
     }
     document.addEventListener("mousedown", onClick);
-    document.addEventListener("keydown", onKey);
+    document.addEventListener("keydown", onKey, true);
     return () => {
       document.removeEventListener("mousedown", onClick);
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("keydown", onKey, true);
     };
   }, [open]);
 

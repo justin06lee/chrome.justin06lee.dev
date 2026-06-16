@@ -64,7 +64,12 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!state) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") close(false);
+      if (e.key === "Escape") {
+        // Stop the press from also reaching a dropdown/select listening beneath
+        // the modal, which would otherwise close both at once.
+        e.preventDefault();
+        close(false);
+      }
       if (e.key === "Enter" && panelRef.current?.contains(e.target as Node)) close(true);
     }
     document.addEventListener("keydown", onKey);

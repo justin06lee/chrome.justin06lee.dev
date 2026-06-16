@@ -1,15 +1,20 @@
 "use client";
 
 import * as React from "react";
+import type { DonutConfig } from "./donut-frames";
+import { acquireBake, releaseBake, frameString } from "./donut-cache";
 
 export interface DonutProps {
   width?: number;
   height?: number;
   R?: number;
   r?: number;
+  /** Projection scale. Omit to auto-fit the torus to the grid (recommended). */
   K?: number;
   D?: number;
+  /** Optional override for the adaptive u-sampling step (radians). */
   du?: number;
+  /** Optional override for the adaptive v-sampling step (radians). */
   dv?: number;
   luminanceChars?: string;
   lightDirection?: [number, number, number];
@@ -25,10 +30,10 @@ export function Donut({
   height = 30,
   R = 0.4,
   r = 0.25,
-  K = 120,
+  K,
   D = 4,
-  du = 0.035,
-  dv = 0.01,
+  du,
+  dv,
   luminanceChars = " ,-~:;=!*#$@",
   lightDirection = [0, 1, -1],
   speed = 0.75,
@@ -38,6 +43,14 @@ export function Donut({
 }: DonutProps) {
   const preRef = React.useRef<HTMLPreElement | null>(null);
   const [yScale, setYScale] = React.useState<number>(yScaleOverride ?? 0.55);
+
+  // Auto-fit the projection scale to the char grid so the torus always sits
+  // inside its bounds with a margin, at any width/height. A fixed K overflows
+  // small grids (the donut gets clipped at the top/sides). Caller can still
+  // override K explicitly.
+  const Keff =
+    K ??
+    0.82 * Math.min((width * D) / (2 * (R + r)), (height * D) / (2 * (R + r) * yScale));
 
   const lx = lightDirection[0];
   const ly = lightDirection[1];
@@ -71,47 +84,42 @@ export function Donut({
 
   React.useEffect(() => {
     let rafId = 0;
-    let ax = 0;
-    let az = 0;
+    let terminated = false;
 
+    // Device tier feeds sampling density (coarser on weak hardware).
     const cores = navigator.hardwareConcurrency || 2;
     const memory = (navigator as unknown as { deviceMemory?: number }).deviceMemory ?? 8;
     const isLowEnd = cores <= 4 || memory <= 4;
-    const adaptiveDu = isLowEnd ? Math.max(du, 0.07) : du;
-    const adaptiveDv = isLowEnd ? Math.max(dv, 0.02) : dv;
-    const frameBudget = isLowEnd ? 33 : 0;
-    let lastFrameTime = 0;
 
     const lMag = Math.hypot(lx, ly, lz) || 1;
-    const Lx = lx / lMag;
-    const Ly = ly / lMag;
-    const Lz = lz / lMag;
-
     const chars = luminanceChars.length ? luminanceChars : " ";
-    const charsLen = chars.length;
-    const cx = width >> 1;
-    const cy = height >> 1;
-    const bufSize = width * height;
-    const zbuf = new Float32Array(bufSize);
-    const outBuf = new Uint8Array(bufSize);
 
-    const uSteps = Math.ceil((Math.PI * 2) / adaptiveDu);
-    const vSteps = Math.ceil((Math.PI * 2) / adaptiveDv);
-    const cosU = new Float32Array(uSteps);
-    const sinU = new Float32Array(uSteps);
-    const cosV = new Float32Array(vSteps);
-    const sinV = new Float32Array(vSteps);
+    const cfg: DonutConfig = {
+      width,
+      height,
+      R,
+      r,
+      K: Keff,
+      D,
+      du,
+      dv,
+      Lx: lx / lMag,
+      Ly: ly / lMag,
+      Lz: lz / lMag,
+      chars,
+      speed,
+      yScale,
+      isLowEnd,
+    };
 
-    for (let i = 0; i < uSteps; i++) {
-      const u = i * adaptiveDu;
-      cosU[i] = Math.cos(u);
-      sinU[i] = Math.sin(u);
-    }
-    for (let i = 0; i < vSteps; i++) {
-      const v = i * adaptiveDv;
-      cosV[i] = Math.cos(v);
-      sinV[i] = Math.sin(v);
-    }
+    // Shared across every Donut with this exact config: one frame-string cache,
+    // one baked buffer, one worker. Identical donuts replay the same data.
+    const handle = acquireBake(cfg);
+    const N = handle.N;
+
+    const frameBudget = isLowEnd ? 33 : 0; // ~30fps on low-end, vsync otherwise
+    let lastFrameTime = 0;
+    let fi = 0;
 
     function frame(now: number) {
       if (frameBudget > 0 && now - lastFrameTime < frameBudget) {
@@ -120,76 +128,20 @@ export function Donut({
       }
       lastFrameTime = now;
 
-      ax += 0.025 * speed;
-      az += 0.015 * speed;
+      const pre = preRef.current;
+      if (pre && !terminated) pre.textContent = frameString(handle, fi);
+      fi = (fi + 1) % N;
 
-      zbuf.fill(-Infinity);
-      outBuf.fill(0);
-
-      const cosAx = Math.cos(ax), sinAx = Math.sin(ax);
-      const cosAz = Math.cos(az), sinAz = Math.sin(az);
-
-      for (let ui = 0; ui < uSteps; ui++) {
-        const cu = cosU[ui]!, su = sinU[ui]!;
-        for (let vi = 0; vi < vSteps; vi++) {
-          const cv = cosV[vi]!, sv = sinV[vi]!;
-          const Rcv = R + r * cv;
-          const px0 = Rcv * cu;
-          const py0 = Rcv * su;
-          const pz0 = r * sv;
-          const nx0 = cv * cu;
-          const ny0 = cv * su;
-          const nz0 = sv;
-
-          const px1 = px0;
-          const py1 = py0 * cosAx - pz0 * sinAx;
-          const pz1 = py0 * sinAx + pz0 * cosAx;
-          const px2 = px1 * cosAz - py1 * sinAz;
-          const py2 = px1 * sinAz + py1 * cosAz;
-          const pz2 = pz1;
-
-          const nx1 = nx0;
-          const ny1 = ny0 * cosAx - nz0 * sinAx;
-          const nz1 = ny0 * sinAx + nz0 * cosAx;
-          const nx2 = nx1 * cosAz - ny1 * sinAz;
-          const ny2 = nx1 * sinAz + ny1 * cosAz;
-          const nz2 = nz1;
-
-          const z = pz2 + D;
-          if (z <= 0) continue;
-          const ooz = 1 / z;
-          const xProj = (cx + (K * px2) * ooz) | 0;
-          const yProj = (cy - (K * py2) * ooz * yScale) | 0;
-
-          if (xProj >= 0 && xProj < width && yProj >= 0 && yProj < height) {
-            const idx = xProj + yProj * width;
-            if (ooz > zbuf[idx]!) {
-              zbuf[idx] = ooz;
-              const nMag = Math.hypot(nx2, ny2, nz2) || 1;
-              const lum = Math.max(0, (nx2 / nMag) * Lx + (ny2 / nMag) * Ly + (nz2 / nMag) * Lz);
-              outBuf[idx] = Math.min(charsLen - 1, (lum * (charsLen - 1)) | 0);
-            }
-          }
-        }
-      }
-
-      if (preRef.current) {
-        let str = "";
-        for (let y = 0; y < height; y++) {
-          const start = y * width;
-          for (let x = 0; x < width; x++) {
-            str += chars[outBuf[start + x]!];
-          }
-          if (y < height - 1) str += "\n";
-        }
-        preRef.current.textContent = str;
-      }
       rafId = requestAnimationFrame(frame);
     }
 
     rafId = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(rafId);
-  }, [width, height, R, r, K, D, du, dv, luminanceChars, speed, lx, ly, lz, yScale]);
+    return () => {
+      terminated = true;
+      cancelAnimationFrame(rafId);
+      releaseBake(handle);
+    };
+  }, [width, height, R, r, Keff, D, du, dv, luminanceChars, speed, lx, ly, lz, yScale]);
 
   return (
     <pre
