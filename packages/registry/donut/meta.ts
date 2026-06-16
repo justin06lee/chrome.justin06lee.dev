@@ -29,7 +29,7 @@ export default defineComponent({
       type: "number",
       description: "optional override for the adaptive v-sampling step (radians)",
     },
-    { name: "speed", type: "number", default: "0.75" },
+    { name: "speed", type: "number", default: "0.5625" },
     { name: "luminanceChars", type: "string", default: "' ,-~:;=!*#$@'" },
     { name: "lightDirection", type: "[number, number, number]", default: "[0, 1, -1]" },
     { name: "yScaleOverride", type: "number", description: "override the measured char-cell aspect" },
