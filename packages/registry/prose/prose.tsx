@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
-import { Check, Copy } from "lucide-react";
+import { AlertCircle, Check, Copy } from "lucide-react";
 import "katex/dist/katex.min.css";
 
 export type ProseProps = {
@@ -14,8 +14,50 @@ export type ProseProps = {
   children: string;
   /** Prefix for relative image srcs (e.g. a GitHub raw base). */
   imageBaseUrl?: string;
+  /**
+   * When true, stamps each top-level block with `data-source-line` (its 1-based
+   * source line) so a host can map editor lines to rendered blocks for
+   * scroll/highlight sync. Off by default — zero overhead when unused.
+   */
+  lineSync?: boolean;
+  /**
+   * 1-based source line of the block to highlight (the synced block). The last
+   * top-level block at/above this line is marked with `data-sync-highlight`.
+   * Declarative — rendered into the markup so a re-render can't strand it. Only
+   * applies when `lineSync` is true.
+   */
+  highlightLine?: number | null;
   className?: string;
 };
+
+// Copies each top-level block's source line (1-based, relative to the markdown)
+// onto a `data-source-line` attribute, and marks the highlighted block with
+// `data-sync-highlight`. Only top-level children are tagged so a host maps a line
+// to exactly one block instead of every nested element.
+function rehypeSourceLine(options?: { highlightLine?: number | null }) {
+  const highlightLine = options?.highlightLine ?? null;
+  return (tree: { children?: Array<Record<string, unknown>> }) => {
+    // the last top-level block at/above the target line is the one to highlight
+    let highlightTarget: Record<string, unknown> | null = null;
+    for (const node of tree.children ?? []) {
+      const position = node.position as
+        | { start?: { line?: number } }
+        | undefined;
+      const line = position?.start?.line;
+      if (node.type === "element" && typeof line === "number") {
+        const properties = (node.properties ?? {}) as Record<string, unknown>;
+        properties.dataSourceLine = line;
+        node.properties = properties;
+        if (highlightLine != null && line <= highlightLine) {
+          highlightTarget = properties;
+        }
+      }
+    }
+    if (highlightTarget) {
+      highlightTarget.dataSyncHighlight = true;
+    }
+  };
+}
 
 function isExternal(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
@@ -27,9 +69,11 @@ function isResolved(src: string): boolean {
 
 const HEADING_SCROLL = { scrollMarginTop: "var(--sticky-header-offset, 80px)" };
 
+type CopyStatus = "idle" | "copied" | "error";
+
 function PreBlock({ children, ...props }: React.ComponentPropsWithoutRef<"pre">) {
   const ref = useRef<HTMLPreElement>(null);
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<CopyStatus>("idle");
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -42,14 +86,21 @@ function PreBlock({ children, ...props }: React.ComponentPropsWithoutRef<"pre">)
     const code = ref.current?.querySelector("code");
     const text = (code ?? ref.current)?.textContent ?? "";
     try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("clipboard unavailable");
+      }
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      if (timerRef.current) window.clearTimeout(timerRef.current);
-      timerRef.current = window.setTimeout(() => setCopied(false), 2000);
+      setStatus("copied");
     } catch {
-      /* clipboard blocked */
+      setStatus("error");
     }
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setStatus("idle"), 2000);
   };
+
+  const Icon = status === "copied" ? Check : status === "error" ? AlertCircle : Copy;
+  const label = status === "copied" ? "copied" : status === "error" ? "copy failed" : "copy code";
+
   return (
     <pre
       ref={ref}
@@ -60,10 +111,11 @@ function PreBlock({ children, ...props }: React.ComponentPropsWithoutRef<"pre">)
       <button
         type="button"
         onClick={copy}
-        aria-label="copy code"
+        aria-label={label}
+        title={label}
         className="absolute right-2 top-2 text-white/40 opacity-0 transition hover:text-white focus:opacity-100 focus:outline-none group-hover:opacity-100"
       >
-        {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+        <Icon className="size-4" />
       </button>
     </pre>
   );
@@ -74,7 +126,13 @@ function PreBlock({ children, ...props }: React.ComponentPropsWithoutRef<"pre">)
  * heading slugs, and copy-on-hover code blocks. Dark-only. Pass markdown as the
  * single string child.
  */
-export function Prose({ children, imageBaseUrl, className }: ProseProps) {
+export function Prose({
+  children,
+  imageBaseUrl,
+  lineSync = false,
+  highlightLine = null,
+  className,
+}: ProseProps) {
   const components: Components = {
     h1: ({ children, ...p }) => (
       <h1 className="mb-4 mt-10 text-3xl font-semibold tracking-tight text-white first:mt-0" style={HEADING_SCROLL} {...p}>{children}</h1>
@@ -87,6 +145,12 @@ export function Prose({ children, imageBaseUrl, className }: ProseProps) {
     ),
     h4: ({ children, ...p }) => (
       <h4 className="mb-2 mt-6 text-lg font-semibold text-white" style={HEADING_SCROLL} {...p}>{children}</h4>
+    ),
+    h5: ({ children, ...p }) => (
+      <h5 className="mb-2 mt-5 text-base font-semibold text-white" style={HEADING_SCROLL} {...p}>{children}</h5>
+    ),
+    h6: ({ children, ...p }) => (
+      <h6 className="mb-2 mt-4 text-sm font-semibold uppercase tracking-widest text-white/60" style={HEADING_SCROLL} {...p}>{children}</h6>
     ),
     p: ({ children, ...p }) => <p className="my-4 text-[15px] leading-7 text-white/85" {...p}>{children}</p>,
     a: ({ children, href }) => {
@@ -144,7 +208,11 @@ export function Prose({ children, imageBaseUrl, className }: ProseProps) {
       <ReactMarkdown
         skipHtml
         remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex, rehypeSlug]}
+        rehypePlugins={
+          lineSync
+            ? [rehypeKatex, rehypeSlug, [rehypeSourceLine, { highlightLine }]]
+            : [rehypeKatex, rehypeSlug]
+        }
         components={components}
       >
         {children}

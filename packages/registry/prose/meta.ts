@@ -19,5 +19,19 @@ export default defineComponent({
   props: [
     { name: "children", type: "string", required: true, description: "markdown source." },
     { name: "imageBaseUrl", type: "string", description: "prefix for relative image srcs." },
+    {
+      name: "lineSync",
+      type: "boolean",
+      default: "false",
+      description:
+        "stamp each top-level block with data-source-line for editor↔preview scroll/highlight sync. zero overhead when off.",
+    },
+    {
+      name: "highlightLine",
+      type: "number | null",
+      default: "null",
+      description:
+        "1-based source line whose block is marked with data-sync-highlight. requires lineSync.",
+    },
   ],
 });

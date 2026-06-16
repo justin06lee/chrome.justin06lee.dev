@@ -61,6 +61,16 @@
     ]
   },
   {
+    "name": "category-picker",
+    "type": "registry:ui",
+    "description": "a searchable dropdown of color-coded items with click-outside + escape close and an optional inline create row. controlled and domain-agnostic.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "color-swatch"
+    ]
+  },
+  {
     "name": "chrome",
     "type": "registry:ui",
     "description": "wrapper that renders every text glyph inside it as shimmering chrome foil.",
@@ -74,6 +84,27 @@
     "dependencies": [
       "prism-react-renderer"
     ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "collapsible-prose",
+    "type": "registry:ui",
+    "description": "long-form reading layout that splits markdown into collapsible <details> sections on each ## heading, each with a rotating chevron. content before the first ## renders as a plain intro. bring your own renderer via renderMarkdown — typically the prose component. dark-only.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "prose",
+      "utils"
+    ]
+  },
+  {
+    "name": "color-swatch",
+    "type": "registry:ui",
+    "description": "a fixed-palette color chip plus a controlled palette picker, with a muted default palette and a next-unused-color helper.",
+    "dependencies": [],
     "registryDependencies": [
       "utils"
     ]
@@ -104,7 +135,7 @@
   {
     "name": "donut",
     "type": "registry:ui",
-    "description": "spinning ascii torus rendered with luminance shading.",
+    "description": "spinning ascii torus baked off-thread in a shared web worker and replayed as a seamless loop. multiple donuts share one bake.",
     "dependencies": [],
     "registryDependencies": []
   },
@@ -118,12 +149,31 @@
     ]
   },
   {
+    "name": "inline-edit",
+    "type": "registry:ui",
+    "description": "blur-to-save editable field. holds a local draft, commits onblur and enter, shows a pending state, rolls back on error, escape cancels. behavior split into a headless useInlineEdit hook.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "input",
     "type": "registry:ui",
     "description": "minimal text input. thin border, no corners.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "login-form",
+    "type": "registry:ui",
+    "description": "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "input"
     ]
   },
   {
@@ -204,6 +254,18 @@
     "registryDependencies": []
   },
   {
+    "name": "sheet",
+    "type": "registry:ui",
+    "description": "animated slide-in panel from a screen edge with a dimmed backdrop. closes on backdrop click, escape, or close button, and locks body scroll while open.",
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "showcase",
     "type": "registry:ui",
     "description": "framed preview container with a dotted background. holds component demos with optional label, source caption, and note. exports a Row helper for explicit row breaks; bare children get auto-wrapped into one centered row.",
@@ -218,6 +280,16 @@
     "description": "stacked paper card with hovered fan-out spring animation.",
     "dependencies": [],
     "registryDependencies": []
+  },
+  {
+    "name": "synced-preview",
+    "type": "registry:ui",
+    "description": "presentational preview pane with editor↔preview scroll/highlight sync. renders markdown through a caller-supplied renderer (typically the prose component with lineSync), maps source lines to blocks, exposes an imperative alignLineToScreenY handle, and reports clicks via onSelectBlock. framework-agnostic, dark-only.",
+    "dependencies": [],
+    "registryDependencies": [
+      "prose",
+      "utils"
+    ]
   },
   {
     "name": "tabs",

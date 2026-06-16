@@ -31,6 +31,9 @@ export function CopyButton({
 
   const handleClick = async () => {
     try {
+      // Guard for insecure contexts / unsupported browsers where the Clipboard
+      // API is absent — route those to the error state instead of throwing late.
+      if (!navigator.clipboard?.writeText) throw new Error("clipboard unavailable");
       await navigator.clipboard.writeText(text);
       setState("copied");
     } catch {
