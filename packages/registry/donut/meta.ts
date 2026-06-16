@@ -38,5 +38,11 @@ export default defineComponent({
       type: "string",
       description: "CSS background applied to the root element. transparent by default.",
     },
+    {
+      name: "isolate",
+      type: "boolean",
+      default: "true",
+      description: "apply CSS contain to isolate per-frame repaint; set false inside <Chrome> so the foil paints through",
+    },
   ],
 });

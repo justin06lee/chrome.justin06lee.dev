@@ -350,10 +350,10 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
     },
     {
       label: "Chrome ascii",
-      code: "<Chrome as=\"div\">\n  <Donut width={48} height={22} />\n</Chrome>",
+      code: "<Chrome as=\"div\">\n  {/* isolate={false} lets the chrome foil paint through */}\n  <Donut width={48} height={22} isolate={false} />\n</Chrome>",
       render: (
         <Chrome as="div">
-          <Donut width={48} height={22} />
+          <Donut width={48} height={22} isolate={false} />
         </Chrome>
       ),
     },
