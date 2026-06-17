@@ -1,42 +1,84 @@
 "use client";
 
-import { useState } from "react";
-import { SyncedEditor } from "./synced-editor";
+import { useState, type ReactNode } from "react";
+import { SyncedEditor, SyncedEditorTextarea } from "./synced-editor";
+import { SyncedPreview } from "../synced-preview/synced-preview";
+import { useLineSync } from "./use-line-sync";
 import { Prose } from "../prose/prose";
 
-const INITIAL = `# synced editor
+const render = (source: string, { highlightLine }: { highlightLine: number | null }): ReactNode => (
+  <Prose lineSync highlightLine={highlightLine}>
+    {source}
+  </Prose>
+);
 
-select any text on the left and a **→ preview** button appears — click it and the
-matching block on the right scrolls into view and both sides highlight.
+const SPLIT_MD = `## separate components
 
-## try the other direction
+this editor and preview are two different components, in two boxes with a gap
+between them — not one widget.
 
-click any block over here in the preview. the editor scrolls to it and lays a gray
-streak over the matching lines.
+## still in sync
 
-\`\`\`ts
-// code blocks sync too — click this one
-const sync = useLineSync({ value });
-\`\`\`
-
-- the streak tracks the textarea's own scroll
-- line math is the same source on both sides
+select text → the **→ preview** button scrolls the right box. click a block on
+the right → this editor streaks. the engine aligns by viewport position, so they
+don't need to be stuck together.
 `;
 
-export default function SyncedEditorDemo() {
-  const [md, setMd] = useState(INITIAL);
+const FULL_MD = `# combined editor
+
+the same engine, packaged as one turnkey \`<SyncedEditor />\`.
+
+## how it works
+
+select text on the left → **→ preview**; click a block here → the editor scrolls
+and lays a gray streak over the matching lines.
+
+\`\`\`ts
+<SyncedEditor value={md} onChange={setMd} renderMarkdown={render} />
+\`\`\`
+`;
+
+// Two separate components wired by one engine — they sync across the gap.
+function SplitPieces() {
+  const [md, setMd] = useState(SPLIT_MD);
+  const sync = useLineSync({ value: md });
   return (
-    <div className="h-[460px] w-full border border-white/10">
-      <SyncedEditor
-        value={md}
-        onChange={setMd}
-        className="h-full"
-        renderMarkdown={(source, { highlightLine }) => (
-          <Prose lineSync highlightLine={highlightLine}>
-            {source}
-          </Prose>
-        )}
-      />
+    <div className="flex flex-col gap-4 md:flex-row">
+      <div className="h-[280px] flex-1 border border-white/10">
+        <SyncedEditorTextarea sync={sync} value={md} onChange={setMd} className="h-full" />
+      </div>
+      <div className="h-[280px] flex-1 border border-white/10">
+        <SyncedPreview
+          ref={sync.previewRef}
+          content={md}
+          onSelectBlock={sync.onPreviewSelectBlock}
+          renderMarkdown={render}
+          label="separate preview"
+          className="h-full"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function SyncedEditorDemo() {
+  const [md, setMd] = useState(FULL_MD);
+  return (
+    <div className="flex w-full flex-col gap-8">
+      <div className="space-y-2">
+        <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
+          two pieces, one engine
+        </div>
+        <SplitPieces />
+      </div>
+      <div className="space-y-2">
+        <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
+          combined &lt;SyncedEditor /&gt;
+        </div>
+        <div className="h-[420px] w-full border border-white/10">
+          <SyncedEditor value={md} onChange={setMd} renderMarkdown={render} className="h-full" />
+        </div>
+      </div>
     </div>
   );
 }
