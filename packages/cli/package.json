@@ -1,6 +1,6 @@
 {
   "name": "@justin06lee/chrome",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "components for justin06lee.dev. install via bunx.",
   "type": "module",
   "bin": {
@@ -13,7 +13,8 @@
     "build": "bun build src/index.ts --target=node --outdir=dist --minify --entry-naming=cli.js",
     "dev": "bun run src/index.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "citty": "^0.1.6"
