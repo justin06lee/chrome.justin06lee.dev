@@ -126,6 +126,14 @@ function PreBlock({ children, ...props }: React.ComponentPropsWithoutRef<"pre">)
  * heading slugs, and copy-on-hover code blocks. Dark-only. Pass markdown as the
  * single string child.
  */
+// Paints the block tagged with `data-sync-highlight` (by rehypeSourceLine) as the
+// gray sync streak. Text blocks bleed the fill horizontally past the words so it
+// doesn't hug them; block-ish content keeps a tight box; an opaque image gets an
+// outline instead. Injected only when lineSync is on (no global stylesheet needed).
+const SYNC_HIGHLIGHT_CSS = `[data-sync-highlight]{background-color:rgba(255,255,255,0.1);}
+:is(p,h1,h2,h3,h4,h5,h6)[data-sync-highlight]{--sync-bleed:0.5rem;margin-left:calc(-1*var(--sync-bleed));margin-right:calc(-1*var(--sync-bleed));padding-left:var(--sync-bleed);padding-right:var(--sync-bleed);}
+[data-sync-highlight] img,img[data-sync-highlight]{outline:2px solid rgba(255,255,255,0.7);outline-offset:3px;}`;
+
 export function Prose({
   children,
   imageBaseUrl,
@@ -205,6 +213,11 @@ export function Prose({
 
   return (
     <div className={className}>
+      {lineSync ? (
+        <style precedence="default" href="chrome-prose-sync-highlight">
+          {SYNC_HIGHLIGHT_CSS}
+        </style>
+      ) : null}
       <ReactMarkdown
         skipHtml
         remarkPlugins={[remarkGfm, remarkMath]}
