@@ -58,9 +58,9 @@ export function SyncedEditor({
   } = useLineSync({ value });
 
   return (
-    <div className={cn("grid min-h-0 grid-cols-1 md:grid-cols-2", className)}>
+    <div className={cn("flex min-h-0 flex-col md:flex-row", className)}>
       {/* editor pane — sticky wrapper holds overlay + textarea so they scroll together */}
-      <div className="relative min-h-0 overflow-hidden border-b border-white/10 md:border-b-0 md:border-r">
+      <div className="relative min-h-0 flex-1 overflow-hidden border-b border-white/10 md:border-b-0 md:border-r">
         <div className="relative h-full min-h-0">
           {/* overlay layer: translated on scroll (handleScroll) so streak/button track text 1:1 */}
           <div
@@ -120,7 +120,7 @@ export function SyncedEditor({
         renderMarkdown={renderMarkdown}
         onSelectBlock={onPreviewSelectBlock}
         label={label}
-        className="min-h-0"
+        className="min-h-0 flex-1"
       />
     </div>
   );

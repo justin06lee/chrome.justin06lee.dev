@@ -30,6 +30,7 @@ export default function SyncedEditorDemo() {
       <SyncedEditor
         value={md}
         onChange={setMd}
+        className="h-full"
         renderMarkdown={(source, { highlightLine }) => (
           <Prose lineSync highlightLine={highlightLine}>
             {source}
