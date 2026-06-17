@@ -1,7 +1,7 @@
 {
   "name": "editor",
   "type": "registry:ui",
-  "description": "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. ships three composable pieces: a headless useLineSync engine, a EditorPreview pane, and a EditorTextarea, plus the turnkey Editor that combines them. dark-only.",
+  "description": "split-pane markdown editor with a live preview that scrolls and highlights in sync, both ways: select text and a button pushes it to the preview; click a block in the preview and the editor scrolls to it and lays a gray streak over the matching lines. bring your own markdown renderer (e.g. prose). dark-only.",
   "dependencies": [],
   "devDependencies": [],
   "registryDependencies": [
