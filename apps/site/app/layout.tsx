@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "chrome — components by justin06lee",
   description:
     "A component registry of polished, copy-paste React components. Run `bunx @justin06lee/chrome@latest init` to get started.",
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
