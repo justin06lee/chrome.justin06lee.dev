@@ -4,11 +4,12 @@ export default defineComponent({
   name: "synced-editor",
   type: "registry:ui",
   description:
-    "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. behavior lives in a headless useLineSync engine; the preview pane is the synced-preview component. dark-only.",
+    "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. ships three composable pieces: a headless useLineSync engine, a SyncedPreview pane, and a SyncedEditorTextarea, plus the turnkey SyncedEditor that combines them. dark-only.",
   dependencies: [],
-  registryDependencies: ["synced-preview", "utils"],
+  registryDependencies: ["utils"],
   files: [
     { source: "synced-editor.tsx", target: "synced-editor.tsx" },
+    { source: "synced-preview.tsx", target: "synced-preview.tsx" },
     { source: "use-line-sync.ts", target: "use-line-sync.ts", type: "registry:hook" },
   ],
   props: [

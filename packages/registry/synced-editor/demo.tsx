@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { SyncedEditor, SyncedEditorTextarea } from "./synced-editor";
-import { SyncedPreview } from "../synced-preview/synced-preview";
+import { SyncedPreview } from "./synced-preview";
 import { useLineSync } from "./use-line-sync";
 import { Prose } from "../prose/prose";
 

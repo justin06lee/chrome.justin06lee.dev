@@ -30,7 +30,6 @@ import sheet from "../../packages/registry/sheet/meta";
 import showcase from "../../packages/registry/showcase/meta";
 import stack from "../../packages/registry/stack/meta";
 import synced_editor from "../../packages/registry/synced-editor/meta";
-import synced_preview from "../../packages/registry/synced-preview/meta";
 import tabs from "../../packages/registry/tabs/meta";
 import textarea from "../../packages/registry/textarea/meta";
 import theme from "../../packages/registry/_shared/theme/meta";
@@ -40,4 +39,4 @@ import toc from "../../packages/registry/toc/meta";
 import tooltip from "../../packages/registry/tooltip/meta";
 import utils from "../../packages/registry/_shared/utils/meta";
 
-export const REGISTRY = [accordion, article, badge, button, calendar, card, category_picker, chrome, code_block, collapsible_prose, color_swatch, combobox, copy_button, dialog, donut, heatmap, inline_edit, input, login_form, menu, navbar, prose, rainbow, range, scramble, segmented, select, sheet, showcase, stack, synced_editor, synced_preview, tabs, textarea, theme, tilt, timeline, toc, tooltip, utils];
+export const REGISTRY = [accordion, article, badge, button, calendar, card, category_picker, chrome, code_block, collapsible_prose, color_swatch, combobox, copy_button, dialog, donut, heatmap, inline_edit, input, login_form, menu, navbar, prose, rainbow, range, scramble, segmented, select, sheet, showcase, stack, synced_editor, tabs, textarea, theme, tilt, timeline, toc, tooltip, utils];

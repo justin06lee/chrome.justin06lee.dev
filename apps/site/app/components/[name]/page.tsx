@@ -42,7 +42,6 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   showcase: () => import("../../../../../packages/registry/showcase/demo"),
   stack: () => import("../../../../../packages/registry/stack/demo"),
   "synced-editor": () => import("../../../../../packages/registry/synced-editor/demo"),
-  "synced-preview": () => import("../../../../../packages/registry/synced-preview/demo"),
   tabs: () => import("../../../../../packages/registry/tabs/demo"),
   textarea: () => import("../../../../../packages/registry/textarea/demo"),
   tilt: () => import("../../../../../packages/registry/tilt/demo"),
