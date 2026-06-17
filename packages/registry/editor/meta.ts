@@ -4,7 +4,7 @@ export default defineComponent({
   name: "editor",
   type: "registry:ui",
   description:
-    "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. ships three composable pieces: a headless useLineSync engine, a EditorPreview pane, and a EditorTextarea, plus the turnkey Editor that combines them. dark-only.",
+    "split-pane markdown editor with a live preview that scrolls and highlights in sync, both ways: select text and a button pushes it to the preview; click a block in the preview and the editor scrolls to it and lays a gray streak over the matching lines. bring your own markdown renderer (e.g. prose). dark-only.",
   dependencies: [],
   registryDependencies: ["utils"],
   files: [
@@ -23,6 +23,6 @@ export default defineComponent({
     },
     { name: "label", type: "ReactNode", default: "'live preview'", description: "sticky label over the preview pane." },
     { name: "placeholder", type: "string", description: "editor textarea placeholder." },
-    { name: "className", type: "string", description: "sizing/extra classes for the root grid (give it a height)." },
+    { name: "className", type: "string", description: "sizing/extra classes for the root (give it a height)." },
   ],
 });
