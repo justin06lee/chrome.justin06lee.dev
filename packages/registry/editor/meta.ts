@@ -1,15 +1,15 @@
 import { defineComponent } from "chrome-ui-registry-builder";
 
 export default defineComponent({
-  name: "synced-editor",
+  name: "editor",
   type: "registry:ui",
   description:
-    "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. ships three composable pieces: a headless useLineSync engine, a SyncedPreview pane, and a SyncedEditorTextarea, plus the turnkey SyncedEditor that combines them. dark-only.",
+    "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. ships three composable pieces: a headless useLineSync engine, a EditorPreview pane, and a EditorTextarea, plus the turnkey Editor that combines them. dark-only.",
   dependencies: [],
   registryDependencies: ["utils"],
   files: [
-    { source: "synced-editor.tsx", target: "synced-editor.tsx" },
-    { source: "synced-preview.tsx", target: "synced-preview.tsx" },
+    { source: "editor.tsx", target: "editor.tsx" },
+    { source: "editor-preview.tsx", target: "editor-preview.tsx" },
     { source: "use-line-sync.ts", target: "use-line-sync.ts", type: "registry:hook" },
   ],
   props: [

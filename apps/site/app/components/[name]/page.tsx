@@ -41,7 +41,7 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   sheet: () => import("../../../../../packages/registry/sheet/demo"),
   showcase: () => import("../../../../../packages/registry/showcase/demo"),
   stack: () => import("../../../../../packages/registry/stack/demo"),
-  "synced-editor": () => import("../../../../../packages/registry/synced-editor/demo"),
+  "editor": () => import("../../../../../packages/registry/editor/demo"),
   tabs: () => import("../../../../../packages/registry/tabs/demo"),
   textarea: () => import("../../../../../packages/registry/textarea/demo"),
   tilt: () => import("../../../../../packages/registry/tilt/demo"),
