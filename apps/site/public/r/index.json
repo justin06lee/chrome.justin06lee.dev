@@ -282,6 +282,16 @@
     "registryDependencies": []
   },
   {
+    "name": "synced-editor",
+    "type": "registry:ui",
+    "description": "split-pane markdown editor whose preview scrolls and highlights in sync both ways — select text to push to the preview, click a preview block to scroll the editor and streak the matching lines. behavior lives in a headless useLineSync engine; the preview pane is the synced-preview component. dark-only.",
+    "dependencies": [],
+    "registryDependencies": [
+      "synced-preview",
+      "utils"
+    ]
+  },
+  {
     "name": "synced-preview",
     "type": "registry:ui",
     "description": "presentational preview pane with editor↔preview scroll/highlight sync. renders markdown through a caller-supplied renderer (typically the prose component with lineSync), maps source lines to blocks, exposes an imperative alignLineToScreenY handle, and reports clicks via onSelectBlock. framework-agnostic, dark-only.",
