@@ -6,9 +6,9 @@ export {
   offsetToLine,
   lineStartOffset,
   trimStreakRange,
-} from "../../../packages/registry/synced-editor/use-line-sync";
+} from "../../../packages/registry/editor/use-line-sync";
 export type {
   SelectionRect,
   UseLineSyncOptions,
   UseLineSyncReturn,
-} from "../../../packages/registry/synced-editor/use-line-sync";
+} from "../../../packages/registry/editor/use-line-sync";

@@ -2,11 +2,11 @@
 
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { SyncedPreview } from "@/components/ui/synced-preview";
+import { EditorPreview } from "@/components/ui/editor-preview";
 import { useLineSync, STREAK_PAD, type UseLineSyncReturn } from "@/hooks/use-line-sync";
 
-export interface SyncedEditorTextareaProps {
-  /** A `useLineSync(...)` return value, shared with the paired `<SyncedPreview>`. */
+export interface EditorTextareaProps {
+  /** A `useLineSync(...)` return value, shared with the paired `<EditorPreview>`. */
   sync: UseLineSyncReturn;
   /** Markdown source (controlled). */
   value: string;
@@ -19,17 +19,17 @@ export interface SyncedEditorTextareaProps {
 
 /**
  * The editor half on its own: a `<textarea>` with the gray-streak + "→ preview"
- * button overlay, driven by a `useLineSync` engine. Pair it with a `<SyncedPreview>`
+ * button overlay, driven by a `useLineSync` engine. Pair it with a `<EditorPreview>`
  * that shares the same engine and they stay in sync even in separate, non-adjacent
  * containers — the engine aligns by viewport coordinates, not relative layout.
  */
-export function SyncedEditorTextarea({
+export function EditorTextarea({
   sync,
   value,
   onChange,
   placeholder,
   className,
-}: SyncedEditorTextareaProps) {
+}: EditorTextareaProps) {
   const {
     textareaRef,
     overlayLayerRef,
@@ -95,7 +95,7 @@ export function SyncedEditorTextarea({
   );
 }
 
-export interface SyncedEditorProps {
+export interface EditorProps {
   /** Markdown source (controlled). */
   value: string;
   /** Called with the next markdown source on edit. */
@@ -117,31 +117,31 @@ export interface SyncedEditorProps {
 }
 
 /**
- * Turnkey split-pane markdown editor: `SyncedEditorTextarea` beside a
- * `<SyncedPreview>`, sharing one `useLineSync` engine so the preview scrolls and
+ * Turnkey split-pane markdown editor: `EditorTextarea` beside a
+ * `<EditorPreview>`, sharing one `useLineSync` engine so the preview scrolls and
  * highlights in sync both ways. Dark-only. Give the root a height. For a custom
  * layout, drop down to `useLineSync` + the two pieces directly.
  */
-export function SyncedEditor({
+export function Editor({
   value,
   onChange,
   renderMarkdown,
   label = "live preview",
   placeholder,
   className,
-}: SyncedEditorProps) {
+}: EditorProps) {
   const sync = useLineSync({ value });
 
   return (
     <div className={cn("flex min-h-0 flex-col md:flex-row", className)}>
-      <SyncedEditorTextarea
+      <EditorTextarea
         sync={sync}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         className="flex-1 border-b border-white/10 md:border-b-0 md:border-r"
       />
-      <SyncedPreview
+      <EditorPreview
         ref={sync.previewRef}
         content={value}
         renderMarkdown={renderMarkdown}

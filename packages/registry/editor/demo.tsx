@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { SyncedEditor, SyncedEditorTextarea } from "./synced-editor";
-import { SyncedPreview } from "./synced-preview";
+import { Editor, EditorTextarea } from "./editor";
+import { EditorPreview } from "./editor-preview";
 import { useLineSync } from "./use-line-sync";
 import { Prose } from "../prose/prose";
 
@@ -26,7 +26,7 @@ don't need to be stuck together.
 
 const FULL_MD = `# combined editor
 
-the same engine, packaged as one turnkey \`<SyncedEditor />\`.
+the same engine, packaged as one turnkey \`<Editor />\`.
 
 ## how it works
 
@@ -34,7 +34,7 @@ select text on the left → **→ preview**; click a block here → the editor s
 and lays a gray streak over the matching lines.
 
 \`\`\`ts
-<SyncedEditor value={md} onChange={setMd} renderMarkdown={render} />
+<Editor value={md} onChange={setMd} renderMarkdown={render} />
 \`\`\`
 `;
 
@@ -45,10 +45,10 @@ function SplitPieces() {
   return (
     <div className="flex flex-col gap-4 md:flex-row">
       <div className="h-[280px] flex-1 border border-white/10">
-        <SyncedEditorTextarea sync={sync} value={md} onChange={setMd} className="h-full" />
+        <EditorTextarea sync={sync} value={md} onChange={setMd} className="h-full" />
       </div>
       <div className="h-[280px] flex-1 border border-white/10">
-        <SyncedPreview
+        <EditorPreview
           ref={sync.previewRef}
           content={md}
           onSelectBlock={sync.onPreviewSelectBlock}
@@ -61,7 +61,7 @@ function SplitPieces() {
   );
 }
 
-export default function SyncedEditorDemo() {
+export default function EditorDemo() {
   const [md, setMd] = useState(FULL_MD);
   return (
     <div className="flex w-full flex-col gap-8">
@@ -73,10 +73,10 @@ export default function SyncedEditorDemo() {
       </div>
       <div className="space-y-2">
         <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
-          combined &lt;SyncedEditor /&gt;
+          combined &lt;Editor /&gt;
         </div>
         <div className="h-[420px] w-full border border-white/10">
-          <SyncedEditor value={md} onChange={setMd} renderMarkdown={render} className="h-full" />
+          <Editor value={md} onChange={setMd} renderMarkdown={render} className="h-full" />
         </div>
       </div>
     </div>

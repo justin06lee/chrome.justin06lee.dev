@@ -32,7 +32,7 @@ export interface PreviewBlockSelection {
   screenHeight: number;
 }
 
-export interface SyncedPreviewHandle {
+export interface EditorPreviewHandle {
   /**
    * Scroll the block for a 1-based source line so its top edge lands at
    * `screenY` (a viewport coordinate), putting it level with the editor
@@ -41,7 +41,7 @@ export interface SyncedPreviewHandle {
   alignLineToScreenY: (line: number, screenY: number) => void;
 }
 
-export interface SyncedPreviewProps {
+export interface EditorPreviewProps {
   /** Markdown source rendered through `renderMarkdown`. */
   content: string;
   /**
@@ -66,8 +66,8 @@ export interface SyncedPreviewProps {
 // blur) don't re-run the markdown renderer here. Each such re-render briefly
 // reflows the preview, shifting a block out from under the pointer mid-click so
 // the click is lost. Requires onSelectBlock to be a stable (useCallback) ref.
-export const SyncedPreview = memo(
-  forwardRef<SyncedPreviewHandle, SyncedPreviewProps>(function SyncedPreview(
+export const EditorPreview = memo(
+  forwardRef<EditorPreviewHandle, EditorPreviewProps>(function EditorPreview(
     { content, renderMarkdown, onSelectBlock, label = "live preview", className },
     ref,
   ) {

@@ -10,8 +10,8 @@ import {
 } from "react";
 import type {
   PreviewBlockSelection,
-  SyncedPreviewHandle,
-} from "@/components/ui/synced-preview";
+  EditorPreviewHandle,
+} from "@/components/ui/editor-preview";
 
 function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
@@ -160,7 +160,7 @@ export interface UseLineSyncOptions {
 
 export interface UseLineSyncReturn {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
-  previewRef: RefObject<SyncedPreviewHandle | null>;
+  previewRef: RefObject<EditorPreviewHandle | null>;
   overlayLayerRef: RefObject<HTMLDivElement | null>;
   editorScrollTopRef: RefObject<number>;
   /** Pixel rect of the gray streak, or null. */
@@ -171,7 +171,7 @@ export interface UseLineSyncReturn {
   selectionRect: SelectionRect | null;
   /** Fire the editor → preview sync (call from the floating button). */
   syncToPreview: () => void;
-  /** Handler for a preview block click (pass to SyncedPreview's onSelectBlock). */
+  /** Handler for a preview block click (pass to EditorPreview's onSelectBlock). */
   onPreviewSelectBlock: (selection: PreviewBlockSelection) => void;
   /** Refresh the tracked selection (pass to the textarea's onSelect/onMouseUp). */
   refreshSelection: () => void;
@@ -184,11 +184,11 @@ export interface UseLineSyncReturn {
 /**
  * Bidirectional editor ↔ preview sync engine. Owns the caret↔line math, the
  * pixel measurement, the overlay scroll-follow, and the two-way coordination.
- * Pair it with a `<textarea>` and a `<SyncedPreview>` (see synced-editor.tsx).
+ * Pair it with a `<textarea>` and a `<EditorPreview>` (see editor.tsx).
  */
 export function useLineSync({ value }: UseLineSyncOptions): UseLineSyncReturn {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const previewRef = useRef<SyncedPreviewHandle>(null);
+  const previewRef = useRef<EditorPreviewHandle>(null);
   const overlayLayerRef = useRef<HTMLDivElement>(null);
   const editorScrollTopRef = useRef(0);
 
