@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type UseInlineEditOptions = {
   /** Source of truth, owned by the caller. */
@@ -39,30 +39,58 @@ export function useInlineEdit({
   const [draft, setDraft] = useState(value);
   const [pending, setPending] = useState(false);
 
+  // Generation token: bumped on every commit and whenever `value` changes. A
+  // resolving onCommit only updates state if its captured generation is still
+  // current (no newer commit/value superseded it, component still mounted).
+  const generation = useRef(0);
+  const mounted = useRef(true);
+
   // Keep the draft in sync when the source of truth changes externally
   // (e.g. a successful commit updates `value`), but never while mid-edit.
   useEffect(() => {
     if (!pending) setDraft(value);
   }, [value, pending]);
 
+  // An external value change supersedes any in-flight commit.
+  useEffect(() => {
+    generation.current++;
+  }, [value]);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  // Set transiently by an Escape press so the blur it triggers does not commit
+  // the (about-to-be-discarded) draft. Consumed and cleared by the next commit.
+  const skipNextCommit = useRef(false);
+
   const cancel = () => setDraft(value);
 
   const commit = async () => {
+    if (skipNextCommit.current) {
+      skipNextCommit.current = false;
+      return;
+    }
     const next = trim ? draft.trim() : draft;
     if (next.length === 0 || next === value) {
       // Nothing to do — revert to the source of truth.
       setDraft(value);
       return;
     }
+    const gen = ++generation.current;
+    const isCurrent = () => mounted.current && gen === generation.current;
     setPending(true);
     try {
       await onCommit(next);
-      setDraft(next);
+      if (isCurrent()) setDraft(next);
     } catch {
-      // Roll back to the previous value on failure.
-      setDraft(value);
+      // Roll back to the previous value on failure — unless superseded.
+      if (isCurrent()) setDraft(value);
     } finally {
-      setPending(false);
+      if (isCurrent()) setPending(false);
     }
   };
 
@@ -72,6 +100,9 @@ export function useInlineEdit({
       e.currentTarget.blur();
     } else if (e.key === "Escape") {
       e.preventDefault();
+      // The blur below triggers the consumer's onCommit; suppress that one commit
+      // so Escape discards the draft rather than saving it.
+      skipNextCommit.current = true;
       cancel();
       e.currentTarget.blur();
     }

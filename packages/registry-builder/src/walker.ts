@@ -1,5 +1,6 @@
 import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { pathToFileURL } from "node:url";
 import type { ComponentMeta, RegistryItemType } from "./schema";
 
 const KNOWN_TYPES: ReadonlyArray<RegistryItemType> = [
@@ -35,7 +36,13 @@ export async function walkRegistry(root: string): Promise<WalkedItem[]> {
   const metaPaths = await findMetaFiles(root);
   const items: WalkedItem[] = [];
   for (const metaPath of metaPaths) {
-    const mod = await import(metaPath);
+    let mod: { default?: unknown };
+    try {
+      // file:// URL so this works under plain Node ESM, not just Bun.
+      mod = await import(pathToFileURL(metaPath).href);
+    } catch (err) {
+      throw new Error(`Failed to import meta.ts at ${metaPath}: ${(err as Error).message}`);
+    }
     const meta = mod.default as ComponentMeta;
     if (!meta || typeof meta !== "object" || !meta.name) {
       throw new Error(`Invalid meta.ts at ${metaPath}: missing default export or name`);
@@ -50,7 +57,14 @@ export async function walkRegistry(root: string): Promise<WalkedItem[]> {
         `Invalid meta.ts at ${metaPath}: "files" must be a non-empty array`,
       );
     }
-    items.push({ dir: metaPath.slice(0, -"meta.ts".length - 1), meta });
+    for (const f of meta.files) {
+      if (!f || typeof f.source !== "string" || typeof f.target !== "string") {
+        throw new Error(
+          `Invalid meta.ts at ${metaPath}: every "files" entry needs string "source" and "target"`,
+        );
+      }
+    }
+    items.push({ dir: dirname(metaPath), meta });
   }
   return items.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
 }

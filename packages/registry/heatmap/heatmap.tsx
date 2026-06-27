@@ -60,7 +60,7 @@ export function Heatmap({
   title,
   className,
 }: HeatmapProps) {
-  const ceiling = max ?? Math.max(1, ...Object.values(values));
+  const ceiling = max ?? Object.values(values).reduce((m, v) => (v > m ? v : m), 1);
   const interactive = Boolean(onSelectDay);
 
   const cell = (date: string | null, i: number) => {

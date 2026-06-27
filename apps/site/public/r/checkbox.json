@@ -1,0 +1,20 @@
+{
+  "name": "checkbox",
+  "type": "registry:ui",
+  "description": "square checkbox with a check-on-fill. wraps a native checkbox so it works in forms; thin border, no corners, fills white with a black check when checked.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "checkbox.tsx",
+      "content": "import * as React from \"react\";\nimport { Check } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface CheckboxProps\n  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"type\" | \"size\"> {\n  /** Optional label rendered to the right of the box. */\n  label?: React.ReactNode;\n  /** Extra classes for the outer <label> wrapper. */\n  wrapperClassName?: string;\n}\n\n/**\n * Square checkbox with a check-on-fill. Wraps a native `<input type=\"checkbox\">`\n * (so `name`/`checked`/`onChange`/`required` work in forms) with the box visually\n * replaced: thin translucent border, no corners, fills white with a black check\n * when checked. Dark-only. `className` targets the box; pass a `label` for the\n * text beside it.\n */\nexport const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(\n  ({ className, wrapperClassName, label, disabled, ...props }, ref) => (\n    <label\n      className={cn(\n        \"group inline-flex select-none items-center gap-2 text-sm text-white/80\",\n        disabled ? \"cursor-not-allowed opacity-50\" : \"cursor-pointer\",\n        wrapperClassName,\n      )}\n    >\n      <span className=\"relative inline-flex size-4 shrink-0 items-center justify-center\">\n        <input\n          ref={ref}\n          type=\"checkbox\"\n          disabled={disabled}\n          className={cn(\n            \"peer size-4 cursor-[inherit] appearance-none border border-white/20 bg-transparent\",\n            \"transition-colors checked:border-white checked:bg-white\",\n            \"focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50\",\n            className,\n          )}\n          {...props}\n        />\n        <Check\n          aria-hidden\n          className=\"pointer-events-none absolute size-3 stroke-[3] text-black opacity-0 peer-checked:opacity-100\"\n        />\n      </span>\n      {label != null && <span>{label}</span>}\n    </label>\n  ),\n);\nCheckbox.displayName = \"Checkbox\";\n",
+      "type": "registry:ui",
+      "target": "checkbox.tsx"
+    }
+  ]
+}

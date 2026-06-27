@@ -48,9 +48,17 @@ export function makeHttpFetcher(baseUrl: string): Fetcher {
       typeof data !== "object" || data === null ||
       typeof (data as Record<string, unknown>).name !== "string" ||
       typeof (data as Record<string, unknown>).type !== "string" ||
-      !Array.isArray((data as Record<string, unknown>).files)
+      !Array.isArray((data as Record<string, unknown>).files) ||
+      !Array.isArray((data as Record<string, unknown>).dependencies) ||
+      !Array.isArray((data as Record<string, unknown>).registryDependencies)
     ) {
       throw new Error(`registry returned invalid item shape for "${name}" (${url})`);
+    }
+    const registryDeps: unknown[] = (data as Record<string, unknown>).registryDependencies as unknown[];
+    for (const dep of registryDeps) {
+      if (typeof dep !== "string") {
+        throw new Error(`registry item "${name}" has a non-string registryDependency (${url})`);
+      }
     }
     const files: unknown[] = (data as Record<string, unknown>).files as unknown[];
     for (const f of files) {

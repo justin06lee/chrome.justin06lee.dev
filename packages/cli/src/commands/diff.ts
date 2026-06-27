@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { readConfig } from "../writers/config";
 import { makeHttpFetcher } from "../registry";
 
@@ -36,9 +36,35 @@ export const diffCommand = defineCommand({
       process.exit(1);
     }
     const fetcher = makeHttpFetcher(cfg.registry);
-    const remote = await fetcher(args.name);
+    let remote;
+    try {
+      remote = await fetcher(args.name);
+    } catch (err) {
+      console.error(`✗ ${(err as Error).message}`);
+      process.exit(1);
+    }
+    const componentsRel = aliasToFs(cfg.aliases.components);
+    const utilsRel = aliasToFs(cfg.aliases.utils);
+    const hooksRel = aliasToFs(cfg.aliases.hooks ?? "@/hooks");
+    // Mirror add.ts: hook → hooks alias, lib → utils alias's parent dir, else components.
+    const utilsSlash = utilsRel.lastIndexOf("/");
+    const libBase = utilsSlash === -1 ? "" : utilsRel.slice(0, utilsSlash);
     for (const file of remote.files) {
-      const localPath = join(cwd, aliasToFs(cfg.aliases.components), file.path);
+      let localDir: string;
+      if (file.type === "registry:hook") {
+        localDir = hooksRel;
+      } else if (remote.type === "registry:lib") {
+        localDir = libBase;
+      } else {
+        localDir = componentsRel;
+      }
+      const localPath = join(cwd, localDir, file.path);
+      // Guard against a malicious registry whose file.path (e.g. "../../etc/passwd")
+      // escapes the project root — mirror add.ts's writeFileSafe cwdGuard.
+      if (!resolve(localPath).startsWith(cwd + sep)) {
+        console.error(`✗ refusing to read "${file.path}" — escapes the project root`);
+        process.exit(1);
+      }
       if (!existsSync(localPath)) {
         console.log(`(no local copy at ${localPath})`);
         continue;

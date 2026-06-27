@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -141,7 +141,10 @@ export function Prose({
   highlightLine = null,
   className,
 }: ProseProps) {
-  const components: Components = {
+  // Memoize so the component map is stable across renders (only `imageBaseUrl`
+  // affects it via the `img` renderer); otherwise ReactMarkdown re-renders the
+  // whole tree every render.
+  const components: Components = useMemo(() => ({
     h1: ({ children, ...p }) => (
       <h1 className="mb-4 mt-10 text-3xl font-semibold tracking-tight text-white first:mt-0" style={HEADING_SCROLL} {...p}>{children}</h1>
     ),
@@ -209,7 +212,7 @@ export function Prose({
       // eslint-disable-next-line @next/next/no-img-element
       return <img src={resolved} alt={alt || ""} loading="lazy" className="my-5 max-w-full border border-white/10" {...p} />;
     },
-  };
+  }), [imageBaseUrl]);
 
   return (
     <div className={className}>
