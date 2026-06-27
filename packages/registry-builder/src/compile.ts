@@ -20,7 +20,7 @@ export async function compileItem(item: WalkedItem): Promise<RegistryItem> {
         path: f.target,
         content,
         type: f.type ?? meta.type,
-        target: "",
+        target: f.target,
       };
     }),
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 export interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
   /** how many paper layers sit behind the front card. default 1. */
@@ -25,8 +26,8 @@ export function Stack({
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className={"relative h-44 w-40 " + className}
-      style={{ background, ...style }}
+      className={cn("relative h-44 w-40", className)}
+      style={{ ...style, background }}
       {...rest}
     >
       {Array.from({ length: layers }).map((_, i) => (

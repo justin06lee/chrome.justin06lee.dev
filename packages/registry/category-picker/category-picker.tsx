@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { cn } from "@/lib/utils";
 import { ColorSwatch } from "@/components/ui/color-swatch";
 
@@ -47,11 +54,16 @@ export function CategoryPicker({
 }: CategoryPickerProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const baseId = useId();
+  const listboxId = `${baseId}-listbox`;
+  const rowId = (i: number) => `${baseId}-row-${i}`;
 
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setActiveIndex(-1);
       return;
     }
     function onPointer(e: MouseEvent) {
@@ -59,20 +71,9 @@ export function CategoryPicker({
         setOpen(false);
       }
     }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        // Capture-phase + stopImmediatePropagation so an open picker nested in a
-        // dialog swallows the Escape and only closes itself.
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        setOpen(false);
-      }
-    }
     document.addEventListener("mousedown", onPointer);
-    document.addEventListener("keydown", onKey, true);
     return () => {
       document.removeEventListener("mousedown", onPointer);
-      document.removeEventListener("keydown", onKey, true);
     };
   }, [open]);
 
@@ -85,6 +86,74 @@ export function CategoryPicker({
   }, [items, query]);
 
   const trimmed = query.trim();
+
+  // Reset the highlight whenever the navigable rows change (e.g. filtering).
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [query]);
+
+  // Navigable rows, in render order: optional create, optional clear, then the
+  // filtered items.
+  const showCreate = Boolean(onCreate);
+  const showClear = Boolean(allowClear && value !== null);
+  const createIndex = showCreate ? 0 : -1;
+  const clearIndex = showClear ? (showCreate ? 1 : 0) : -1;
+  const optionsOffset = (showCreate ? 1 : 0) + (showClear ? 1 : 0);
+  const rowCount = optionsOffset + filtered.length;
+
+  const activateRow = (i: number) => {
+    if (i === createIndex && onCreate) {
+      onCreate(trimmed);
+      setOpen(false);
+      return;
+    }
+    if (i === clearIndex) {
+      onChange(null);
+      setOpen(false);
+      return;
+    }
+    const item = filtered[i - optionsOffset];
+    if (item) {
+      onChange(item.id);
+      setOpen(false);
+    }
+  };
+
+  function onInputKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    const move = (dir: 1 | -1) => {
+      if (rowCount === 0) return;
+      setActiveIndex((i) => {
+        const next = i + dir;
+        if (next < 0) return rowCount - 1;
+        if (next > rowCount - 1) return 0;
+        return next;
+      });
+    };
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        move(1);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        move(-1);
+        break;
+      case "Enter":
+        if (activeIndex >= 0 && activeIndex < rowCount) {
+          e.preventDefault();
+          activateRow(activeIndex);
+        }
+        break;
+      case "Escape":
+        // Scoped, non-capture handler: only fires while the picker is open and
+        // its input is focused. stopPropagation keeps a wrapping dialog from
+        // also closing, without the global capture-phase swallowing of before.
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(false);
+        break;
+    }
+  }
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
@@ -111,55 +180,76 @@ export function CategoryPicker({
         <div className="absolute left-0 right-0 top-full z-20 mt-1 border border-white/20 bg-black">
           <input
             autoFocus
-            aria-controls="chrome-category-picker-listbox"
+            role="combobox"
+            aria-expanded={open}
+            aria-controls={listboxId}
+            aria-activedescendant={activeIndex >= 0 ? rowId(activeIndex) : undefined}
+            onKeyDown={onInputKeyDown}
             placeholder={searchPlaceholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full border-b border-white/20 bg-transparent px-3 py-2 text-sm outline-none focus:border-white/60"
           />
           <div
-            id="chrome-category-picker-listbox"
+            id={listboxId}
             role="listbox"
             className="max-h-72 overflow-auto"
           >
-            {onCreate && (
+            {showCreate && (
               <button
                 type="button"
+                id={rowId(createIndex)}
+                role="option"
+                aria-selected={false}
+                onMouseEnter={() => setActiveIndex(createIndex)}
                 onClick={() => {
-                  onCreate(trimmed);
+                  onCreate?.(trimmed);
                   setOpen(false);
                 }}
-                className="w-full border-b border-white/10 px-3 py-2 text-left text-sm text-white/80 hover:bg-white/10"
+                className={cn(
+                  "w-full border-b border-white/10 px-3 py-2 text-left text-sm text-white/80 hover:bg-white/10",
+                  activeIndex === createIndex && "bg-white/10",
+                )}
               >
                 + create {trimmed ? `"${trimmed}"` : "new"}
               </button>
             )}
 
-            {allowClear && value !== null && (
+            {showClear && (
               <button
                 type="button"
+                id={rowId(clearIndex)}
+                role="option"
+                aria-selected={false}
+                onMouseEnter={() => setActiveIndex(clearIndex)}
                 onClick={() => {
                   onChange(null);
                   setOpen(false);
                 }}
-                className="w-full border-b border-white/10 px-3 py-2 text-left text-xs text-white/50 hover:bg-white/10"
+                className={cn(
+                  "w-full border-b border-white/10 px-3 py-2 text-left text-xs text-white/50 hover:bg-white/10",
+                  activeIndex === clearIndex && "bg-white/10",
+                )}
               >
                 clear
               </button>
             )}
 
-            {filtered.map((i) => (
+            {filtered.map((i, idx) => (
               <button
                 key={i.id}
+                id={rowId(optionsOffset + idx)}
                 type="button"
                 role="option"
                 aria-selected={i.id === value}
+                onMouseEnter={() => setActiveIndex(optionsOffset + idx)}
                 onClick={() => {
                   onChange(i.id);
                   setOpen(false);
                 }}
                 className={cn(
                   "flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-white/10",
+                  activeIndex === optionsOffset + idx && "bg-white/10",
                   i.id === value ? "text-white" : "text-white/80",
                 )}
               >

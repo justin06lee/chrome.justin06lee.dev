@@ -84,7 +84,7 @@ export function useLoginForm({
         setRateLimited(true);
         setError(rateLimitedError);
       } else {
-        setError(e instanceof Error && e.message ? e.message : networkError);
+        setError(networkError);
       }
     } finally {
       setLoading(false);

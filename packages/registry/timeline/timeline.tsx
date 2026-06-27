@@ -79,8 +79,12 @@ export function Timeline({ events, showNow, nowMinutes, className }: TimelinePro
       <HourGrid />
       {now != null && <NowLine minutes={now} />}
       {events.map((e, i) => {
-        const top = (Math.max(0, e.startMin) / 1440) * 100;
-        const height = (Math.max(1, e.endMin - e.startMin) / 1440) * 100;
+        // Clamp into the 0–1440 axis so out-of-range (negative or >24h) events
+        // stay within the visible day instead of overflowing the track.
+        const start = Math.min(1440, Math.max(0, e.startMin));
+        const end = Math.min(1440, Math.max(start, e.endMin));
+        const top = (start / 1440) * 100;
+        const height = (Math.max(1, end - start) / 1440) * 100;
         const color = e.color ?? "#ffffff";
         return (
           <div

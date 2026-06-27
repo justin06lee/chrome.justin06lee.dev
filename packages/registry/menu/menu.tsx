@@ -30,8 +30,14 @@ export type MenuProps = {
  * headless useMenu hook.
  */
 export function Menu({ trigger, items, label, align = "left", className }: MenuProps) {
-  const { open, activeIndex, setActiveIndex, containerRef, triggerProps, menuProps, onSelect } =
-    useMenu({ itemCount: items.length });
+  const { open, activeIndex, setActiveIndex, containerRef, itemId, triggerProps, menuProps, onSelect } =
+    useMenu({
+      itemCount: items.length,
+      onActivate: (i) => {
+        const item = items[i];
+        if (item && !item.disabled) onSelect(item.onSelect);
+      },
+    });
 
   return (
     <div ref={containerRef} className={cn("relative inline-block", className)}>
@@ -62,6 +68,7 @@ export function Menu({ trigger, items, label, align = "left", className }: MenuP
             return (
               <button
                 key={item.label}
+                id={itemId(i)}
                 type="button"
                 role="menuitem"
                 disabled={item.disabled}

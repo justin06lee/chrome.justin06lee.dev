@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 
 export type ComboboxOption<T extends string | number> = {
   value: T;
@@ -24,6 +31,18 @@ export type UseComboboxReturn<T extends string | number> = {
   selected: ComboboxOption<T> | null;
   /** Wrap trigger + dropdown; outside click / Escape closes and resets query. */
   containerRef: React.RefObject<HTMLDivElement | null>;
+  /** Index of the keyboard-highlighted row, or -1. */
+  activeIndex: number;
+  setActiveIndex: (i: number) => void;
+  /** Stable id for the listbox element + per-row option ids. */
+  listboxId: string;
+  rowId: (i: number) => string;
+  /**
+   * Build the search input's onKeyDown for the given navigable row list.
+   * `rowCount` is the total number of highlightable rows (create/clear +
+   * filtered options) and `onActivate` runs the row at the highlighted index.
+   */
+  inputKeyDown: (rowCount: number, onActivate: (i: number) => void) => (e: KeyboardEvent) => void;
 };
 
 /**
@@ -37,11 +56,16 @@ export function useCombobox<T extends string | number>({
 }: UseComboboxOptions<T>): UseComboboxReturn<T> {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const baseId = useId();
+  const listboxId = `${baseId}-listbox`;
+  const rowId = (i: number) => `${baseId}-row-${i}`;
 
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setActiveIndex(-1);
       return;
     }
     const onPointer = (e: MouseEvent) => {
@@ -49,14 +73,9 @@ export function useCombobox<T extends string | number>({
         setOpen(false);
       }
     };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
     document.addEventListener("mousedown", onPointer);
-    document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("mousedown", onPointer);
-      document.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
@@ -66,7 +85,62 @@ export function useCombobox<T extends string | number>({
     return options.filter((o) => o.label.toLowerCase().includes(q));
   }, [options, query]);
 
-  const selected = options.find((o) => o.value === value) ?? null;
+  // Reset the highlight whenever the navigable rows change (e.g. filtering).
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [query]);
 
-  return { open, setOpen, query, setQuery, filtered, selected, containerRef };
+  const selected = useMemo(
+    () => options.find((o) => o.value === value) ?? null,
+    [options, value],
+  );
+
+  const inputKeyDown =
+    (rowCount: number, onActivate: (i: number) => void) => (e: KeyboardEvent) => {
+      const move = (dir: 1 | -1) => {
+        if (rowCount === 0) return;
+        setActiveIndex((i) => {
+          const next = i + dir;
+          if (next < 0) return rowCount - 1;
+          if (next > rowCount - 1) return 0;
+          return next;
+        });
+      };
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          move(1);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          move(-1);
+          break;
+        case "Enter":
+          if (activeIndex >= 0 && activeIndex < rowCount) {
+            e.preventDefault();
+            onActivate(activeIndex);
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(false);
+          break;
+      }
+    };
+
+  return {
+    open,
+    setOpen,
+    query,
+    setQuery,
+    filtered,
+    selected,
+    containerRef,
+    activeIndex,
+    setActiveIndex,
+    listboxId,
+    rowId,
+    inputKeyDown,
+  };
 }

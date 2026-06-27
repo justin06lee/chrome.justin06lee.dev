@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
@@ -21,6 +21,11 @@ export type SheetProps = {
   children?: React.ReactNode;
   /** Extra classes for the panel. */
   className?: string;
+  /**
+   * Accessible name for the panel when no `title` is rendered. Ignored when
+   * `title` is set (the rendered title is used via aria-labelledby instead).
+   */
+  ariaLabel?: string;
 };
 
 // Off-screen position per edge, used for both the initial and exit states.
@@ -51,8 +56,56 @@ export function Sheet({
   title,
   children,
   className,
+  ariaLabel,
 }: SheetProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  // Element focused before the sheet opened, restored on close.
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+  const titleId = useId();
+
+  // Move focus into the panel on open and restore it on close.
+  useEffect(() => {
+    if (!open) return;
+    previouslyFocused.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const panel = panelRef.current;
+    const focusables = panel?.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    (focusables && focusables.length > 0 ? focusables[0] : panel)?.focus();
+    return () => {
+      previouslyFocused.current?.focus();
+      previouslyFocused.current = null;
+    };
+  }, [open]);
+
+  // Tab focus trap while open.
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusables = panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !panel.contains(active)) {
+          e.preventDefault();
+          last?.focus();
+        }
+      } else if (active === last || !panel.contains(active)) {
+        e.preventDefault();
+        first?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   // Escape-to-close.
   useEffect(() => {
@@ -98,6 +151,9 @@ export function Sheet({
             transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
             role="dialog"
             aria-modal="true"
+            tabIndex={-1}
+            aria-labelledby={title ? titleId : undefined}
+            aria-label={title ? undefined : ariaLabel}
             className={cn(
               "fixed z-[80] flex flex-col gap-4 border border-white/20 bg-black",
               PANEL_SIDE[side],
@@ -106,7 +162,7 @@ export function Sheet({
           >
             <div className="flex items-center justify-between p-4">
               {title ? (
-                <span className="text-sm font-semibold text-white">{title}</span>
+                <span id={titleId} className="text-sm font-semibold text-white">{title}</span>
               ) : (
                 <span />
               )}

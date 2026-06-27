@@ -23,6 +23,15 @@
     ]
   },
   {
+    "name": "asset-sidebar",
+    "type": "registry:ui",
+    "description": "scrollable image/asset sidebar. drag a row into a textarea or click insert; optional drop zone for uploads.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "badge",
     "type": "registry:ui",
     "description": "small chip. static label by default; pass onClick to make it a toggle/filter chip, with active swapping to the solid look.",
@@ -68,6 +77,17 @@
     "registryDependencies": [
       "utils",
       "color-swatch"
+    ]
+  },
+  {
+    "name": "checkbox",
+    "type": "registry:ui",
+    "description": "square checkbox with a check-on-fill. wraps a native checkbox so it works in forms; thin border, no corners, fills white with a black check when checked.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
     ]
   },
   {
@@ -209,6 +229,15 @@
     ]
   },
   {
+    "name": "pfp",
+    "type": "registry:ui",
+    "description": "profile-picture tile: an image framed in a bordered square that tilts in 3d and sweeps a shine across itself on hover. frame the subject with x/y/scale; size it via className.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "prose",
     "type": "registry:ui",
     "description": "markdown renderer with the justin06lee.dev prose styling — GFM, KaTeX math, heading slugs, and copy-on-hover code blocks. dark-only. pass markdown as the string child.",
@@ -279,6 +308,17 @@
     "type": "registry:ui",
     "description": "framed preview container with a dotted background. holds component demos with optional label, source caption, and note. exports a Row helper for explicit row breaks; bare children get auto-wrapped into one centered row.",
     "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "socials",
+    "type": "registry:ui",
+    "description": "row of social links; pass a links map and only the platforms you supply render. white slide-up tooltip on hover/focus; the email entry copies the address to the clipboard (falls back to mailto). framework-agnostic plain anchors.",
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]

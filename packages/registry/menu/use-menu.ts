@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
 export type UseMenuOptions = {
   itemCount: number;
+  /** Activate the item at the given index (Enter/Space on the highlighted row). */
+  onActivate?: (i: number) => void;
 };
 
 export type UseMenuReturn = {
@@ -14,6 +16,8 @@ export type UseMenuReturn = {
   setActiveIndex: (i: number) => void;
   /** Wrap the trigger + dropdown; an outside click closes the menu. */
   containerRef: React.RefObject<HTMLDivElement | null>;
+  /** Build a stable per-item id for aria-activedescendant wiring. */
+  itemId: (i: number) => string;
   /** Spread onto the trigger button. */
   triggerProps: {
     "aria-haspopup": "menu";
@@ -23,7 +27,10 @@ export type UseMenuReturn = {
   };
   /** Spread onto the menu container; handles arrow/Enter/Escape. */
   menuProps: {
+    ref: React.RefObject<HTMLDivElement | null>;
     role: "menu";
+    tabIndex: -1;
+    "aria-activedescendant": string | undefined;
     onKeyDown: (e: KeyboardEvent) => void;
   };
   /** Call when an item is chosen — closes and resets. */
@@ -34,16 +41,26 @@ export type UseMenuReturn = {
  * Headless action-menu behavior: open state, outside-click + Escape close, and
  * arrow-key navigation with a highlighted item. No styling.
  */
-export function useMenu({ itemCount }: UseMenuOptions): UseMenuReturn {
+export function useMenu({ itemCount, onActivate }: UseMenuOptions): UseMenuReturn {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const baseId = useId();
+
+  // Keep the latest onActivate without re-subscribing handlers.
+  const activateRef = useRef(onActivate);
+  activateRef.current = onActivate;
+
+  const itemId = (i: number) => `${baseId}-item-${i}`;
 
   useEffect(() => {
     if (!open) {
       setActiveIndex(-1);
       return;
     }
+    // Focus the menu so its onKeyDown (Arrow/Enter/Escape) fires on open.
+    menuRef.current?.focus();
     const onPointer = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -81,6 +98,13 @@ export function useMenu({ itemCount }: UseMenuOptions): UseMenuReturn {
         e.preventDefault();
         move(-1);
         break;
+      case "Enter":
+      case " ":
+        if (activeIndex >= 0 && activeIndex < itemCount) {
+          e.preventDefault();
+          activateRef.current?.(activeIndex);
+        }
+        break;
       case "Escape":
         e.preventDefault();
         setOpen(false);
@@ -94,13 +118,21 @@ export function useMenu({ itemCount }: UseMenuOptions): UseMenuReturn {
     activeIndex,
     setActiveIndex,
     containerRef,
+    itemId,
     triggerProps: {
       "aria-haspopup": "menu",
       "aria-expanded": open,
       onClick: () => setOpen(!open),
       onKeyDown: triggerKeyDown,
     },
-    menuProps: { role: "menu", onKeyDown: menuKeyDown },
+    menuProps: {
+      ref: menuRef,
+      role: "menu",
+      tabIndex: -1,
+      "aria-activedescendant":
+        activeIndex >= 0 && activeIndex < itemCount ? itemId(activeIndex) : undefined,
+      onKeyDown: menuKeyDown,
+    },
     onSelect: (run: () => void) => {
       run();
       setOpen(false);

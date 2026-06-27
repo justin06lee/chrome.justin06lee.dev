@@ -66,9 +66,11 @@ export async function runAdd(opts: AddOptions): Promise<void> {
       if (file.type === "registry:hook") {
         dest = join(cwd, hooksRel, file.path);
       } else if (item.type === "registry:lib") {
-        // Lib files land at <utilsAlias>/<file.path> — but since utils is normally
-        // a single file (utils.ts), strip the alias's basename to avoid lib/utils/utils.ts.
-        const utilsBase = utilsRel.replace(/\/[^/]+$/, "");
+        // Lib files land at <utilsDir>/<file.path>. The utils alias points at a
+        // single file (e.g. lib/utils → lib/utils.ts), so use its parent dir.
+        // For a bare alias (no slash, e.g. "utils") the dir is the project root.
+        const slash = utilsRel.lastIndexOf("/");
+        const utilsBase = slash === -1 ? "" : utilsRel.slice(0, slash);
         dest = join(cwd, utilsBase, file.path);
       } else if (item.type === "registry:theme") {
         await patchGlobalsCss(join(cwd, cfg.tailwind.css), file.content);

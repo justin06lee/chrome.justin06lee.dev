@@ -1,0 +1,18 @@
+{
+  "name": "pfp",
+  "type": "registry:ui",
+  "description": "profile-picture tile: an image framed in a bordered square that tilts in 3d and sweeps a shine across itself on hover. frame the subject with x/y/scale; size it via className.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "pfp.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type PfpProps = {\n  /** Image url. */\n  src: string;\n  alt?: string;\n  /** Horizontal framing offset, in % of the tile (passed to translate). */\n  x?: number;\n  /** Vertical framing offset, in % of the tile. */\n  y?: number;\n  /** Zoom applied to the image inside the tile. */\n  scale?: number;\n  className?: string;\n};\n\n/**\n * Profile-picture tile: an image framed in a bordered square that tilts in 3D\n * and sweeps a shine across itself on hover. Use `x`/`y`/`scale` to frame the\n * subject within the tile. Size it via `className` (defaults to `size-16`).\n */\nexport function Pfp({ src, alt = \"\", x = 0, y = 0, scale = 1, className }: PfpProps) {\n  const [hover, setHover] = useState(false);\n  const shineRef = useRef<HTMLDivElement>(null);\n\n  useEffect(() => {\n    if (!hover || !shineRef.current) return;\n    const anim = shineRef.current.animate(\n      [\n        { transform: \"translateX(-220%)\", opacity: 0, offset: 0 },\n        { opacity: 1, offset: 0.15 },\n        { opacity: 1, offset: 0.85 },\n        { transform: \"translateX(320%)\", opacity: 0, offset: 1 },\n      ],\n      { duration: 900, easing: \"ease-in-out\", fill: \"forwards\" },\n    );\n    return () => anim.cancel();\n  }, [hover]);\n\n  return (\n    <div style={{ perspective: \"500px\" }}>\n      <div\n        onMouseEnter={() => setHover(true)}\n        onMouseLeave={() => setHover(false)}\n        className={cn(\n          \"relative size-16 cursor-pointer overflow-hidden border border-white/70 bg-white/5\",\n          \"shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_8px_24px_-8px_rgba(0,0,0,0.6)]\",\n          className,\n        )}\n        style={{\n          transform: hover\n            ? \"rotateX(14deg) rotateY(14deg) translateZ(0)\"\n            : \"rotateX(0deg) rotateY(0deg) translateZ(0)\",\n          transformStyle: \"preserve-3d\",\n          transition: \"transform 0.4s cubic-bezier(0.2, 0.9, 0.2, 1)\",\n          willChange: \"transform\",\n        }}\n      >\n        {/* eslint-disable-next-line @next/next/no-img-element */}\n        <img\n          src={src}\n          alt={alt}\n          draggable={false}\n          className=\"pointer-events-none absolute inset-0 h-full w-full object-cover\"\n          style={{\n            transform: `translate(${x}%, ${y}%) scale(${scale})`,\n            transformOrigin: \"center\",\n          }}\n        />\n        <div\n          ref={shineRef}\n          aria-hidden\n          className=\"pointer-events-none absolute top-0 bottom-0 w-1/2\"\n          style={{\n            background:\n              \"linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.75) 50%, transparent 80%)\",\n            filter: \"blur(1px)\",\n            mixBlendMode: \"screen\",\n            transform: \"translateX(-220%)\",\n            opacity: 0,\n          }}\n        />\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "pfp.tsx"
+    }
+  ]
+}

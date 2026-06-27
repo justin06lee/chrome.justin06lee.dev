@@ -10,9 +10,9 @@
   "files": [
     {
       "path": "input.tsx",
-      "content": "import * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  /** CSS background applied to the root element. Transparent by default. */\n  background?: string;\n}\n\nexport const Input = React.forwardRef<HTMLInputElement, InputProps>(\n  ({ className, background, style, ...props }, ref) => (\n    <input\n      ref={ref}\n      className={cn(\n        \"bg-transparent border border-white/20 px-3 py-1.5 text-sm text-white\",\n        \"placeholder:text-white/30 focus:outline-none focus:border-white/50\",\n        \"disabled:opacity-50\",\n        className,\n      )}\n      style={{ background, ...style }}\n      {...props}\n    />\n  ),\n);\nInput.displayName = \"Input\";\n",
+      "content": "import * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  /** CSS background applied to the root element. Transparent by default. */\n  background?: string;\n}\n\nexport const Input = React.forwardRef<HTMLInputElement, InputProps>(\n  ({ className, background, style, ...props }, ref) => (\n    <input\n      ref={ref}\n      className={cn(\n        \"bg-transparent border border-white/20 px-3 py-1.5 text-sm text-white\",\n        \"placeholder:text-white/30 focus:outline-none focus:border-white/50\",\n        \"disabled:opacity-50\",\n        className,\n      )}\n      style={{ ...style, background }}\n      {...props}\n    />\n  ),\n);\nInput.displayName = \"Input\";\n",
       "type": "registry:ui",
-      "target": ""
+      "target": "input.tsx"
     }
   ]
 }
