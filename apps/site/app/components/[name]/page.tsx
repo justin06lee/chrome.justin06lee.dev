@@ -13,11 +13,13 @@ import { Chrome } from "../../../../../packages/registry/chrome/chrome";
 const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   accordion: () => import("../../../../../packages/registry/accordion/demo"),
   article: () => import("../../../../../packages/registry/article/demo"),
+  "asset-sidebar": () => import("../../../../../packages/registry/asset-sidebar/demo"),
   badge: () => import("../../../../../packages/registry/badge/demo"),
   button: () => import("../../../../../packages/registry/button/demo"),
   calendar: () => import("../../../../../packages/registry/calendar/demo"),
   card: () => import("../../../../../packages/registry/card/demo"),
   "category-picker": () => import("../../../../../packages/registry/category-picker/demo"),
+  checkbox: () => import("../../../../../packages/registry/checkbox/demo"),
   chrome: () => import("../../../../../packages/registry/chrome/demo"),
   "code-block": () => import("../../../../../packages/registry/code-block/demo"),
   "collapsible-prose": () => import("../../../../../packages/registry/collapsible-prose/demo"),
