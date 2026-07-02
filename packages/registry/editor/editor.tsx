@@ -13,6 +13,11 @@ export interface EditorTextareaProps {
   /** Called with the next markdown source on edit. */
   onChange: (value: string) => void;
   placeholder?: string;
+  /**
+   * Passthrough `keydown` on the textarea. An escape hatch for layering your own
+   * keymap (e.g. a vim mode) over the plain editor without forking it.
+   */
+  onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   /** Sizing/extra classes (give it a height). */
   className?: string;
 }
@@ -28,6 +33,7 @@ export function EditorTextarea({
   value,
   onChange,
   placeholder,
+  onKeyDown,
   className,
 }: EditorTextareaProps) {
   const {
@@ -85,6 +91,7 @@ export function EditorTextarea({
           onMouseUp={refreshSelection}
           onSelect={refreshSelection}
           onBlur={clearSelection}
+          onKeyDown={onKeyDown}
           onScroll={(event) => handleScroll(event.currentTarget.scrollTop)}
           spellCheck={false}
           placeholder={placeholder}

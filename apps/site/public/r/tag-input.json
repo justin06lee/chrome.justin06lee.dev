@@ -1,0 +1,19 @@
+{
+  "name": "tag-input",
+  "type": "registry:ui",
+  "description": "chip/token input. type and press enter or comma to add a tag, backspace on an empty field removes the last, and click a suggestion chip to append it. dedupes and trims. dark-only.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils",
+    "badge"
+  ],
+  "files": [
+    {
+      "path": "tag-input.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Badge } from \"@/components/ui/badge\";\n\nexport interface TagInputProps {\n  /** Current tags (controlled). */\n  value: string[];\n  /** Called with the next tag list on every add/remove. */\n  onChange: (tags: string[]) => void;\n  /** Clickable \"existing tags\" chips; already-present ones are hidden. */\n  suggestions?: string[];\n  placeholder?: string;\n  /** When false, only suggestions can be added — typed text is ignored. */\n  allowFreeText?: boolean;\n  className?: string;\n}\n\nexport function TagInput({\n  value,\n  onChange,\n  suggestions = [],\n  placeholder = \"add a tag…\",\n  allowFreeText = true,\n  className,\n}: TagInputProps) {\n  const [draft, setDraft] = React.useState(\"\");\n  const inputRef = React.useRef<HTMLInputElement>(null);\n\n  const addTag = (raw: string) => {\n    const tag = raw.trim();\n    if (!tag) return;\n    if (value.includes(tag)) return;\n    onChange([...value, tag]);\n  };\n\n  const removeTag = (tag: string) => {\n    onChange(value.filter((t) => t !== tag));\n  };\n\n  const commitDraft = () => {\n    if (!allowFreeText) return;\n    if (draft.trim()) addTag(draft);\n    setDraft(\"\");\n  };\n\n  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {\n    if (e.key === \"Enter\" || e.key === \",\") {\n      e.preventDefault();\n      commitDraft();\n    } else if (e.key === \"Backspace\" && draft === \"\") {\n      const last = value[value.length - 1];\n      if (last !== undefined) {\n        e.preventDefault();\n        removeTag(last);\n      }\n    }\n  };\n\n  const remaining = suggestions.filter((t) => !value.includes(t));\n\n  return (\n    <div className={cn(\"flex flex-col gap-2\", className)}>\n      <div\n        onClick={() => inputRef.current?.focus()}\n        className={cn(\n          \"flex flex-wrap items-center gap-1.5 bg-transparent border border-white/20 px-2 py-1.5\",\n          \"text-sm text-white focus-within:border-white/50\",\n        )}\n      >\n        {value.map((tag) => (\n          <Badge key={tag} variant=\"outline\" className=\"gap-1\">\n            {tag}\n            <button\n              type=\"button\"\n              aria-label={`remove ${tag}`}\n              onClick={(e) => {\n                e.stopPropagation();\n                removeTag(tag);\n              }}\n              className=\"text-white/40 hover:text-white transition-colors\"\n            >\n              ×\n            </button>\n          </Badge>\n        ))}\n        <input\n          ref={inputRef}\n          value={draft}\n          onChange={(e) => setDraft(e.target.value)}\n          onKeyDown={handleKeyDown}\n          onBlur={commitDraft}\n          placeholder={value.length === 0 ? placeholder : \"\"}\n          className={cn(\n            \"flex-1 min-w-[6rem] bg-transparent px-1 py-0.5 text-sm text-white\",\n            \"placeholder:text-white/30 focus:outline-none\",\n          )}\n        />\n      </div>\n      {remaining.length > 0 && (\n        <div className=\"flex flex-wrap gap-1\">\n          {remaining.map((tag) => (\n            <Badge key={tag} variant=\"ghost\" onClick={() => addTag(tag)}>\n              + {tag}\n            </Badge>\n          ))}\n        </div>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "tag-input.tsx"
+    }
+  ]
+}

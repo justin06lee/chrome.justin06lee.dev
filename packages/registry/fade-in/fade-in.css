@@ -1,0 +1,28 @@
+/* Mount fade-in. Opacity 0 -> 1 and translate(--fade-x, --fade-y) -> 0.
+   Offsets are passed as custom properties so a single keyframe covers any
+   direction. animation-delay / animation-duration come from inline style. */
+@keyframes chrome-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--fade-x, 0), var(--fade-y, -10px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+.chrome-fade-in {
+  animation-name: chrome-fade-in;
+  animation-duration: 0.4s;
+  animation-delay: 0s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chrome-fade-in {
+    animation: none;
+  }
+}
