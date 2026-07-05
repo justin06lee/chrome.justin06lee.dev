@@ -23,6 +23,16 @@
     ]
   },
   {
+    "name": "article-list",
+    "type": "registry:ui",
+    "description": "searchable, tag-filterable grid of article cards. each card defers its animated gif/webp banner — showing a frozen, grayscale first frame (rendered to a still png via canvas) until hover, then swapping to the animated original in full color. dark-only; plain <a>/<img> so it stays framework-agnostic.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "badge"
+    ]
+  },
+  {
     "name": "asset-sidebar",
     "type": "registry:ui",
     "description": "scrollable image/asset sidebar. drag a row into a textarea or click insert; optional drop zone for uploads.",
@@ -36,6 +46,17 @@
     "type": "registry:ui",
     "description": "small chip. static label by default; pass onClick to make it a toggle/filter chip, with active swapping to the solid look.",
     "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "breadcrumb",
+    "type": "registry:ui",
+    "description": "presentational breadcrumb trail from caller-supplied items; the last crumb renders as the current page (muted, no link). plain <a> links, dark-only. ships a crumbsFromPath helper that splits a pathname into crumbs (decode + dash→space).",
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]
@@ -58,6 +79,19 @@
     "dependencies": [],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "calendar-nav",
+    "type": "registry:ui",
+    "description": "period-navigation header for the calendar / heatmap / timeline views: a day/month/year switcher plus prev / today / next controls. fully controlled — view and navigation are props/callbacks, no router coupling. dark-only.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils",
+      "segmented",
+      "button"
     ]
   },
   {
@@ -146,6 +180,28 @@
     "registryDependencies": []
   },
   {
+    "name": "count-up",
+    "type": "registry:ui",
+    "description": "animated number that tweens to its target with an easeout curve. dependency-free requestanimationframe, respects prefers-reduced-motion.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "desk",
+    "type": "registry:ui",
+    "description": "the full markdown workbench: a toolbar (edit/preview/split + format buttons + actions), an image sidebar, a split text editor with a two-way synced live preview, and floating drawing windows. composes the editor, asset-sidebar, editor-toolbar, and drawing-window components. bring your own markdown renderer (e.g. prose). dark-only; give the root a height. backend ops are callbacks.",
+    "dependencies": [],
+    "registryDependencies": [
+      "editor",
+      "asset-sidebar",
+      "editor-toolbar",
+      "drawing-window",
+      "utils"
+    ]
+  },
+  {
     "name": "dialog",
     "type": "registry:ui",
     "description": "promise-based confirm and alert dialogs.",
@@ -160,6 +216,15 @@
     "registryDependencies": []
   },
   {
+    "name": "drawing-window",
+    "type": "registry:ui",
+    "description": "a floating, draggable and resizable paint window: brush/eraser, color swatches + custom color, brush sizes, undo/redo/clear, zoom + space/middle-drag pan, and canvas-size presets. dark-only. draws directly on a black canvas by default, or set darkMapping to draw in light colors that are remapped to a dark variant (and a saved dark png). save runs onSave with the png(s), or downloads.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "editor",
     "type": "registry:ui",
     "description": "split-pane markdown editor with a live preview that scrolls and highlights in sync, both ways: select text and a button pushes it to the preview; click a block in the preview and the editor scrolls to it and lays a gray streak over the matching lines. bring your own markdown renderer (e.g. prose). dark-only.",
@@ -169,12 +234,56 @@
     ]
   },
   {
+    "name": "editor-toolbar",
+    "type": "registry:ui",
+    "description": "the bar above a markdown editor: an optional edit/preview/split toggle, a right-hand action cluster, and a row of markdown format buttons (h2/bold/list/code/link/math). with enableDrawing it also owns the floating drawing windows — a 'new drawing' button opens numbered windows (drawing #1, #2, …) you can stack, drag, and bring to front, with a one-at-a-time save lock. dark-only.",
+    "dependencies": [],
+    "registryDependencies": [
+      "drawing-window",
+      "utils"
+    ]
+  },
+  {
+    "name": "fade-in",
+    "type": "registry:ui",
+    "description": "fade + translate a node in on mount. pure css keyframe with per-instance delay/offset; stagger a list via the staggerDelay helper. honors prefers-reduced-motion.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "gallery",
+    "type": "registry:ui",
+    "description": "searchable, filterable, sortable project card grid. a sort menu, tag filter chips, and a search input drive a responsive grid of cards — each with a pinned marker, tech chips, and repo / live links. composes the card, badge, and menu components. data comes in via the items prop as GalleryItem[]: { id, title, link?, description, year, tech[], repo?, live?, notes?, pinned? }. dark-only.",
+    "dependencies": [
+      "lucide-react",
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils",
+      "card",
+      "badge",
+      "menu"
+    ]
+  },
+  {
     "name": "heatmap",
     "type": "registry:ui",
     "description": "year activity grid — 12 mini month grids of day cells tinted by value (contribution-graph style), with a less→more legend. generalized from the justin06lee.dev year view.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "image-cropper",
+    "type": "registry:ui",
+    "description": "drag-to-reposition + scroll/slider-to-zoom image cropper. drag inside the frame nudges x/y (clamped -100..100), the wheel and range sliders drive zoom; emits { url, scale, x, y }. dark only.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "range"
     ]
   },
   {
@@ -196,6 +305,17 @@
     ]
   },
   {
+    "name": "intro",
+    "type": "registry:ui",
+    "description": "a full-screen timed multi-step intro/splash overlay: motion staggered enter/exit between steps, auto-advance, an optional skip button, and an optional localStorage gate so it plays only once. dark-only; pass steps as react nodes.",
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "login-form",
     "type": "registry:ui",
     "description": "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook.",
@@ -203,6 +323,18 @@
     "registryDependencies": [
       "utils",
       "input"
+    ]
+  },
+  {
+    "name": "manager-table",
+    "type": "registry:ui",
+    "description": "an admin table of rows you can inline-rename, recolor via a swatch picker, archive, and delete with a confirm dialog. every mutation is a callback — bring your own state. composes inline-edit, color-swatch, and dialog. archived rows render muted. dark-only.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "inline-edit",
+      "color-swatch",
+      "dialog"
     ]
   },
   {
@@ -224,6 +356,15 @@
       "lucide-react",
       "motion"
     ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "now-playing-bar",
+    "type": "registry:ui",
+    "description": "sticky bottom bar for a currently-running activity: a live elapsed timer that ticks every second, a left accent color/dot, and a right-side action slot. all data is prop/callback driven — no backend coupling. omit startedAt for an idle state. dark-only.",
+    "dependencies": [],
     "registryDependencies": [
       "utils"
     ]
@@ -324,6 +465,15 @@
     ]
   },
   {
+    "name": "sprite-scrubber",
+    "type": "registry:ui",
+    "description": "scrub through a sprite-sheet grid by dragging the pointer across it. maps pointer x (with edge dead zones) to a frame index and shows it via backgroundPosition. dark-only; pointer + touch.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "stack",
     "type": "registry:ui",
     "description": "stacked paper card with hovered fan-out spring animation.",
@@ -337,6 +487,16 @@
     "dependencies": [],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "tag-input",
+    "type": "registry:ui",
+    "description": "chip/token input. type and press enter or comma to add a tag, backspace on an empty field removes the last, and click a suggestion chip to append it. dedupes and trims. dark-only.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "badge"
     ]
   },
   {

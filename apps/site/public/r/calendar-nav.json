@@ -1,0 +1,22 @@
+{
+  "name": "calendar-nav",
+  "type": "registry:ui",
+  "description": "period-navigation header for the calendar / heatmap / timeline views: a day/month/year switcher plus prev / today / next controls. fully controlled — view and navigation are props/callbacks, no router coupling. dark-only.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils",
+    "segmented",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "calendar-nav.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\nimport { ChevronLeft, ChevronRight } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\nimport { Segmented } from \"@/components/ui/segmented\";\nimport { Button } from \"@/components/ui/button\";\n\nexport type CalendarView = \"day\" | \"month\" | \"year\";\n\nexport type CalendarNavProps = {\n  /** The current period label, e.g. \"June 2026\". */\n  label: ReactNode;\n  /** Controlled active view. */\n  view?: CalendarView;\n  /** Views to offer in the switcher. Hidden when fewer than 2. */\n  views?: CalendarView[];\n  onViewChange?: (view: CalendarView) => void;\n  onPrev?: () => void;\n  onNext?: () => void;\n  onToday?: () => void;\n  /** Label for the \"jump to current period\" button. */\n  todayLabel?: ReactNode;\n  className?: string;\n};\n\n/**\n * Period-navigation header that pairs with the calendar / heatmap / timeline\n * views: a day/month/year switcher on the left, prev / today / next controls\n * on the right. Fully controlled — view + navigation are props/callbacks, no\n * router coupling. Generalized from the justin06lee.dev CalendarShell.\n */\nexport function CalendarNav({\n  label,\n  view,\n  views = [\"day\", \"month\", \"year\"],\n  onViewChange,\n  onPrev,\n  onNext,\n  onToday,\n  todayLabel = \"today\",\n  className,\n}: CalendarNavProps) {\n  const showSwitcher = views.length >= 2;\n\n  return (\n    <div\n      className={cn(\n        \"flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-3 text-white\",\n        className,\n      )}\n    >\n      {showSwitcher ? (\n        <Segmented<CalendarView>\n          value={view ?? views[0] ?? \"day\"}\n          onChange={(v) => onViewChange?.(v)}\n          options={views.map((v) => ({ value: v, label: v }))}\n          ariaLabel=\"Calendar view\"\n        />\n      ) : (\n        <span />\n      )}\n\n      <div className=\"flex items-center gap-1 text-sm\">\n        <Button\n          variant=\"ghost\"\n          size=\"sm\"\n          icon={ChevronLeft}\n          label=\"Previous\"\n          onClick={onPrev}\n        />\n        <span className=\"px-1 font-mono tabular-nums text-white/80\">\n          {label}\n        </span>\n        <Button\n          variant=\"link\"\n          size=\"sm\"\n          onClick={onToday}\n          className=\"text-white/60 hover:text-white\"\n        >\n          {todayLabel}\n        </Button>\n        <Button\n          variant=\"ghost\"\n          size=\"sm\"\n          icon={ChevronRight}\n          label=\"Next\"\n          onClick={onNext}\n        />\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "calendar-nav.tsx"
+    }
+  ]
+}

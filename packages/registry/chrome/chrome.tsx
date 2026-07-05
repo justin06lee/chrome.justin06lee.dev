@@ -29,10 +29,14 @@ const CHROME_STYLE: React.CSSProperties = {
   WebkitBackgroundClip: "text",
   backgroundClip: "text",
   color: "transparent",
+  // A sharp bevel (blur 0, cheap) plus ONE small-radius glow. Big-radius
+  // drop-shadows (the old 60px + 120px blurs) get re-rasterized on every repaint,
+  // so when Chrome wraps animating content — e.g. a <Donut isolate={false}> that
+  // rewrites its text each frame — they re-blur ~60×/sec and pin a core. A 24px
+  // glow keeps the halo while costing a fraction to repaint.
   filter:
     "drop-shadow(0 2px 0 rgba(255,255,255,0.18)) " +
-    "drop-shadow(0 0 60px rgba(180,200,255,0.25)) " +
-    "drop-shadow(0 0 120px rgba(255,200,230,0.15))",
+    "drop-shadow(0 0 24px rgba(198,206,255,0.22))",
   animation: "chrome-shine 5s cubic-bezier(.4,0,.6,1) infinite",
 };
 
@@ -45,7 +49,10 @@ const KEYFRAMES = `@keyframes chrome-shine {
   0%   { background-position: -50% 0, 0 0, 0 0; }
   100% { background-position: 250% 0, 0 0, 0 0; }
 }
-[data-chrome] * { color: transparent !important; }`;
+[data-chrome] * { color: transparent !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-chrome] { animation: none !important; background-position: 50% 0, 0 0, 0 0 !important; }
+}`;
 
 export interface ChromeProps extends React.HTMLAttributes<HTMLElement> {
   as?: React.ElementType;
