@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 type Example = {
   slug: string;
@@ -41,7 +42,13 @@ export default function ExamplesIndex() {
                 <div className="text-[12px] text-white/55 mt-0.5">{ex.tagline}</div>
               </div>
               <div className="font-mono text-[11px] text-white/40 shrink-0">
-                {ex.status === "live" ? "view →" : "soon"}
+                {ex.status === "live" ? (
+                  <span className="flex items-center gap-1">
+                    view <ArrowRight size={11} aria-hidden />
+                  </span>
+                ) : (
+                  "soon"
+                )}
               </div>
             </Link>
           ))}

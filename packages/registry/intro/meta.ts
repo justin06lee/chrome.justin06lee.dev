@@ -4,7 +4,7 @@ export default defineComponent({
   name: "intro",
   type: "registry:ui",
   description:
-    "a full-screen timed multi-step intro/splash overlay: motion staggered enter/exit between steps, auto-advance, an optional skip button, and an optional localStorage gate so it plays only once. dark-only; pass steps as react nodes.",
+    "full-screen timed multi-step intro overlay with staggered enter/exit, auto-advance, optional skip, and a play-once localStorage gate.",
   dependencies: ["motion"],
   registryDependencies: ["utils"],
   files: [{ source: "intro.tsx", target: "intro.tsx" }],

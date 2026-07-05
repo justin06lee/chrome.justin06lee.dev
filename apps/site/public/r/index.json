@@ -25,7 +25,7 @@
   {
     "name": "article-list",
     "type": "registry:ui",
-    "description": "searchable, tag-filterable grid of article cards. each card defers its animated gif/webp banner — showing a frozen, grayscale first frame (rendered to a still png via canvas) until hover, then swapping to the animated original in full color. dark-only; plain <a>/<img> so it stays framework-agnostic.",
+    "description": "searchable, tag-filterable grid of article cards. animated banners stay frozen in grayscale until hover, then play in full color.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
@@ -53,7 +53,7 @@
   {
     "name": "breadcrumb",
     "type": "registry:ui",
-    "description": "presentational breadcrumb trail from caller-supplied items; the last crumb renders as the current page (muted, no link). plain <a> links, dark-only. ships a crumbsFromPath helper that splits a pathname into crumbs (decode + dash→space).",
+    "description": "breadcrumb trail from caller-supplied items; the last crumb is the muted current page. ships a crumbsFromPath helper.",
     "dependencies": [
       "lucide-react"
     ],
@@ -64,7 +64,7 @@
   {
     "name": "button",
     "type": "registry:ui",
-    "description": "polymorphic button with five variants. supports icon-only / text-only / icon+text, an optional hover tooltip, and click-to-clipboard. renders as an anchor when given href, a button otherwise.",
+    "description": "polymorphic button with five variants, optional icons, hover tooltip, and click-to-clipboard. renders as an anchor when given href.",
     "dependencies": [
       "lucide-react"
     ],
@@ -75,7 +75,7 @@
   {
     "name": "calendar",
     "type": "registry:ui",
-    "description": "month date grid — selectable days, today ring, prev/next header, Sunday-aligned. pass renderDay to layer dots or counts onto cells. generalized from the justin06lee.dev calendar.",
+    "description": "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -84,7 +84,7 @@
   {
     "name": "calendar-nav",
     "type": "registry:ui",
-    "description": "period-navigation header for the calendar / heatmap / timeline views: a day/month/year switcher plus prev / today / next controls. fully controlled — view and navigation are props/callbacks, no router coupling. dark-only.",
+    "description": "period-navigation header: a day/month/year switcher plus prev / today / next controls. fully controlled, no router coupling.",
     "dependencies": [
       "lucide-react"
     ],
@@ -134,7 +134,7 @@
   {
     "name": "code-block",
     "type": "registry:ui",
-    "description": "syntax-highlighted code box with a built-in copy button. monochrome prism theme tuned for a black background; common languages bundled (tsx, ts, jsx, js, bash, json, css, markup).",
+    "description": "syntax-highlighted code box with a built-in copy button. monochrome prism theme tuned for a black background.",
     "dependencies": [
       "prism-react-renderer"
     ],
@@ -145,7 +145,7 @@
   {
     "name": "collapsible-prose",
     "type": "registry:ui",
-    "description": "long-form reading layout that splits markdown into collapsible <details> sections on each ## heading, each with a rotating chevron. content before the first ## renders as a plain intro. bring your own renderer via renderMarkdown — typically the prose component. dark-only.",
+    "description": "splits markdown into collapsible sections on each ## heading. bring your own renderer via renderMarkdown — typically prose.",
     "dependencies": [
       "lucide-react"
     ],
@@ -191,7 +191,7 @@
   {
     "name": "desk",
     "type": "registry:ui",
-    "description": "the full markdown workbench: a toolbar (edit/preview/split + format buttons + actions), an image sidebar, a split text editor with a two-way synced live preview, and floating drawing windows. composes the editor, asset-sidebar, editor-toolbar, and drawing-window components. bring your own markdown renderer (e.g. prose). dark-only; viewport-height by default with sm→2xl size presets. backend ops are callbacks.",
+    "description": "the full markdown workbench: toolbar, image sidebar, split editor with a two-way synced preview, and floating drawing windows. bring your own markdown renderer; backend ops are callbacks.",
     "dependencies": [],
     "registryDependencies": [
       "editor",
@@ -218,7 +218,7 @@
   {
     "name": "drawing-window",
     "type": "registry:ui",
-    "description": "a floating, draggable and resizable paint window: brush/eraser, color swatches + custom color, brush sizes, undo/redo/clear, zoom + space/middle-drag pan, and canvas-size presets. dark-only. draws directly on a black canvas by default, or set darkMapping to draw in light colors that are remapped to a dark variant (and a saved dark png). save runs onSave with the png(s), or downloads.",
+    "description": "floating, draggable, resizable paint window: brush/eraser, colors, undo/redo, zoom + pan, and canvas-size presets. save emits png(s) via onSave, or downloads.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -227,8 +227,10 @@
   {
     "name": "editor",
     "type": "registry:ui",
-    "description": "split-pane markdown editor with a live preview that scrolls and highlights in sync, both ways: select text and a button pushes it to the preview; click a block in the preview and the editor scrolls to it and lays a gray streak over the matching lines. bring your own markdown renderer (e.g. prose). dark-only.",
-    "dependencies": [],
+    "description": "split-pane markdown editor whose live preview scrolls and highlights in sync, both ways. bring your own markdown renderer (e.g. prose).",
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]
@@ -236,7 +238,7 @@
   {
     "name": "editor-toolbar",
     "type": "registry:ui",
-    "description": "the bar above a markdown editor: an optional edit/preview/split toggle, a right-hand action cluster, and a row of markdown format buttons (h2/bold/list/code/link/math). with enableDrawing it also owns the floating drawing windows — a 'new drawing' button opens numbered windows (drawing #1, #2, …) you can stack, drag, and bring to front, with a one-at-a-time save lock. dark-only.",
+    "description": "the bar above a markdown editor: edit/preview/split toggle, format buttons, and an action cluster. with enableDrawing it owns the floating numbered drawing windows.",
     "dependencies": [],
     "registryDependencies": [
       "drawing-window",
@@ -255,7 +257,7 @@
   {
     "name": "gallery",
     "type": "registry:ui",
-    "description": "searchable, filterable, sortable project card grid. a sort menu, tag filter chips, and a search input drive a responsive grid of cards — each with a pinned marker, tech chips, and repo / live links. composes the card, badge, and menu components. data comes in via the items prop as GalleryItem[]: { id, title, link?, description, year, tech[], repo?, live?, notes?, pinned? }. dark-only.",
+    "description": "searchable, filterable, sortable project card grid with pinned markers, tech chips, and repo/live links. composes card, badge, and menu.",
     "dependencies": [
       "lucide-react",
       "motion"
@@ -270,7 +272,7 @@
   {
     "name": "heatmap",
     "type": "registry:ui",
-    "description": "year activity grid — 12 mini month grids of day cells tinted by value (contribution-graph style), with a less→more legend. generalized from the justin06lee.dev year view.",
+    "description": "year activity grid — 12 mini month grids of day cells tinted by value (contribution-graph style), with a less-to-more legend. generalized from the justin06lee.dev year view.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -279,7 +281,7 @@
   {
     "name": "image-cropper",
     "type": "registry:ui",
-    "description": "drag-to-reposition + scroll/slider-to-zoom image cropper. drag inside the frame nudges x/y (clamped -100..100), the wheel and range sliders drive zoom; emits { url, scale, x, y }. dark only.",
+    "description": "drag-to-reposition, scroll/slider-to-zoom image cropper. emits { url, scale, x, y }.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
@@ -307,7 +309,7 @@
   {
     "name": "intro",
     "type": "registry:ui",
-    "description": "a full-screen timed multi-step intro/splash overlay: motion staggered enter/exit between steps, auto-advance, an optional skip button, and an optional localStorage gate so it plays only once. dark-only; pass steps as react nodes.",
+    "description": "full-screen timed multi-step intro overlay with staggered enter/exit, auto-advance, optional skip, and a play-once localStorage gate.",
     "dependencies": [
       "motion"
     ],
@@ -328,7 +330,7 @@
   {
     "name": "manager-table",
     "type": "registry:ui",
-    "description": "an admin table of rows you can inline-rename, recolor via a swatch picker, archive, and delete with a confirm dialog. every mutation is a callback — bring your own state. composes inline-edit, color-swatch, and dialog. archived rows render muted. dark-only.",
+    "description": "admin table with inline rename, swatch recolor, archive, and confirmed delete. every mutation is a callback — bring your own state.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
@@ -363,7 +365,7 @@
   {
     "name": "now-playing-bar",
     "type": "registry:ui",
-    "description": "sticky bottom bar for a currently-running activity: a live elapsed timer that ticks every second, a left accent color/dot, and a right-side action slot. all data is prop/callback driven — no backend coupling. omit startedAt for an idle state. dark-only.",
+    "description": "sticky bottom bar for a running activity: live elapsed timer, accent dot, and an action slot. omit startedAt for an idle state.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -447,7 +449,7 @@
   {
     "name": "showcase",
     "type": "registry:ui",
-    "description": "framed preview container with a dotted background. holds component demos with optional label, source caption, and note. exports a Row helper for explicit row breaks; bare children get auto-wrapped into one centered row.",
+    "description": "framed preview container with a dotted background, optional label, caption, and note. exports a Row helper for explicit row breaks.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -456,7 +458,7 @@
   {
     "name": "socials",
     "type": "registry:ui",
-    "description": "row of social links; pass a links map and only the platforms you supply render. white slide-up tooltip on hover/focus; the email entry copies the address to the clipboard (falls back to mailto). framework-agnostic plain anchors.",
+    "description": "row of social links from a links map — only supplied platforms render. tooltip on hover; the email entry copies to clipboard.",
     "dependencies": [
       "lucide-react"
     ],
@@ -467,7 +469,7 @@
   {
     "name": "sprite-scrubber",
     "type": "registry:ui",
-    "description": "scrub through a sprite-sheet grid by dragging the pointer across it. maps pointer x (with edge dead zones) to a frame index and shows it via backgroundPosition. dark-only; pointer + touch.",
+    "description": "scrub through a sprite-sheet grid by dragging across it — pointer x maps to a frame index.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -492,7 +494,7 @@
   {
     "name": "tag-input",
     "type": "registry:ui",
-    "description": "chip/token input. type and press enter or comma to add a tag, backspace on an empty field removes the last, and click a suggestion chip to append it. dedupes and trims. dark-only.",
+    "description": "chip input — enter or comma adds a tag, backspace removes the last, suggestions append on click. dedupes and trims.",
     "dependencies": [],
     "registryDependencies": [
       "utils",

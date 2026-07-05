@@ -8,8 +8,8 @@ type Sort = "newest" | "oldest" | "az" | "za";
 const LABELS: Record<Sort, string> = {
   newest: "Newest",
   oldest: "Oldest",
-  az: "A → Z",
-  za: "Z → A",
+  az: "A–Z",
+  za: "Z–A",
 };
 
 export default function MenuDemo() {

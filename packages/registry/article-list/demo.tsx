@@ -3,7 +3,7 @@
 import { ArticleList, type ArticlePreview } from "./article-list";
 
 // Inline SVG data-uri banners so the demo is self-contained. With a real
-// animated GIF / WebP banner you'd see the defer-until-hover + grayscale→color
+// animated GIF / WebP banner you'd see the defer-until-hover + grayscale-to-color
 // swap; static stills here just show the frozen-frame treatment.
 function banner(label: string, from: string, to: string): string {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300">

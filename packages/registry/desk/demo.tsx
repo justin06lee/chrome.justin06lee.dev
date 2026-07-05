@@ -12,7 +12,7 @@ const swatch = (label: string, bg: string) =>
 
 const INITIAL = `# the desk
 
-a full markdown workbench. select text on the left and a **→ preview** button
+a full markdown workbench. select text on the left and a **preview** button
 appears; click a block on the right and the editor scrolls to it.
 
 ## images

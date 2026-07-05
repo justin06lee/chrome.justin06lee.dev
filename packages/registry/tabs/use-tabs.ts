@@ -12,7 +12,7 @@ export type UseTabsOptions<T extends string> = {
   value: T;
   onValueChange: (value: T) => void;
   items: TabItem<T>[];
-  /** Loop focus from last → first (and back). Defaults to true. */
+  /** Loop focus from last back to first (and vice versa). Defaults to true. */
   loop?: boolean;
 };
 

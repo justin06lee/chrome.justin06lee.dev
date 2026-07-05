@@ -4,7 +4,7 @@ export default defineComponent({
   name: "drawing-window",
   type: "registry:ui",
   description:
-    "a floating, draggable and resizable paint window: brush/eraser, color swatches + custom color, brush sizes, undo/redo/clear, zoom + space/middle-drag pan, and canvas-size presets. dark-only. draws directly on a black canvas by default, or set darkMapping to draw in light colors that are remapped to a dark variant (and a saved dark png). save runs onSave with the png(s), or downloads.",
+    "floating, draggable, resizable paint window: brush/eraser, colors, undo/redo, zoom + pan, and canvas-size presets. save emits png(s) via onSave, or downloads.",
   registryDependencies: ["utils"],
   files: [{ source: "drawing-window.tsx", target: "drawing-window.tsx" }],
   props: [

@@ -6,7 +6,7 @@ import { Prose } from "../prose/prose";
 
 const INITIAL = `# markdown editor
 
-select any text on the left and a **→ preview** button appears — click it and the
+select any text on the left and a **preview** button appears — click it and the
 matching block on the right scrolls into view and both sides highlight.
 
 ## the other direction

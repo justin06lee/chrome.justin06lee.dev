@@ -1,3 +1,6 @@
+"use client";
+
+import { ArrowRight } from "lucide-react";
 import { Nav } from "./_components/nav";
 import { Chrome } from "../../../packages/registry/chrome/chrome";
 import { Button } from "../../../packages/registry/button/button";
@@ -35,8 +38,8 @@ function Hero() {
         </div>
       </div>
       <div className="flex gap-2.5">
-        <Button href="/components" variant="solid">
-          browse components →
+        <Button href="/components" variant="solid" iconRight={ArrowRight}>
+          browse components
         </Button>
         <Button
           href="https://github.com/justin06lee/chrome.justin06lee.dev"

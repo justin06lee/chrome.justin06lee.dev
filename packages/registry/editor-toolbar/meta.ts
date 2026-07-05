@@ -4,7 +4,7 @@ export default defineComponent({
   name: "editor-toolbar",
   type: "registry:ui",
   description:
-    "the bar above a markdown editor: an optional edit/preview/split toggle, a right-hand action cluster, and a row of markdown format buttons (h2/bold/list/code/link/math). with enableDrawing it also owns the floating drawing windows — a 'new drawing' button opens numbered windows (drawing #1, #2, …) you can stack, drag, and bring to front, with a one-at-a-time save lock. dark-only.",
+    "the bar above a markdown editor: edit/preview/split toggle, format buttons, and an action cluster. with enableDrawing it owns the floating numbered drawing windows.",
   registryDependencies: ["drawing-window", "utils"],
   files: [{ source: "editor-toolbar.tsx", target: "editor-toolbar.tsx" }],
   props: [
@@ -20,7 +20,7 @@ export default defineComponent({
     { name: "enableDrawing", type: "boolean", default: "false", description: "show 'new drawing' and own the numbered drawing windows." },
     { name: "onSaveDrawing", type: "(result: { dataUrl: string; darkDataUrl?: string }) => void | Promise<void>", description: "fired when a drawing window saves; it then closes." },
     { name: "drawingSubtitle", type: "string", description: "subtitle under each window's 'drawing #N' title." },
-    { name: "drawingDarkMapping", type: "boolean", description: "use the drawing window's light→dark mapping mode." },
+    { name: "drawingDarkMapping", type: "boolean", description: "use the drawing window's light-to-dark mapping mode." },
     { name: "className", type: "string" },
   ],
 });

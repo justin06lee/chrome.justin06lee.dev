@@ -4,7 +4,7 @@ export default defineComponent({
   name: "code-block",
   type: "registry:ui",
   description:
-    "syntax-highlighted code box with a built-in copy button. monochrome prism theme tuned for a black background; common languages bundled (tsx, ts, jsx, js, bash, json, css, markup).",
+    "syntax-highlighted code box with a built-in copy button. monochrome prism theme tuned for a black background.",
   dependencies: ["prism-react-renderer"],
   registryDependencies: ["utils"],
   files: [{ source: "code-block.tsx", target: "code-block.tsx" }],

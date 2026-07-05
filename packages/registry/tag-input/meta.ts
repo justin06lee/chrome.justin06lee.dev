@@ -4,7 +4,7 @@ export default defineComponent({
   name: "tag-input",
   type: "registry:ui",
   description:
-    "chip/token input. type and press enter or comma to add a tag, backspace on an empty field removes the last, and click a suggestion chip to append it. dedupes and trims. dark-only.",
+    "chip input — enter or comma adds a tag, backspace removes the last, suggestions append on click. dedupes and trims.",
   dependencies: [],
   registryDependencies: ["utils", "badge"],
   files: [{ source: "tag-input.tsx", target: "tag-input.tsx" }],

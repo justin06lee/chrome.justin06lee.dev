@@ -4,7 +4,7 @@ export default defineComponent({
   name: "button",
   type: "registry:ui",
   description:
-    "polymorphic button with five variants. supports icon-only / text-only / icon+text, an optional hover tooltip, and click-to-clipboard. renders as an anchor when given href, a button otherwise.",
+    "polymorphic button with five variants, optional icons, hover tooltip, and click-to-clipboard. renders as an anchor when given href.",
   dependencies: ["lucide-react"],
   registryDependencies: ["utils"],
   files: [{ source: "button.tsx", target: "button.tsx" }],

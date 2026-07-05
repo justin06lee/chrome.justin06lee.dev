@@ -4,7 +4,7 @@ export default defineComponent({
   name: "calendar",
   type: "registry:ui",
   description:
-    "month date grid — selectable days, today ring, prev/next header, Sunday-aligned. pass renderDay to layer dots or counts onto cells. generalized from the justin06lee.dev calendar.",
+    "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells.",
   registryDependencies: ["utils"],
   files: [{ source: "calendar.tsx", target: "calendar.tsx" }],
   props: [

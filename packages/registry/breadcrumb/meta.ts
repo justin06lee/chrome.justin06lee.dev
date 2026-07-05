@@ -4,7 +4,7 @@ export default defineComponent({
   name: "breadcrumb",
   type: "registry:ui",
   description:
-    "presentational breadcrumb trail from caller-supplied items; the last crumb renders as the current page (muted, no link). plain <a> links, dark-only. ships a crumbsFromPath helper that splits a pathname into crumbs (decode + dash→space).",
+    "breadcrumb trail from caller-supplied items; the last crumb is the muted current page. ships a crumbsFromPath helper.",
   dependencies: ["lucide-react"],
   registryDependencies: ["utils"],
   files: [{ source: "breadcrumb.tsx", target: "breadcrumb.tsx" }],

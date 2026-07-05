@@ -73,14 +73,14 @@ export function Breadcrumb({
 }
 
 export type CrumbsFromPathOptions = {
-  /** Map a raw segment to a display label. Defaults to decode + dash→space. */
+  /** Map a raw segment to a display label. Defaults to decode + dashes to spaces. */
   labels?: (segment: string, index: number) => ReactNode;
   /** Path prefix stripped before splitting, e.g. "/desk". Becomes the first href. */
   basePath?: string;
 };
 
 /**
- * Split a pathname into a Crumb[] — mirrors the OperatorHeader segment→label logic.
+ * Split a pathname into a Crumb[] — mirrors the OperatorHeader segment-to-label logic.
  * Each crumb's href is the cumulative path; the final segment is still given an href
  * (the Breadcrumb component renders the last item as current regardless).
  */

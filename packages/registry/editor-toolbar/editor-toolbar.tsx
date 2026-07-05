@@ -67,7 +67,7 @@ export interface EditorToolbarProps {
   onSaveDrawing?: (result: DrawingSaveResult) => void | Promise<void>;
   /** Subtitle shown under each drawing window's "drawing #N" title. */
   drawingSubtitle?: string;
-  /** Use the drawing window's light→dark mapping mode. */
+  /** Use the drawing window's light-to-dark mapping mode. */
   drawingDarkMapping?: boolean;
   className?: string;
 }

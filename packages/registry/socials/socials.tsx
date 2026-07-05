@@ -38,7 +38,7 @@ export type SocialKey =
 export type SocialLinks = Partial<Record<SocialKey, string>>;
 
 export type SocialsProps = {
-  /** Map of platform → url (or bare email address for `email`). Empty entries are skipped. */
+  /** Map of platform to url (or bare email address for `email`). Empty entries are skipped. */
   links: SocialLinks;
   size?: "sm" | "md" | "lg";
   gap?: "tight" | "normal" | "loose";

@@ -4,7 +4,7 @@ export default defineComponent({
   name: "now-playing-bar",
   type: "registry:ui",
   description:
-    "sticky bottom bar for a currently-running activity: a live elapsed timer that ticks every second, a left accent color/dot, and a right-side action slot. all data is prop/callback driven — no backend coupling. omit startedAt for an idle state. dark-only.",
+    "sticky bottom bar for a running activity: live elapsed timer, accent dot, and an action slot. omit startedAt for an idle state.",
   dependencies: [],
   registryDependencies: ["utils"],
   files: [{ source: "now-playing-bar.tsx", target: "now-playing-bar.tsx" }],
