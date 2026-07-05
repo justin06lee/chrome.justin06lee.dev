@@ -191,7 +191,7 @@
   {
     "name": "desk",
     "type": "registry:ui",
-    "description": "the full markdown workbench: a toolbar (edit/preview/split + format buttons + actions), an image sidebar, a split text editor with a two-way synced live preview, and floating drawing windows. composes the editor, asset-sidebar, editor-toolbar, and drawing-window components. bring your own markdown renderer (e.g. prose). dark-only; give the root a height. backend ops are callbacks.",
+    "description": "the full markdown workbench: a toolbar (edit/preview/split + format buttons + actions), an image sidebar, a split text editor with a two-way synced live preview, and floating drawing windows. composes the editor, asset-sidebar, editor-toolbar, and drawing-window components. bring your own markdown renderer (e.g. prose). dark-only; viewport-height by default with sm→2xl size presets. backend ops are callbacks.",
     "dependencies": [],
     "registryDependencies": [
       "editor",

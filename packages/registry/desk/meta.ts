@@ -4,7 +4,7 @@ export default defineComponent({
   name: "desk",
   type: "registry:ui",
   description:
-    "the full markdown workbench: a toolbar (edit/preview/split + format buttons + actions), an image sidebar, a split text editor with a two-way synced live preview, and floating drawing windows. composes the editor, asset-sidebar, editor-toolbar, and drawing-window components. bring your own markdown renderer (e.g. prose). dark-only; give the root a height. backend ops are callbacks.",
+    "the full markdown workbench: a toolbar (edit/preview/split + format buttons + actions), an image sidebar, a split text editor with a two-way synced live preview, and floating drawing windows. composes the editor, asset-sidebar, editor-toolbar, and drawing-window components. bring your own markdown renderer (e.g. prose). dark-only; viewport-height by default with sm→2xl size presets. backend ops are callbacks.",
   registryDependencies: [
     "editor",
     "asset-sidebar",
@@ -32,6 +32,13 @@ export default defineComponent({
     { name: "onSaveDrawing", type: "(result: { dataUrl: string; darkDataUrl?: string }) => void | Promise<void>" },
     { name: "drawingDarkMapping", type: "boolean", description: "use the drawing window's light→dark mapping mode." },
     { name: "actions", type: "ReactNode", description: "extra toolbar actions before Save." },
-    { name: "className", type: "string", description: "give the root a height." },
+    {
+      name: "size",
+      type: "'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'screen' | 'auto'",
+      default: "'screen'",
+      description:
+        "height preset. 'screen' fills the viewport minus a header allowance (like justin06lee.dev/desk); sm→2xl step from 20rem to 52rem; 'auto' opts out so className owns the height.",
+    },
+    { name: "className", type: "string", description: "extra classes; an h-* class here overrides size." },
   ],
 });

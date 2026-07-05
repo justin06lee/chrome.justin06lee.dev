@@ -45,7 +45,7 @@ export default function DeskDemo() {
         subtitle="guides / the-desk"
         value={md}
         onChange={setMd}
-        className="h-[640px]"
+        size="xl"
         assets={assets}
         onDeleteAsset={(asset) => setAssets((current) => current.filter((a) => a.id !== asset.id))}
         onUploadAssets={(files) =>

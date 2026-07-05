@@ -5,6 +5,26 @@ import { cn } from "@/lib/utils";
 import { EditorPreview } from "@/components/ui/editor-preview";
 import { useLineSync, STREAK_PAD, type UseLineSyncReturn } from "@/hooks/use-line-sync";
 
+/**
+ * Height presets. `screen` matches justin06lee.dev/desk — the pane fills the
+ * viewport minus a header allowance. `auto` opts out so `className` owns the
+ * height. Any preset can still be overridden by an `h-*` class in `className`.
+ */
+export type EditorSize = "sm" | "md" | "lg" | "xl" | "2xl" | "screen" | "auto";
+
+export const EDITOR_SIZE_CLASS: Record<Exclude<EditorSize, "auto">, string> = {
+  sm: "h-80",
+  md: "h-[28rem]",
+  lg: "h-[36rem]",
+  xl: "h-[44rem]",
+  "2xl": "h-[52rem]",
+  screen: "h-[calc(100dvh-10rem)] min-h-[24rem]",
+};
+
+export function editorSizeClass(size: EditorSize): string | undefined {
+  return size === "auto" ? undefined : EDITOR_SIZE_CLASS[size];
+}
+
 export interface EditorTextareaProps {
   /** A `useLineSync(...)` return value, shared with the paired `<EditorPreview>`. */
   sync: UseLineSyncReturn;
@@ -119,14 +139,17 @@ export interface EditorProps {
   label?: ReactNode;
   /** Editor textarea placeholder. */
   placeholder?: string;
-  /** Sizing/extra classes for the root (give it a height). */
+  /** Height preset; defaults to the viewport-filling `screen`. */
+  size?: EditorSize;
+  /** Extra classes for the root; an `h-*` class here overrides `size`. */
   className?: string;
 }
 
 /**
  * Turnkey split-pane markdown editor: `EditorTextarea` beside a
  * `<EditorPreview>`, sharing one `useLineSync` engine so the preview scrolls and
- * highlights in sync both ways. Dark-only. Give the root a height. For a custom
+ * highlights in sync both ways. Dark-only. Sized via the `size` preset
+ * (viewport-filling by default, like justin06lee.dev/desk). For a custom
  * layout, drop down to `useLineSync` + the two pieces directly.
  */
 export function Editor({
@@ -135,12 +158,13 @@ export function Editor({
   renderMarkdown,
   label = "live preview",
   placeholder,
+  size = "screen",
   className,
 }: EditorProps) {
   const sync = useLineSync({ value });
 
   return (
-    <div className={cn("flex min-h-0 flex-col md:flex-row", className)}>
+    <div className={cn("flex min-h-0 flex-col md:flex-row", editorSizeClass(size), className)}>
       <EditorTextarea
         sync={sync}
         value={value}

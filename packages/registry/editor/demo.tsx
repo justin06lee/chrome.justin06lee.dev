@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Editor } from "./editor";
+import { Editor, type EditorSize } from "./editor";
 import { Prose } from "../prose/prose";
 
 const INITIAL = `# markdown editor
@@ -20,16 +20,39 @@ over the matching lines.
 
 - the streak tracks the textarea's own scroll
 - editor and preview share one source of line numbers
+- \`size\` presets: sm · md · lg · xl · 2xl · screen (default, fills the viewport)
 `;
+
+const SIZES: EditorSize[] = ["sm", "md", "lg", "xl", "2xl", "screen"];
 
 export default function EditorDemo() {
   const [md, setMd] = useState(INITIAL);
+  const [size, setSize] = useState<EditorSize>("lg");
   return (
-    <div className="h-[460px] w-full border border-white/10">
+    <div className="w-full">
+      <div className="mb-3 flex items-center gap-1 font-mono text-[11px]">
+        <span className="mr-2 uppercase tracking-[0.18em] text-white/40">size</span>
+        {SIZES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setSize(s)}
+            className={
+              "border px-2 py-1 transition-colors " +
+              (s === size
+                ? "border-white text-white"
+                : "border-white/20 text-white/60 hover:border-white/50")
+            }
+          >
+            {s}
+          </button>
+        ))}
+      </div>
       <Editor
         value={md}
         onChange={setMd}
-        className="h-full"
+        size={size}
+        className="border border-white/10"
         renderMarkdown={(source, { highlightLine }) => (
           <Prose lineSync highlightLine={highlightLine}>
             {source}

@@ -23,6 +23,13 @@ export default defineComponent({
     },
     { name: "label", type: "ReactNode", default: "'live preview'", description: "sticky label over the preview pane." },
     { name: "placeholder", type: "string", description: "editor textarea placeholder." },
-    { name: "className", type: "string", description: "sizing/extra classes for the root (give it a height)." },
+    {
+      name: "size",
+      type: "'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'screen' | 'auto'",
+      default: "'screen'",
+      description:
+        "height preset. 'screen' fills the viewport minus a header allowance (like justin06lee.dev/desk); sm→2xl step from 20rem to 52rem; 'auto' opts out so className owns the height.",
+    },
+    { name: "className", type: "string", description: "extra classes; an h-* class here overrides size." },
   ],
 });
