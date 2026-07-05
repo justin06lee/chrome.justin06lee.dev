@@ -73,7 +73,7 @@ export function ComponentDetail({
       <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3">
         installation
       </div>
-      <div className="flex items-center gap-3 border border-white/10 px-4 py-3 bg-white/[0.02] mb-12">
+      <div className="flex max-w-[720px] items-center gap-3 border border-white/10 px-4 py-3 bg-white/[0.02] mb-12">
         <code className="font-mono text-[13px] flex-1">{installCommand}</code>
         <Button
           variant="link"

@@ -8,7 +8,7 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
       <div className="flex-1 flex pl-10">
         <Sidebar />
         <main className="flex-1 px-12 py-10">
-          <div className="max-w-[720px] mx-auto">{children}</div>
+          <div className="max-w-[1360px] mx-auto w-full">{children}</div>
         </main>
       </div>
     </div>
