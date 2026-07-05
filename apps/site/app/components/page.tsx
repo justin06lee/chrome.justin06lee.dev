@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { REGISTRY } from "../../registry-manifest";
 
 export default function ComponentsIndex() {
@@ -33,7 +34,9 @@ export default function ComponentsIndex() {
                 <div className="text-[12px] text-white/55 mt-0.5">{m.description}</div>
               )}
             </div>
-            <div className="font-mono text-[11px] text-white/40">view →</div>
+            <div className="flex items-center gap-1 font-mono text-[11px] text-white/40">
+              view <ArrowRight size={11} aria-hidden />
+            </div>
           </Link>
         ))}
       </div>

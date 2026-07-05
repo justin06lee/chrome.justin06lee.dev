@@ -1,7 +1,7 @@
 {
   "name": "calendar",
   "type": "registry:ui",
-  "description": "month date grid — selectable days, today ring, prev/next header, Sunday-aligned. pass renderDay to layer dots or counts onto cells. generalized from the justin06lee.dev calendar.",
+  "description": "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells.",
   "dependencies": [],
   "devDependencies": [],
   "registryDependencies": [

@@ -4,7 +4,7 @@ export default defineComponent({
   name: "article-list",
   type: "registry:ui",
   description:
-    "searchable, tag-filterable grid of article cards. each card defers its animated gif/webp banner — showing a frozen, grayscale first frame (rendered to a still png via canvas) until hover, then swapping to the animated original in full color. dark-only; plain <a>/<img> so it stays framework-agnostic.",
+    "searchable, tag-filterable grid of article cards. animated banners stay frozen in grayscale until hover, then play in full color.",
   registryDependencies: ["utils", "badge"],
   files: [{ source: "article-list.tsx", target: "article-list.tsx" }],
   props: [

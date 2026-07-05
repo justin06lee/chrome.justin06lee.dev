@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Copy, Github, ListFilter, Menu as MenuIcon } from "lucide-react";
+import { ArrowRight, Copy, Github, ListFilter, Menu as MenuIcon } from "lucide-react";
+import { FORM_EXAMPLES } from "./_examples-forms";
+import { CONTENT_EXAMPLES } from "./_examples-content";
+import { EDITOR_EXAMPLES } from "./_examples-editor";
 import { Button } from "../../../../../packages/registry/button/button";
 import {
   Accordion,
@@ -185,7 +188,7 @@ function RangeSteppedExample() {
 }
 
 function MenuExample() {
-  const opts = ["Newest", "Oldest", "A → Z", "Z → A"];
+  const opts = ["Newest", "Oldest", "A–Z", "Z–A"];
   const [sel, setSel] = useState("Newest");
   return (
     <Menu
@@ -244,9 +247,66 @@ function StackCard({ children }: { children: ReactNode }) {
   );
 }
 
+
+function DialogPlainTrigger() {
+  const { confirm } = useDialog();
+  return (
+    <Button
+      variant="outline"
+      onClick={() => confirm({ title: "publish article?", message: "it goes live immediately." })}
+    >
+      open dialog
+    </Button>
+  );
+}
+
+function DialogPlainExample() {
+  return (
+    <DialogProvider>
+      <DialogPlainTrigger />
+    </DialogProvider>
+  );
+}
+
+function HeatmapClickExample() {
+  const [day, setDay] = useState<string | null>(null);
+  return (
+    <div className="w-full space-y-2">
+      <Heatmap values={heatmapValues(2026)} year={2026} levels={3} onSelectDay={setDay} />
+      <div className="font-mono text-[11px] text-white/45">{day ? `selected: ${day}` : "click a day"}</div>
+    </div>
+  );
+}
+
+function ComboboxPlainExample() {
+  const [value, setValue] = useState<string | null>(null);
+  return (
+    <div className="w-52">
+      <Combobox
+        value={value}
+        onChange={setValue}
+        placeholder="pick one"
+        options={[
+          { value: "a", label: "alpha" },
+          { value: "b", label: "beta" },
+        ]}
+      />
+    </div>
+  );
+}
+
+const bannerSvg =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="160"><rect width="640" height="160" fill="#1a1a1a"/><text x="320" y="88" font-family="monospace" font-size="18" fill="#555" text-anchor="middle">banner.png</text></svg>',
+  );
+
 // --- the example table -----------------------------------------------------
 
 export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
+  ...FORM_EXAMPLES,
+  ...CONTENT_EXAMPLES,
+  ...EDITOR_EXAMPLES,
   button: [
     {
       label: "Variants",
@@ -272,10 +332,10 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
     },
     {
       label: "As link",
-      code: '<Button href="https://github.com" variant="solid">\n  visit github →\n</Button>',
+      code: '<Button href="https://github.com" variant="solid" iconRight={ArrowRight}>\n  visit github\n</Button>',
       render: (
-        <Button href="https://github.com" variant="solid">
-          visit github →
+        <Button href="https://github.com" variant="solid" iconRight={ArrowRight}>
+          visit github
         </Button>
       ),
     },
@@ -335,6 +395,13 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
         "const { confirm } = useDialog();\n\n" +
         "const ok = await confirm({\n  title: \"delete this?\",\n  danger: true,\n});",
       render: <DialogExample />,
+    },
+    {
+      label: "With message",
+      code:
+        "const ok = await confirm({\n" +
+        '  title: "publish article?",\n  message: "it goes live immediately.",\n});',
+      render: <DialogPlainExample />,
     },
   ],
   donut: [
@@ -418,6 +485,16 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
       code: '<Showcase background="grid">\n  {children}\n</Showcase>',
       render: (
         <Showcase background="grid" className="w-full">
+          <span className="text-sm text-white/60">framed content</span>
+        </Showcase>
+      ),
+    },
+    {
+      label: "Label, source & note",
+      code:
+        '<Showcase label="button" source="button.tsx" note="hover for the tooltip">\n  {children}\n</Showcase>',
+      render: (
+        <Showcase label="button" source="button.tsx" note="hover for the tooltip" className="w-full">
           <span className="text-sm text-white/60">framed content</span>
         </Showcase>
       ),
@@ -616,6 +693,18 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
       code: '<Textarea placeholder="write something…" rows={4} />',
       render: <TextareaExample />,
     },
+    {
+      label: "Rows & background",
+      code: '<Textarea rows={2} background="rgba(255,255,255,0.04)"\n  placeholder="two rows, tinted" />',
+      render: (
+        <Textarea
+          rows={2}
+          background="rgba(255,255,255,0.04)"
+          placeholder="two rows, tinted"
+          className="w-64"
+        />
+      ),
+    },
   ],
   calendar: [
     {
@@ -625,6 +714,23 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
         "const [selected, setSelected] = useState(null);\n\n" +
         "<Calendar\n  month={month}\n  onMonthChange={setMonth}\n  selected={selected}\n  onSelect={setSelected}\n  today={todayISO}\n/>",
       render: <CalendarExample />,
+    },
+    {
+      label: "renderDay dots",
+      code:
+        '<Calendar\n  month="2026-05"\n  today="2026-05-24"\n  renderDay={(date) =>\n' +
+        '    events[date] ? <Dot /> : null\n  }\n/>',
+      render: (
+        <Calendar
+          month="2026-05"
+          today="2026-05-24"
+          renderDay={(date) =>
+            ["2026-05-06", "2026-05-14", "2026-05-24"].includes(date) ? (
+              <span className="mx-auto mt-0.5 block size-1 rounded-full bg-white/70" />
+            ) : null
+          }
+        />
+      ),
     },
   ],
   heatmap: [
@@ -637,6 +743,11 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
           <Heatmap values={heatmapValues(2026)} year={2026} today="2026-05-24" />
         </div>
       ),
+    },
+    {
+      label: "Clickable days",
+      code: "<Heatmap\n  values={byDay}\n  year={2026}\n  levels={3}\n  onSelectDay={(date) => setDay(date)}\n/>",
+      render: <HeatmapClickExample />,
     },
   ],
   timeline: [
@@ -697,6 +808,13 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
         "  onCreate={(q) => addCategory(q)}\n/>",
       render: <ComboboxExample />,
     },
+    {
+      label: "Plain options",
+      code:
+        "<Combobox value={value} onChange={setValue}\n" +
+        '  options={[{ value: "a", label: "alpha" }, { value: "b", label: "beta" }]} />',
+      render: <ComboboxPlainExample />,
+    },
   ],
   article: [
     {
@@ -713,6 +831,19 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
             backHref="#"
           >
             <Prose>{"shadcn-style, own-the-code. the header handles **title, date, tags**; the body is yours."}</Prose>
+          </Article>
+        </div>
+      ),
+    },
+    {
+      label: "With banner",
+      code:
+        '<Article title="my post" date="2026-05-24" banner="/images/banner.png">\n' +
+        "  <Prose>{markdown}</Prose>\n</Article>",
+      render: (
+        <div className="w-full text-left">
+          <Article title="with a banner" date="2026-05-24" banner={bannerSvg}>
+            <Prose>{"the banner renders above the header."}</Prose>
           </Article>
         </div>
       ),
@@ -765,6 +896,20 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
         />
       ),
     },
+    {
+      label: "Custom label",
+      code: '<Toc label="contents" headings={headings} />',
+      render: (
+        <Toc
+          label="contents"
+          headings={[
+            { id: "ex2-setup", text: "setup" },
+            { id: "ex2-theming", text: "theming" },
+          ]}
+          className="!static"
+        />
+      ),
+    },
   ],
   prose: [
     {
@@ -809,6 +954,24 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
           <AccordionItem title="third" name="faq-ex">
             zero javascript — native &lt;details&gt;.
           </AccordionItem>
+        </Accordion>
+      ),
+    },
+    {
+      label: "Independent items",
+      code:
+        "<Accordion>\n" +
+        '  <AccordionItem title="first" defaultOpen>\n' +
+        "    no shared name, so items open independently.\n" +
+        "  </AccordionItem>\n" +
+        '  <AccordionItem title="second">each keeps its own state.</AccordionItem>\n' +
+        "</Accordion>",
+      render: (
+        <Accordion className="w-72">
+          <AccordionItem title="first" defaultOpen>
+            no shared name, so items open independently.
+          </AccordionItem>
+          <AccordionItem title="second">each keeps its own state.</AccordionItem>
         </Accordion>
       ),
     },

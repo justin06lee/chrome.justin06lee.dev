@@ -1,7 +1,7 @@
 {
   "name": "image-cropper",
   "type": "registry:ui",
-  "description": "drag-to-reposition + scroll/slider-to-zoom image cropper. drag inside the frame nudges x/y (clamped -100..100), the wheel and range sliders drive zoom; emits { url, scale, x, y }. dark only.",
+  "description": "drag-to-reposition, scroll/slider-to-zoom image cropper. emits { url, scale, x, y }.",
   "dependencies": [],
   "devDependencies": [],
   "registryDependencies": [

@@ -4,8 +4,8 @@ export default defineComponent({
   name: "editor",
   type: "registry:ui",
   description:
-    "split-pane markdown editor with a live preview that scrolls and highlights in sync, both ways: select text and a button pushes it to the preview; click a block in the preview and the editor scrolls to it and lays a gray streak over the matching lines. bring your own markdown renderer (e.g. prose). dark-only.",
-  dependencies: [],
+    "split-pane markdown editor whose live preview scrolls and highlights in sync, both ways. bring your own markdown renderer (e.g. prose).",
+  dependencies: ["lucide-react"],
   registryDependencies: ["utils"],
   files: [
     { source: "editor.tsx", target: "editor.tsx" },
@@ -28,7 +28,7 @@ export default defineComponent({
       type: "'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'screen' | 'auto'",
       default: "'screen'",
       description:
-        "height preset. 'screen' fills the viewport minus a header allowance (like justin06lee.dev/desk); sm→2xl step from 20rem to 52rem; 'auto' opts out so className owns the height.",
+        "height preset. 'screen' fills the viewport minus a header allowance (like justin06lee.dev/desk); sm–2xl step from 20rem to 52rem; 'auto' opts out so className owns the height.",
     },
     { name: "className", type: "string", description: "extra classes; an h-* class here overrides size." },
   ],

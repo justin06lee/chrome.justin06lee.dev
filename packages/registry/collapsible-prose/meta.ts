@@ -4,7 +4,7 @@ export default defineComponent({
   name: "collapsible-prose",
   type: "registry:ui",
   description:
-    "long-form reading layout that splits markdown into collapsible <details> sections on each ## heading, each with a rotating chevron. content before the first ## renders as a plain intro. bring your own renderer via renderMarkdown — typically the prose component. dark-only.",
+    "splits markdown into collapsible sections on each ## heading. bring your own renderer via renderMarkdown — typically prose.",
   dependencies: ["lucide-react"],
   registryDependencies: ["prose", "utils"],
   files: [{ source: "collapsible-prose.tsx", target: "collapsible-prose.tsx" }],

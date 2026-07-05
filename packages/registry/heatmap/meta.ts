@@ -4,7 +4,7 @@ export default defineComponent({
   name: "heatmap",
   type: "registry:ui",
   description:
-    "year activity grid — 12 mini month grids of day cells tinted by value (contribution-graph style), with a less→more legend. generalized from the justin06lee.dev year view.",
+    "year activity grid — 12 mini month grids of day cells tinted by value (contribution-graph style), with a less-to-more legend. generalized from the justin06lee.dev year view.",
   registryDependencies: ["utils"],
   files: [{ source: "heatmap.tsx", target: "heatmap.tsx" }],
   props: [

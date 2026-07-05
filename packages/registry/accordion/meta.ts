@@ -11,6 +11,6 @@ export default defineComponent({
   props: [
     { name: "AccordionItem.title", type: "ReactNode", required: true },
     { name: "AccordionItem.defaultOpen", type: "boolean", description: "open on first render." },
-    { name: "AccordionItem.name", type: "string", description: "shared name → exclusive (accordion) behavior." },
+    { name: "AccordionItem.name", type: "string", description: "a shared name makes the group exclusive." },
   ],
 });

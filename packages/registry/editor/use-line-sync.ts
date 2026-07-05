@@ -169,7 +169,7 @@ export interface UseLineSyncReturn {
   selection: { start: number; end: number } | null;
   /** Pixel rect of the selection (for placing the button), or null. */
   selectionRect: SelectionRect | null;
-  /** Fire the editor → preview sync (call from the floating button). */
+  /** Fire the editor-to-preview sync (call from the floating button). */
   syncToPreview: () => void;
   /** Handler for a preview block click (pass to EditorPreview's onSelectBlock). */
   onPreviewSelectBlock: (selection: PreviewBlockSelection) => void;

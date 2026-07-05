@@ -1,7 +1,7 @@
 {
   "name": "calendar-nav",
   "type": "registry:ui",
-  "description": "period-navigation header for the calendar / heatmap / timeline views: a day/month/year switcher plus prev / today / next controls. fully controlled — view and navigation are props/callbacks, no router coupling. dark-only.",
+  "description": "period-navigation header: a day/month/year switcher plus prev / today / next controls. fully controlled, no router coupling.",
   "dependencies": [
     "lucide-react"
   ],

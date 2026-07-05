@@ -4,7 +4,7 @@ export default defineComponent({
   name: "sprite-scrubber",
   type: "registry:ui",
   description:
-    "scrub through a sprite-sheet grid by dragging the pointer across it. maps pointer x (with edge dead zones) to a frame index and shows it via backgroundPosition. dark-only; pointer + touch.",
+    "scrub through a sprite-sheet grid by dragging across it — pointer x maps to a frame index.",
   dependencies: [],
   registryDependencies: ["utils"],
   files: [{ source: "sprite-scrubber.tsx", target: "sprite-scrubber.tsx" }],

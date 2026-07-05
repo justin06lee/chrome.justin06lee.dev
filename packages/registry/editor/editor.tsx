@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EditorPreview } from "@/components/ui/editor-preview";
 import { useLineSync, STREAK_PAD, type UseLineSyncReturn } from "@/hooks/use-line-sync";
@@ -43,7 +44,7 @@ export interface EditorTextareaProps {
 }
 
 /**
- * The editor half on its own: a `<textarea>` with the gray-streak + "→ preview"
+ * The editor half on its own: a `<textarea>` with the gray-streak + "preview"
  * button overlay, driven by a `useLineSync` engine. Pair it with a `<EditorPreview>`
  * that shares the same engine and they stay in sync even in separate, non-adjacent
  * containers — the engine aligns by viewport coordinates, not relative layout.
@@ -100,7 +101,8 @@ export function EditorTextarea({
                     : "translateY(4px)",
               }}
             >
-              {"→ preview"}
+              <ArrowRight size={12} aria-hidden />
+              preview
             </button>
           ) : null}
         </div>

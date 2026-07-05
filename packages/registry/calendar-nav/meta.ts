@@ -4,7 +4,7 @@ export default defineComponent({
   name: "calendar-nav",
   type: "registry:ui",
   description:
-    "period-navigation header for the calendar / heatmap / timeline views: a day/month/year switcher plus prev / today / next controls. fully controlled — view and navigation are props/callbacks, no router coupling. dark-only.",
+    "period-navigation header: a day/month/year switcher plus prev / today / next controls. fully controlled, no router coupling.",
   dependencies: ["lucide-react"],
   registryDependencies: ["utils", "segmented", "button"],
   files: [{ source: "calendar-nav.tsx", target: "calendar-nav.tsx" }],

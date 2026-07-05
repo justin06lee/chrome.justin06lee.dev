@@ -54,7 +54,7 @@ export interface DeskProps {
  * The full `/desk` markdown workbench: an `EditorToolbar` (mode toggle + format
  * buttons + "new drawing", which owns the floating numbered drawing windows), an
  * image sidebar, and a split text editor with a two-way synced preview. Composes
- * the `editor`, `asset-sidebar`, and `editor-toolbar` (→ `drawing-window`)
+ * the `editor`, `asset-sidebar`, and `editor-toolbar` (which owns `drawing-window`)
  * components. Dark-only. Sized via the `size` preset (viewport-filling by
  * default, like justin06lee.dev/desk). Backend ops are callbacks.
  */

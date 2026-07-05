@@ -2,7 +2,7 @@
 
 import { Heatmap } from "./heatmap";
 
-// Deterministic sample values (no Math.random → no hydration mismatch).
+// Deterministic sample values (no Math.random, so no hydration mismatch).
 function sampleValues(year: number): Record<string, number> {
   const out: Record<string, number> = {};
   for (let m = 1; m <= 12; m++) {

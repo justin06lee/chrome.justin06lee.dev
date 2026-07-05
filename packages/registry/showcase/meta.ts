@@ -4,7 +4,7 @@ export default defineComponent({
   name: "showcase",
   type: "registry:ui",
   description:
-    "framed preview container with a dotted background. holds component demos with optional label, source caption, and note. exports a Row helper for explicit row breaks; bare children get auto-wrapped into one centered row.",
+    "framed preview container with a dotted background, optional label, caption, and note. exports a Row helper for explicit row breaks.",
   registryDependencies: ["utils"],
   files: [{ source: "showcase.tsx", target: "showcase.tsx" }],
   props: [

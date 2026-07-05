@@ -1,7 +1,7 @@
 {
   "name": "sprite-scrubber",
   "type": "registry:ui",
-  "description": "scrub through a sprite-sheet grid by dragging the pointer across it. maps pointer x (with edge dead zones) to a frame index and shows it via backgroundPosition. dark-only; pointer + touch.",
+  "description": "scrub through a sprite-sheet grid by dragging across it — pointer x maps to a frame index.",
   "dependencies": [],
   "devDependencies": [],
   "registryDependencies": [

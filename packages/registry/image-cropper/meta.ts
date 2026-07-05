@@ -4,7 +4,7 @@ export default defineComponent({
   name: "image-cropper",
   type: "registry:ui",
   description:
-    "drag-to-reposition + scroll/slider-to-zoom image cropper. drag inside the frame nudges x/y (clamped -100..100), the wheel and range sliders drive zoom; emits { url, scale, x, y }. dark only.",
+    "drag-to-reposition, scroll/slider-to-zoom image cropper. emits { url, scale, x, y }.",
   dependencies: [],
   registryDependencies: ["utils", "range"],
   files: [{ source: "image-cropper.tsx", target: "image-cropper.tsx" }],

@@ -50,8 +50,8 @@ export type GalleryProps = {
 const SORT_LABEL: Record<GallerySort, string> = {
   newest: "Newest",
   oldest: "Oldest",
-  az: "A → Z",
-  za: "Z → A",
+  az: "A–Z",
+  za: "Z–A",
 };
 
 const SORT_KEYS: GallerySort[] = ["newest", "oldest", "az", "za"];

@@ -62,7 +62,7 @@ function createBlankCanvas(canvas: HTMLCanvasElement, fill: string) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// --- light → dark colour mapping (only used when darkMapping is on) -----------
+// --- light-to-dark colour mapping (only used when darkMapping is on) -----------
 
 function rgbToHsl(red: number, green: number, blue: number) {
   const r = red / 255;
@@ -284,7 +284,7 @@ export interface DrawingWindowProps {
 /**
  * A floating, draggable/resizable paint window: brush/eraser, color + size,
  * undo/redo/clear, zoom/pan, and canvas-size presets. Dark-only. Supports a
- * direct-dark mode (default) and a faithful light→dark mapping mode. Save runs
+ * direct-dark mode (default) and a faithful light-to-dark mapping mode. Save runs
  * `onSave` with the PNG(s), or downloads when no `onSave` is given.
  */
 export function DrawingWindow({

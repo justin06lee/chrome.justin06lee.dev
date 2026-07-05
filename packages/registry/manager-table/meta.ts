@@ -4,7 +4,7 @@ export default defineComponent({
   name: "manager-table",
   type: "registry:ui",
   description:
-    "an admin table of rows you can inline-rename, recolor via a swatch picker, archive, and delete with a confirm dialog. every mutation is a callback — bring your own state. composes inline-edit, color-swatch, and dialog. archived rows render muted. dark-only.",
+    "admin table with inline rename, swatch recolor, archive, and confirmed delete. every mutation is a callback — bring your own state.",
   dependencies: [],
   registryDependencies: ["utils", "inline-edit", "color-swatch", "dialog"],
   files: [{ source: "manager-table.tsx", target: "manager-table.tsx" }],
