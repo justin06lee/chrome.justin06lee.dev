@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { AssetSidebar, type Asset } from "@/components/ui/asset-sidebar";
-import { EditorTextarea } from "@/components/ui/editor";
+import { EditorTextarea, editorSizeClass, type EditorSize } from "@/components/ui/editor";
 import { EditorPreview } from "@/components/ui/editor-preview";
 import {
   EditorToolbar,
@@ -44,7 +44,9 @@ export interface DeskProps {
   drawingDarkMapping?: boolean;
   /** Extra toolbar actions, inserted before the Save button. */
   actions?: ReactNode;
-  /** Sizing/extra classes for the root (give it a height). */
+  /** Height preset; defaults to the viewport-filling `screen`. */
+  size?: EditorSize;
+  /** Extra classes for the root; an `h-*` class here overrides `size`. */
   className?: string;
 }
 
@@ -53,7 +55,8 @@ export interface DeskProps {
  * buttons + "new drawing", which owns the floating numbered drawing windows), an
  * image sidebar, and a split text editor with a two-way synced preview. Composes
  * the `editor`, `asset-sidebar`, and `editor-toolbar` (→ `drawing-window`)
- * components. Dark-only. Give the root a height. Backend ops are callbacks.
+ * components. Dark-only. Sized via the `size` preset (viewport-filling by
+ * default, like justin06lee.dev/desk). Backend ops are callbacks.
  */
 export function Desk({
   title,
@@ -69,6 +72,7 @@ export function Desk({
   onSaveDrawing,
   drawingDarkMapping,
   actions,
+  size = "screen",
   className,
 }: DeskProps) {
   const sync = useLineSync({ value });
@@ -126,7 +130,13 @@ export function Desk({
   }, [onSave, value]);
 
   return (
-    <div className={cn("flex flex-col border border-white/10 bg-white/[0.02]", className)}>
+    <div
+      className={cn(
+        "flex flex-col border border-white/10 bg-white/[0.02]",
+        editorSizeClass(size),
+        className,
+      )}
+    >
       <EditorToolbar
         title={title}
         subtitle={subtitle}
