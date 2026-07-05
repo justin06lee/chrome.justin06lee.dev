@@ -7,19 +7,20 @@ import { EditorPreview } from "@/components/ui/editor-preview";
 import { useLineSync, STREAK_PAD, type UseLineSyncReturn } from "@/hooks/use-line-sync";
 
 /**
- * Height presets. `screen` matches justin06lee.dev/desk — the pane fills the
- * viewport minus a header allowance. `auto` opts out so `className` owns the
- * height. Any preset can still be overridden by an `h-*` class in `className`.
+ * Size presets — each sets height AND width (width clamped to the container).
+ * `screen` matches justin06lee.dev/desk: full container width, viewport height
+ * minus a header allowance. `auto` opts out so `className` owns the sizing.
+ * Any preset can still be overridden by `h-*` / `w-*` classes in `className`.
  */
 export type EditorSize = "sm" | "md" | "lg" | "xl" | "2xl" | "screen" | "auto";
 
 export const EDITOR_SIZE_CLASS: Record<Exclude<EditorSize, "auto">, string> = {
-  sm: "h-80",
-  md: "h-[28rem]",
-  lg: "h-[36rem]",
-  xl: "h-[44rem]",
-  "2xl": "h-[52rem]",
-  screen: "h-[calc(100dvh-10rem)] min-h-[24rem]",
+  sm: "h-80 w-[32rem] max-w-full",
+  md: "h-[28rem] w-[44rem] max-w-full",
+  lg: "h-[36rem] w-[56rem] max-w-full",
+  xl: "h-[44rem] w-[72rem] max-w-full",
+  "2xl": "h-[52rem] w-[88rem] max-w-full",
+  screen: "h-[calc(100dvh-10rem)] min-h-[24rem] w-full",
 };
 
 export function editorSizeClass(size: EditorSize): string | undefined {
@@ -141,9 +142,9 @@ export interface EditorProps {
   label?: ReactNode;
   /** Editor textarea placeholder. */
   placeholder?: string;
-  /** Height preset; defaults to the viewport-filling `screen`. */
+  /** Size preset (height + width); defaults to the container-filling `screen`. */
   size?: EditorSize;
-  /** Extra classes for the root; an `h-*` class here overrides `size`. */
+  /** Extra classes for the root; `h-*` / `w-*` classes here override `size`. */
   className?: string;
 }
 

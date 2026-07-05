@@ -44,9 +44,9 @@ export interface DeskProps {
   drawingDarkMapping?: boolean;
   /** Extra toolbar actions, inserted before the Save button. */
   actions?: ReactNode;
-  /** Height preset; defaults to the viewport-filling `screen`. */
+  /** Size preset (height + width); defaults to the container-filling `screen`. */
   size?: EditorSize;
-  /** Extra classes for the root; an `h-*` class here overrides `size`. */
+  /** Extra classes for the root; `h-*` / `w-*` classes here override `size`. */
   className?: string;
 }
 
