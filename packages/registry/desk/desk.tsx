@@ -132,7 +132,7 @@ export function Desk({
   return (
     <div
       className={cn(
-        "flex flex-col border border-white/10 bg-white/[0.02]",
+        "flex flex-col overflow-hidden border border-white/10 bg-white/[0.02]",
         editorSizeClass(size),
         className,
       )}
@@ -165,7 +165,7 @@ export function Desk({
         }
       />
 
-      <div className="grid min-h-0 flex-1 xl:grid-cols-[18rem_1fr]">
+      <div className="grid min-h-0 min-w-0 flex-1 xl:grid-cols-[18rem_minmax(0,1fr)]">
         <AssetSidebar
           assets={assets}
           onInsert={insertAssetReference}
