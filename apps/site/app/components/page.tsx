@@ -5,7 +5,7 @@ import { REGISTRY } from "../../registry-manifest";
 export default function ComponentsIndex() {
   const ui = REGISTRY.filter((m) => m.type === "registry:ui");
   return (
-    <div className="max-w-[720px]">
+    <div className="max-w-[720px] mx-auto">
       <div className="text-[13px] font-mono text-white/45 mb-3">components</div>
       <h1 className="text-[44px] font-bold italic font-serif tracking-[-0.02em] mb-3">
         components.

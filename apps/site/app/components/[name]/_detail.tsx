@@ -32,7 +32,7 @@ export function ComponentDetail({
   const examples = USAGE_EXAMPLES[name] ?? [];
 
   return (
-    <div className={wide ? undefined : "max-w-[720px]"}>
+    <div className={wide ? undefined : "max-w-[720px] mx-auto"}>
       <div className="text-[13px] font-mono text-white/45 mb-3">
         components / <span className="text-white/70">{name}</span>
       </div>
