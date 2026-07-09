@@ -56,7 +56,7 @@ export function Showcase({
         </div>
       )}
       <div
-        className="border border-white/10 px-6 py-10 flex flex-col gap-6 mb-2"
+        className="border border-white/10 px-6 py-10 flex flex-col gap-6 mb-2 overflow-hidden"
         style={BACKGROUNDS[background]}
       >
         {hasRow ? children : <Row>{children}</Row>}
@@ -80,7 +80,7 @@ export function Row({ children, className }: RowProps) {
   return (
     <div
       className={cn(
-        "w-full flex flex-wrap items-center justify-center gap-6",
+        "w-full min-w-0 flex flex-wrap items-center justify-center gap-6",
         className,
       )}
     >

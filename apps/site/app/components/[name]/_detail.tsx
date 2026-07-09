@@ -62,7 +62,7 @@ export function ComponentDetail({
 
       {tab === "preview" ? (
         barePreview ? (
-          <div className="min-h-[260px] mb-12">{children}</div>
+          <div className="min-h-[260px] mb-12 overflow-hidden">{children}</div>
         ) : (
           <Showcase className="mb-12">{children}</Showcase>
         )
@@ -94,7 +94,7 @@ export function ComponentDetail({
             {examples.map((ex) => (
               <div key={ex.label}>
                 <div className="text-[13px] text-white/70 mb-2">{ex.label}</div>
-                <div className="flex min-h-[150px] items-center justify-center border border-white/10 border-b-0 p-8 bg-white/[0.01]">
+                <div className="flex min-h-[150px] items-center justify-center overflow-hidden border border-white/10 border-b-0 p-8 bg-white/[0.01]">
                   {ex.render}
                 </div>
                 <CodeBlock code={ex.code} language="tsx" />
