@@ -165,7 +165,7 @@ export function Desk({
         }
       />
 
-      <div className="grid min-h-0 min-w-0 flex-1 xl:grid-cols-[18rem_minmax(0,1fr)]">
+      <div className="grid min-h-0 min-w-0 flex-1 xl:grid-cols-[18rem_minmax(0,1fr)] xl:grid-rows-[minmax(0,1fr)]">
         <AssetSidebar
           assets={assets}
           onInsert={insertAssetReference}
@@ -175,7 +175,12 @@ export function Desk({
           className="max-h-[20rem] border-x-0 border-t-0 xl:max-h-none xl:border-b-0 xl:border-r"
         />
 
-        <div className={cn("grid min-h-0", mode === "split" ? "xl:grid-cols-2" : "grid-cols-1")}>
+        <div
+          className={cn(
+            "grid min-h-0 xl:grid-rows-[minmax(0,1fr)]",
+            mode === "split" ? "xl:grid-cols-2" : "grid-cols-1",
+          )}
+        >
           {mode !== "preview" ? (
             <EditorTextarea
               sync={sync}

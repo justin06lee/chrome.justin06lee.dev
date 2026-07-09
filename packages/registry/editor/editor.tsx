@@ -15,11 +15,11 @@ import { useLineSync, STREAK_PAD, type UseLineSyncReturn } from "@/hooks/use-lin
 export type EditorSize = "sm" | "md" | "lg" | "xl" | "2xl" | "screen" | "auto";
 
 export const EDITOR_SIZE_CLASS: Record<Exclude<EditorSize, "auto">, string> = {
-  sm: "h-80 w-[32rem] max-w-full",
-  md: "h-[28rem] w-[44rem] max-w-full",
-  lg: "h-[36rem] w-[56rem] max-w-full",
-  xl: "h-[44rem] w-[72rem] max-w-full",
-  "2xl": "h-[52rem] w-[88rem] max-w-full",
+  sm: "h-80 w-[32rem] max-w-full mx-auto",
+  md: "h-[28rem] w-[44rem] max-w-full mx-auto",
+  lg: "h-[36rem] w-[56rem] max-w-full mx-auto",
+  xl: "h-[44rem] w-[72rem] max-w-full mx-auto",
+  "2xl": "h-[52rem] w-[88rem] max-w-full mx-auto",
   screen: "h-[calc(100dvh-10rem)] min-h-[24rem] w-full",
 };
 
