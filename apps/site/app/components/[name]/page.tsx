@@ -69,6 +69,10 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   "tag-input": () => import("../../../../../packages/registry/tag-input/demo"),
 };
 
+// Components whose size is adjustable via their own `size` prop get the full
+// wide canvas; everything else renders at reading width.
+const WIDE_PREVIEW = new Set(["editor", "desk"]);
+
 export async function generateStaticParams() {
   return REGISTRY.filter((m) => m.type === "registry:ui").map((m) => ({ name: m.name }));
 }
@@ -111,6 +115,7 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
       installCommand={`bunx @justin06lee/chrome@latest add ${name}`}
       title={title}
       barePreview={name === "showcase"}
+      wide={WIDE_PREVIEW.has(name)}
     >
       {Demo ? <Demo /> : null}
     </ComponentDetail>

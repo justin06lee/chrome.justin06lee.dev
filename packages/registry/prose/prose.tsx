@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
-import { AlertCircle, Check, Copy } from "lucide-react";
+import { CodeBlock } from "@/components/ui/code-block";
 import "katex/dist/katex.min.css";
 
 export type ProseProps = {
@@ -69,61 +69,9 @@ function isResolved(src: string): boolean {
 
 const HEADING_SCROLL = { scrollMarginTop: "var(--sticky-header-offset, 80px)" };
 
-type CopyStatus = "idle" | "copied" | "error";
-
-function PreBlock({ children, ...props }: React.ComponentPropsWithoutRef<"pre">) {
-  const ref = useRef<HTMLPreElement>(null);
-  const [status, setStatus] = useState<CopyStatus>("idle");
-  const timerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  const copy = async () => {
-    const code = ref.current?.querySelector("code");
-    const text = (code ?? ref.current)?.textContent ?? "";
-    try {
-      if (!navigator.clipboard?.writeText) {
-        throw new Error("clipboard unavailable");
-      }
-      await navigator.clipboard.writeText(text);
-      setStatus("copied");
-    } catch {
-      setStatus("error");
-    }
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => setStatus("idle"), 2000);
-  };
-
-  const Icon = status === "copied" ? Check : status === "error" ? AlertCircle : Copy;
-  const label = status === "copied" ? "copied" : status === "error" ? "copy failed" : "copy code";
-
-  return (
-    <pre
-      ref={ref}
-      className="group relative my-5 overflow-x-auto border border-white/10 bg-white/[0.03] p-4 font-mono text-[13px] leading-6"
-      {...props}
-    >
-      {children}
-      <button
-        type="button"
-        onClick={copy}
-        aria-label={label}
-        title={label}
-        className="absolute right-2 top-2 text-white/40 opacity-0 transition hover:text-white focus:opacity-100 focus:outline-none group-hover:opacity-100"
-      >
-        <Icon className="size-4" />
-      </button>
-    </pre>
-  );
-}
-
 /**
  * Markdown renderer with the justin06lee.dev prose styling — GFM, math (KaTeX),
- * heading slugs, and copy-on-hover code blocks. Dark-only. Pass markdown as the
+ * heading slugs, and syntax-highlighted code blocks (via `code-block`). Dark-only. Pass markdown as the
  * single string child.
  */
 // Paints the block tagged with `data-sync-highlight` (by rehypeSourceLine) as the
@@ -197,7 +145,30 @@ export function Prose({
       }
       return <code className="border border-white/10 bg-white/[0.06] px-1.5 py-0.5 font-mono text-[0.85em] text-white" {...p}>{children}</code>;
     },
-    pre: PreBlock,
+    pre: ({ node }) => {
+      // Fenced code: extract the raw text + language from the hast node and
+      // hand it to CodeBlock for syntax highlighting. The wrapper re-stamps the
+      // pre's sync attributes so lineSync still targets the block.
+      let text = "";
+      let language: string | undefined;
+      const first = node?.children?.[0];
+      if (first && first.type === "element" && first.tagName === "code") {
+        const cls = first.properties?.className;
+        const classes = Array.isArray(cls) ? cls.map(String) : typeof cls === "string" ? [cls] : [];
+        language = classes.find((c) => c.startsWith("language-"))?.slice("language-".length);
+        text = first.children.map((c) => (c.type === "text" ? c.value : "")).join("");
+      }
+      const properties = node?.properties ?? {};
+      return (
+        <div
+          className="my-5"
+          data-source-line={properties.dataSourceLine as number | undefined}
+          data-sync-highlight={properties.dataSyncHighlight ? true : undefined}
+        >
+          <CodeBlock code={text.replace(/\n$/, "")} language={language ?? "markup"} />
+        </div>
+      );
+    },
     table: ({ children, ...p }) => (
       <div className="my-5 overflow-x-auto">
         <table className="w-full border-collapse border border-white/10 text-sm" {...p}>{children}</table>
