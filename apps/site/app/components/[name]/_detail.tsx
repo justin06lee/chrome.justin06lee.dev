@@ -15,6 +15,8 @@ export function ComponentDetail({
   /** When true, the preview tab drops its bordered+dotted frame so the demo
    *  doesn't appear "inside another showcase". Use for container-type components. */
   barePreview,
+  /** Full-width canvas for components with their own size presets; others stay at reading width. */
+  wide,
   children,
 }: {
   name: string;
@@ -23,13 +25,14 @@ export function ComponentDetail({
   installCommand: string;
   title?: React.ReactNode;
   barePreview?: boolean;
+  wide?: boolean;
   children: React.ReactNode;
 }) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
   const examples = USAGE_EXAMPLES[name] ?? [];
 
   return (
-    <>
+    <div className={wide ? undefined : "max-w-[720px]"}>
       <div className="text-[13px] font-mono text-white/45 mb-3">
         components / <span className="text-white/70">{name}</span>
       </div>
@@ -103,6 +106,6 @@ export function ComponentDetail({
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
