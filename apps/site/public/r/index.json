@@ -383,17 +383,18 @@
   {
     "name": "prose",
     "type": "registry:ui",
-    "description": "markdown renderer with the justin06lee.dev prose styling — GFM, KaTeX math, heading slugs, and copy-on-hover code blocks. dark-only. pass markdown as the string child.",
+    "description": "markdown renderer with the justin06lee.dev prose styling — GFM, KaTeX math, heading slugs, and syntax-highlighted code blocks (via code-block). dark-only. pass markdown as the string child.",
     "dependencies": [
       "react-markdown",
       "remark-gfm",
       "remark-math",
       "rehype-katex",
       "rehype-slug",
-      "katex",
-      "lucide-react"
+      "katex"
     ],
-    "registryDependencies": []
+    "registryDependencies": [
+      "code-block"
+    ]
   },
   {
     "name": "rainbow",
