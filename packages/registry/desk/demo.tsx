@@ -33,6 +33,7 @@ let nextId = 100;
 
 export default function DeskDemo() {
   const [md, setMd] = useState(INITIAL);
+  const [saved, setSaved] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([
     { id: "1", url: swatch("diagram", "#efede7"), name: "system-diagram.png", markdownPath: "/images/system-diagram.png" },
     { id: "2", url: swatch("hero", "#d7e3f0"), name: "hero-shot.png", markdownPath: "/images/hero-shot.png" },
@@ -42,7 +43,11 @@ export default function DeskDemo() {
     <div className="w-full">
       <Desk
         title="the desk"
-        subtitle="guides / the-desk"
+        subtitle={saved ? "guides / the-desk \u00b7 saved" : "guides / the-desk"}
+        onSave={() => {
+          setSaved(true);
+          window.setTimeout(() => setSaved(false), 1500);
+        }}
         value={md}
         onChange={setMd}
         size="xl"

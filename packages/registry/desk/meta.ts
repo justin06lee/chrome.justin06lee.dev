@@ -28,7 +28,7 @@ export default defineComponent({
     { name: "onInsertAsset", type: "(asset: Asset) => void", description: "the markdown ref is also spliced at the caret." },
     { name: "onDeleteAsset", type: "(asset: Asset) => void", description: "parent owns any confirm flow." },
     { name: "onUploadAssets", type: "(files: File[]) => void", description: "omit to hide the sidebar drop zone." },
-    { name: "onSave", type: "(value: string) => void | Promise<void>", description: "fired on Save and cmd/ctrl+s." },
+    { name: "onSave", type: "(value: string) => void | Promise<void>", description: "fired by the built-in save button and cmd/ctrl+s; the button renders disabled without it." },
     { name: "onSaveDrawing", type: "(result: { dataUrl: string; darkDataUrl?: string }) => void | Promise<void>" },
     { name: "drawingDarkMapping", type: "boolean", description: "use the drawing window's light-to-dark mapping mode." },
     { name: "actions", type: "ReactNode", description: "extra toolbar actions before Save." },

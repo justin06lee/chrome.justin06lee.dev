@@ -152,15 +152,14 @@ export function Desk({
         actions={
           <>
             {actions}
-            {onSave ? (
-              <button
-                type="button"
-                onClick={() => void onSave(value)}
-                className="bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
-              >
-                save
-              </button>
-            ) : null}
+            <button
+              type="button"
+              onClick={() => void onSave?.(value)}
+              disabled={!onSave}
+              className="bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              save
+            </button>
           </>
         }
       />
