@@ -44,6 +44,12 @@ const DEFAULT_FIELDS: LoginField[] = [
  * Styled login view over the headless useLoginForm hook. Renders one or more
  * fields, an error line (generic or rate-limited), and a submit button that
  * reflects the loading state. Plain <form> — no router, no fetch.
+ *
+ * Security notes: credentials only ever flow to the injected onSubmit (never
+ * logged, stored, or echoed into the UI), submission is preventDefault-only so
+ * values can't leak into a URL, and default error copy is generic. Rate
+ * limiting and account lockout are the consumer backend's responsibility —
+ * surface them via the `rateLimited` result flag.
  */
 export function LoginForm({
   onSubmit,
@@ -70,13 +76,23 @@ export function LoginForm({
         <h1 className="text-center text-sm lowercase text-white">{title}</h1>
       )}
 
-      {fields.map((field, i) => (
+      {fields.map((field, i) => {
+        const type = field.type ?? "text";
+        const secret = type === "password";
+        return (
         <Input
           key={field.name}
-          type={field.type ?? "text"}
+          name={field.name}
+          type={type}
           aria-label={field.label ?? field.name}
           placeholder={field.placeholder ?? field.label ?? field.name}
-          autoComplete={field.autoComplete}
+          autoComplete={
+            field.autoComplete ?? (secret ? "current-password" : undefined)
+          }
+          // Keep secrets away from spellcheck/autocorrect services.
+          spellCheck={secret ? false : undefined}
+          autoCapitalize={secret ? "none" : undefined}
+          autoCorrect={secret ? "off" : undefined}
           autoFocus={i === 0}
           value={form.values[field.name] ?? ""}
           disabled={form.loading}
@@ -84,7 +100,8 @@ export function LoginForm({
           onKeyDown={form.onKeyDown}
           className="w-full"
         />
-      ))}
+        );
+      })}
 
       {form.error && (
         <p

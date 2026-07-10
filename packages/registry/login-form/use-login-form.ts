@@ -44,6 +44,11 @@ export type UseLoginFormReturn = {
  * Headless login state machine: holds field values, loading + error +
  * rateLimited flags, an Enter-to-submit handler, and a submit runner that
  * delegates to an injected onSubmit. Framework- and transport-agnostic.
+ *
+ * Credentials live only in React state and are handed solely to onSubmit —
+ * never logged, persisted, or echoed into error copy. Default errors are
+ * generic on purpose (no user-enumeration hints); real rate limiting and
+ * lockout belong on the consumer's backend, surfaced here via `rateLimited`.
  */
 export function useLoginForm({
   onSubmit,
@@ -72,8 +77,10 @@ export function useLoginForm({
       if (result?.rateLimited) {
         setRateLimited(true);
         setError(result.error ?? rateLimitedError);
-      } else if (result?.error) {
-        setError(result.error);
+      } else if (result?.error !== undefined) {
+        // Empty string marks a failure without custom copy — fall back to the
+        // generic default so nothing sensitive leaks into the message.
+        setError(result.error || defaultError);
       }
     } catch (e) {
       const limited =

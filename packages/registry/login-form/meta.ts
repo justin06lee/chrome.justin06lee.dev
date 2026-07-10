@@ -4,7 +4,7 @@ export default defineComponent({
   name: "login-form",
   type: "registry:ui",
   description:
-    "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook.",
+    "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook. rate limiting and lockout belong on the consumer's backend.",
   registryDependencies: ["utils", "input"],
   files: [
     // Styled component first so the docs source view shows it (page reads files[0]).
