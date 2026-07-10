@@ -160,7 +160,10 @@ export function SpriteScrubber({
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `url(${src})`,
+          // Quoted url(): an unquoted CSS url token breaks on raw parentheses,
+          // which SVG data URIs routinely contain (encodeURIComponent leaves
+          // "(" and ")" unescaped) — the whole declaration is silently dropped.
+          backgroundImage: `url("${src.replace(/"/g, '%22')}")`,
           backgroundSize: `${cols * 100}% ${rows * 100}%`,
           backgroundPosition: "0% 0%",
           backgroundRepeat: "no-repeat",
