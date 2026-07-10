@@ -1,9 +1,21 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import { cn } from "@/lib/utils";
 import { useToc, type TocHeading } from "@/hooks/use-toc";
 
 export type { TocHeading } from "@/hooks/use-toc";
+
+// Smooth-scroll to a heading instead of the default hash jump, keeping the
+// URL hash in sync. Falls back to an instant jump for reduced motion.
+function scrollToHeading(e: MouseEvent<HTMLAnchorElement>, id: string) {
+  const el = document.getElementById(id);
+  if (!el) return; // no target: let the default navigation handle it
+  e.preventDefault();
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  history.pushState(null, "", `#${id}`);
+}
 
 export type TocProps = {
   headings: TocHeading[];
@@ -37,6 +49,7 @@ export function Toc({ headings, label = "on this page", className }: TocProps) {
           <li key={h.id}>
             <a
               href={`#${h.id}`}
+              onClick={(e) => scrollToHeading(e, h.id)}
               aria-current={activeId === h.id ? "page" : undefined}
               className={cn(
                 "block py-1 text-sm leading-5 transition-colors",
