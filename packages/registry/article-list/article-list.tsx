@@ -175,12 +175,13 @@ function ArticleCard({
         </div>
       )}
       <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
+        {/* flex-wrap lets the date drop below the title on narrow cards instead of overflowing */}
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
           <h2 className="text-base font-semibold leading-snug text-white/80 transition-colors group-hover:text-white">
             {article.title}
           </h2>
           {article.publishedAt && (
-            <span className="mt-0.5 shrink-0 font-mono text-xs tabular-nums text-white/40">
+            <span className="shrink-0 font-mono text-xs tabular-nums text-white/40">
               {formatDate(article.publishedAt)}
             </span>
           )}

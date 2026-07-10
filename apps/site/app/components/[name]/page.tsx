@@ -69,9 +69,10 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   "tag-input": () => import("../../../../../packages/registry/tag-input/demo"),
 };
 
-// Components whose size is adjustable via their own `size` prop get the full
-// wide canvas; everything else renders at reading width.
-const WIDE_PREVIEW = new Set(["editor", "desk"]);
+// Components that need the full wide canvas — size-adjustable ones (editor,
+// desk) and grid layouts that cramp at reading width; everything else renders
+// at reading width.
+const WIDE_PREVIEW = new Set(["editor", "desk", "article-list"]);
 
 export async function generateStaticParams() {
   return REGISTRY.filter((m) => m.type === "registry:ui").map((m) => ({ name: m.name }));
