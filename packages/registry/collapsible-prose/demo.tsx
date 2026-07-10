@@ -18,7 +18,7 @@ each section toggles independently. click a heading to collapse it.
 content is split on every level-two heading. the body of each section is
 handed to your \`renderMarkdown\` function — here, the \`prose\` component.
 
-\`\`\`ts
+\`\`\`tsx
 <CollapsibleProse renderMarkdown={(md) => <Prose>{md}</Prose>}>
   {markdown}
 </CollapsibleProse>
