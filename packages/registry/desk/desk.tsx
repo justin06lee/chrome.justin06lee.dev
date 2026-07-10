@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { AssetSidebar, type Asset } from "@/components/ui/asset-sidebar";
 import { EditorTextarea, editorSizeClass, type EditorSize } from "@/components/ui/editor";
@@ -117,17 +117,23 @@ export function Desk({
     onInsertAsset?.(asset);
   }
 
-  // cmd/ctrl+s saves.
+  // cmd/ctrl+s saves. The latest value/onSave live in a ref so the window
+  // listener binds once instead of re-binding on every keystroke.
+  const saveRef = useRef({ value, onSave });
+  saveRef.current = { value, onSave };
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+        const { value: current, onSave: save } = saveRef.current;
+        // Only hijack the browser shortcut when there's a save handler.
+        if (!save) return;
         event.preventDefault();
-        void onSave?.(value);
+        void save(current);
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onSave, value]);
+  }, []);
 
   return (
     <div

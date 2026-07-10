@@ -93,25 +93,25 @@ export function Prose({
   // affects it via the `img` renderer); otherwise ReactMarkdown re-renders the
   // whole tree every render.
   const components: Components = useMemo(() => ({
-    h1: ({ children, ...p }) => (
+    h1: ({ children, node, ...p }) => (
       <h1 className="mb-4 mt-10 text-3xl font-semibold tracking-tight text-white first:mt-0" style={HEADING_SCROLL} {...p}>{children}</h1>
     ),
-    h2: ({ children, ...p }) => (
+    h2: ({ children, node, ...p }) => (
       <h2 className="mb-3 mt-10 text-2xl font-semibold tracking-tight text-white" style={HEADING_SCROLL} {...p}>{children}</h2>
     ),
-    h3: ({ children, ...p }) => (
+    h3: ({ children, node, ...p }) => (
       <h3 className="mb-2 mt-8 text-xl font-semibold tracking-tight text-white" style={HEADING_SCROLL} {...p}>{children}</h3>
     ),
-    h4: ({ children, ...p }) => (
+    h4: ({ children, node, ...p }) => (
       <h4 className="mb-2 mt-6 text-lg font-semibold text-white" style={HEADING_SCROLL} {...p}>{children}</h4>
     ),
-    h5: ({ children, ...p }) => (
+    h5: ({ children, node, ...p }) => (
       <h5 className="mb-2 mt-5 text-base font-semibold text-white" style={HEADING_SCROLL} {...p}>{children}</h5>
     ),
-    h6: ({ children, ...p }) => (
+    h6: ({ children, node, ...p }) => (
       <h6 className="mb-2 mt-4 text-sm font-semibold uppercase tracking-widest text-white/60" style={HEADING_SCROLL} {...p}>{children}</h6>
     ),
-    p: ({ children, ...p }) => <p className="my-4 text-[15px] leading-7 text-white/85" {...p}>{children}</p>,
+    p: ({ children, node, ...p }) => <p className="my-4 text-[15px] leading-7 text-white/85" {...p}>{children}</p>,
     a: ({ children, href }) => {
       const value = typeof href === "string" ? href : "";
       const cls = "text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white";
@@ -125,12 +125,12 @@ export function Prose({
         </a>
       );
     },
-    strong: ({ children, ...p }) => <strong className="font-semibold text-white" {...p}>{children}</strong>,
-    em: ({ children, ...p }) => <em className="italic" {...p}>{children}</em>,
-    ul: ({ children, ...p }) => <ul className="my-4 ml-6 list-disc space-y-1.5 text-white/85" {...p}>{children}</ul>,
-    ol: ({ children, ...p }) => <ol className="my-4 ml-6 list-decimal space-y-1.5 text-white/85" {...p}>{children}</ol>,
-    li: ({ children, ...p }) => <li className="text-[15px] leading-7" {...p}>{children}</li>,
-    blockquote: ({ children, ...p }) => (
+    strong: ({ children, node, ...p }) => <strong className="font-semibold text-white" {...p}>{children}</strong>,
+    em: ({ children, node, ...p }) => <em className="italic" {...p}>{children}</em>,
+    ul: ({ children, node, ...p }) => <ul className="my-4 ml-6 list-disc space-y-1.5 text-white/85" {...p}>{children}</ul>,
+    ol: ({ children, node, ...p }) => <ol className="my-4 ml-6 list-decimal space-y-1.5 text-white/85" {...p}>{children}</ol>,
+    li: ({ children, node, ...p }) => <li className="text-[15px] leading-7" {...p}>{children}</li>,
+    blockquote: ({ children, node, ...p }) => (
       <blockquote className="my-5 border-l-2 border-white/30 pl-4 italic text-white/60" {...p}>{children}</blockquote>
     ),
     code: ({ children, className: cls, node, ...p }) => {
@@ -169,15 +169,15 @@ export function Prose({
         </div>
       );
     },
-    table: ({ children, ...p }) => (
+    table: ({ children, node, ...p }) => (
       <div className="my-5 overflow-x-auto">
         <table className="w-full border-collapse border border-white/10 text-sm" {...p}>{children}</table>
       </div>
     ),
-    th: ({ children, ...p }) => <th className="border border-white/10 bg-white/[0.04] px-4 py-2 text-left font-semibold text-white" {...p}>{children}</th>,
-    td: ({ children, ...p }) => <td className="border border-white/10 px-4 py-2 text-white/85" {...p}>{children}</td>,
-    hr: (p) => <hr className="my-10 border-white/10" {...p} />,
-    img: ({ src, alt, ...p }) => {
+    th: ({ children, node, ...p }) => <th className="border border-white/10 bg-white/[0.04] px-4 py-2 text-left font-semibold text-white" {...p}>{children}</th>,
+    td: ({ children, node, ...p }) => <td className="border border-white/10 px-4 py-2 text-white/85" {...p}>{children}</td>,
+    hr: ({ node, ...p }) => <hr className="my-10 border-white/10" {...p} />,
+    img: ({ src, alt, node, ...p }) => {
       const s = typeof src === "string" ? src : "";
       const resolved = s && imageBaseUrl && !isResolved(s) ? `${imageBaseUrl}/${s.replace(/^\.\//, "")}` : s;
       // eslint-disable-next-line @next/next/no-img-element

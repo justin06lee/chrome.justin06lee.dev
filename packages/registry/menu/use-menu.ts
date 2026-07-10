@@ -46,6 +46,9 @@ export function useMenu({ itemCount, onActivate }: UseMenuOptions): UseMenuRetur
   const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  // Element focused when the menu opened (the trigger) — restored on
+  // Escape/select close so focus doesn't drop to document.body.
+  const triggerElRef = useRef<HTMLElement | null>(null);
   const baseId = useId();
 
   // Keep the latest onActivate without re-subscribing handlers.
@@ -60,6 +63,8 @@ export function useMenu({ itemCount, onActivate }: UseMenuOptions): UseMenuRetur
       return;
     }
     // Focus the menu so its onKeyDown (Arrow/Enter/Escape) fires on open.
+    triggerElRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     menuRef.current?.focus();
     const onPointer = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -108,6 +113,7 @@ export function useMenu({ itemCount, onActivate }: UseMenuOptions): UseMenuRetur
       case "Escape":
         e.preventDefault();
         setOpen(false);
+        triggerElRef.current?.focus();
         break;
     }
   };
@@ -136,6 +142,7 @@ export function useMenu({ itemCount, onActivate }: UseMenuOptions): UseMenuRetur
     onSelect: (run: () => void) => {
       run();
       setOpen(false);
+      triggerElRef.current?.focus();
     },
   };
 }

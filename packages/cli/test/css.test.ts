@@ -74,6 +74,17 @@ test("serializeCssVars returns empty string for no vars", () => {
   expect(serializeCssVars({})).toBe("");
 });
 
+test("re-patching preserves $-patterns in the css block verbatim", async () => {
+  const path = temp(`@import "tailwindcss";\n`);
+  const block = `.x { content: "$& $' $\` $1"; }`;
+  await patchGlobalsCss(path, block, "x");
+  // second patch hits the String.replace path — $-patterns must not expand
+  await patchGlobalsCss(path, block, "x");
+  const out = readFileSync(path, "utf8");
+  expect(out).toContain(`content: "$& $' $\` $1";`);
+  rmSync(path, { force: true });
+});
+
 test("distinct blockIds do not clobber each other", async () => {
   const path = temp(`@import "tailwindcss";\n`);
   await patchGlobalsCss(path, BLOCK);

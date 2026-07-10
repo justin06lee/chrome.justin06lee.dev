@@ -17,7 +17,21 @@ export interface RainbowProps extends React.HTMLAttributes<HTMLElement> {
   background?: string;
 }
 
-/** Pull plain text out of a node tree — used for the accessible label. */
+// Visually-hidden but screen-reader-visible (the standard sr-only clip
+// pattern) — inline styles so the component stays dependency-free.
+const SR_ONLY: React.CSSProperties = {
+  position: "absolute",
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  border: 0,
+};
+
+/** Pull plain text out of a node tree — used for the accessible name. */
 function extractText(node: React.ReactNode): string {
   if (typeof node === "string" || typeof node === "number") return String(node);
   if (Array.isArray(node)) return node.map(extractText).join("");
@@ -91,7 +105,11 @@ export function Rainbow({
       <style precedence="default" href="chrome-rainbow-keyframes">
         {KEYFRAMES}
       </style>
-      <Tag aria-label={extractText(children)} style={{ background, ...style }} {...rest}>
+      <Tag style={{ background, ...style }} {...rest}>
+        {/* Real text for assistive tech — aria-label on a generic span is
+            unreliable, so an sr-only element carries the accessible name while
+            the animated glyphs stay aria-hidden. */}
+        <span style={SR_ONLY}>{extractText(children)}</span>
         {rainbowify(children, duration, stagger, next)}
       </Tag>
     </>

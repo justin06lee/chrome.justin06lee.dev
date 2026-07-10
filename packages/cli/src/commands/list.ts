@@ -1,5 +1,6 @@
 import { defineCommand } from "citty";
 import { DEFAULT_REGISTRY } from "../constants";
+import { sanitize } from "../sanitize";
 
 interface IndexEntry {
   name: string;
@@ -53,10 +54,10 @@ export const listCommand = defineCommand({
       grouped.get(k)!.push(i);
     }
     for (const [type, entries] of grouped) {
-      console.log(`\n${type}:`);
+      console.log(`\n${sanitize(type)}:`);
       for (const e of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-        const tail = e.description ? `  — ${e.description}` : "";
-        console.log(`  ${e.name}${tail}`);
+        const tail = e.description ? `  — ${sanitize(e.description)}` : "";
+        console.log(`  ${sanitize(e.name)}${tail}`);
       }
     }
   },

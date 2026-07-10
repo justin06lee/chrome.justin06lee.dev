@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Range } from "@/components/ui/range";
 
@@ -59,7 +59,7 @@ export function ImageCropper({
   const clampScale = (s: number) => Math.min(maxScale, Math.max(minScale, s));
   const clampPct = (p: number) => Math.min(100, Math.max(-100, p));
 
-  const onMouseDown = (e: React.MouseEvent) => {
+  const onPointerDown = (e: React.PointerEvent) => {
     if (!boxRef.current) return;
     const rect = boxRef.current.getBoundingClientRect();
     dragState.current = {
@@ -69,38 +69,49 @@ export function ImageCropper({
       origY: value.y,
       w: rect.width,
     };
-    const move = (ev: MouseEvent) => {
-      const d = dragState.current;
-      if (!d) return;
-      const dxPct = ((ev.clientX - d.startX) / d.w) * 100;
-      const dyPct = ((ev.clientY - d.startY) / d.w) * 100;
-      onChange({
-        ...value,
-        x: clampPct(d.origX + dxPct),
-        y: clampPct(d.origY + dyPct),
-      });
-    };
-    const up = () => {
-      dragState.current = null;
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", up);
-    };
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", up);
+    boxRef.current.setPointerCapture(e.pointerId);
   };
 
-  const onWheel = (e: React.WheelEvent) => {
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = dragState.current;
+    if (!d) return;
+    const dxPct = ((e.clientX - d.startX) / d.w) * 100;
+    const dyPct = ((e.clientY - d.startY) / d.w) * 100;
+    onChange({
+      ...value,
+      x: clampPct(d.origX + dxPct),
+      y: clampPct(d.origY + dyPct),
+    });
+  };
+
+  const onPointerUp = () => {
+    dragState.current = null;
+  };
+
+  // React registers wheel listeners as passive, so preventDefault there is a
+  // no-op (the page scrolls while zooming). Attach a non-passive one instead.
+  const onWheelRef = useRef<(e: WheelEvent) => void>(null);
+  onWheelRef.current = (e: WheelEvent) => {
     e.preventDefault();
     const delta = -e.deltaY * 0.002;
     onChange({ ...value, scale: clampScale(value.scale + delta) });
   };
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const onWheel = (e: WheelEvent) => onWheelRef.current?.(e);
+    box.addEventListener("wheel", onWheel, { passive: false });
+    return () => box.removeEventListener("wheel", onWheel);
+  }, []);
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       <div
         ref={boxRef}
-        onMouseDown={onMouseDown}
-        onWheel={onWheel}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
         className={cn(
           "relative overflow-hidden border border-white/20 bg-white/5",
           "cursor-grab touch-none select-none active:cursor-grabbing",

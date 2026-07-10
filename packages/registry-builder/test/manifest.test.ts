@@ -17,3 +17,15 @@ test("writeManifest writes a TS file importing each meta module", async () => {
   expect(text).toContain("export const REGISTRY = [button, utils]");
   rmSync(out, { recursive: true, force: true });
 });
+
+test("writeManifest prefixes identifiers that are JS reserved words", async () => {
+  const out = mkdtempSync(join(tmpdir(), "chrome-ui-manifest-reserved-"));
+  const manifestPath = join(out, "registry-manifest.ts");
+  await writeManifest(manifestPath, [
+    { name: "switch", relativeImportPath: "../packages/registry/switch/meta" },
+  ]);
+  const text = readFileSync(manifestPath, "utf8");
+  expect(text).toContain('import _switch from "../packages/registry/switch/meta"');
+  expect(text).toContain("export const REGISTRY = [_switch]");
+  rmSync(out, { recursive: true, force: true });
+});

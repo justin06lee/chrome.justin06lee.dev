@@ -67,6 +67,8 @@ export function Segmented<T extends string>({
     }
   };
 
+  const hasSelection = options.some((o) => o.value === value);
+
   return (
     <div
       role="group"
@@ -74,6 +76,8 @@ export function Segmented<T extends string>({
       onKeyDown={onKeyDown}
       className={cn("inline-flex items-center gap-1", className)}
     >
+      {/* Roving tabindex needs one tab stop — if no option matches value, fall
+          back to the first so the control stays keyboard-reachable. */}
       {options.map((o, i) => {
         const active = o.value === value;
         return (
@@ -84,7 +88,7 @@ export function Segmented<T extends string>({
             }}
             type="button"
             aria-pressed={active}
-            tabIndex={active ? 0 : -1}
+            tabIndex={active || (!hasSelection && i === 0) ? 0 : -1}
             onClick={() => onChange(o.value)}
             className={cn(
               "border transition-colors",

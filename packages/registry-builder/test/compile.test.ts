@@ -92,3 +92,43 @@ test("compileItem fails clearly when cssFile is missing", async () => {
   };
   await expect(compileItem(item)).rejects.toThrow(/missing\.css/);
 });
+
+test("compileItem rejects a files source that escapes the component folder", async () => {
+  const item = {
+    dir: join(FIXTURE, "button"),
+    meta: {
+      name: "button",
+      type: "registry:ui" as const,
+      files: [{ source: "../_shared/utils/utils.ts", target: "utils.ts" }],
+    },
+  };
+  await expect(compileItem(item)).rejects.toThrow(/escapes the component folder/);
+});
+
+test("compileItem rejects a cssFile that escapes the component folder", async () => {
+  const item = {
+    dir: join(FIXTURE, "button"),
+    meta: {
+      name: "button",
+      type: "registry:ui" as const,
+      files: [{ source: "button.tsx", target: "button.tsx" }],
+      cssFile: "../../../../etc/passwd",
+    },
+  };
+  await expect(compileItem(item)).rejects.toThrow(/escapes the component folder/);
+});
+
+test("compileItem still allows nested sources inside the component folder", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-compile-nested-"));
+  writeFileSync(join(dir, "widget.tsx"), "export function Widget() { return null; }\n");
+  const compiled = await compileItem({
+    dir,
+    meta: {
+      name: "widget",
+      type: "registry:ui" as const,
+      files: [{ source: "./widget.tsx", target: "widget.tsx" }],
+    },
+  });
+  expect(compiled.files[0]!.content).toContain("export function Widget");
+  rmSync(dir, { recursive: true, force: true });
+});

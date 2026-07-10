@@ -4,7 +4,9 @@
   "description": "stacked paper card with hovered fan-out spring animation.",
   "dependencies": [],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "path": "stack.tsx",

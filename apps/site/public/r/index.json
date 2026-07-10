@@ -431,7 +431,7 @@
   {
     "name": "select",
     "type": "registry:ui",
-    "description": "headless dropdown with palette swatch support.",
+    "description": "styled dropdown select with keyboard navigation and option prefix slots (e.g. palette swatches).",
     "dependencies": [],
     "registryDependencies": []
   },
@@ -481,7 +481,9 @@
     "type": "registry:ui",
     "description": "stacked paper card with hovered fan-out spring animation.",
     "dependencies": [],
-    "registryDependencies": []
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "tabs",
@@ -523,7 +525,9 @@
     "type": "registry:ui",
     "description": "3d perspective tilt card with sweeping shine on hover.",
     "dependencies": [],
-    "registryDependencies": []
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "timeline",

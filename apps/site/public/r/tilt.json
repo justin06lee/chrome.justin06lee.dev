@@ -4,7 +4,9 @@
   "description": "3d perspective tilt card with sweeping shine on hover.",
   "dependencies": [],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "path": "tilt.tsx",

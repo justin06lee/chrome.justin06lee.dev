@@ -31,6 +31,57 @@ function formatDate(iso?: string): string {
   });
 }
 
+type BannerStill = {
+  /** Frozen first frame as a data URL, or null when fetch/decode failed. */
+  still: string | null;
+  /** The fetched banner blob (for the hover swap), or null on failure. */
+  blob: Blob | null;
+};
+
+// Module-level cache keyed by src: each banner is fetched + frozen once, even
+// as cards remount (e.g. while typing in the search box). Holds the in-flight
+// promise too, so concurrent cards share one fetch.
+const bannerStillCache = new Map<string, Promise<BannerStill>>();
+
+function loadBannerStill(src: string): Promise<BannerStill> {
+  const cached = bannerStillCache.get(src);
+  if (cached) return cached;
+  const promise = fetch(src)
+    .then((r) => r.blob())
+    .then(
+      (blob) =>
+        new Promise<BannerStill>((resolve) => {
+          const url = URL.createObjectURL(blob);
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const c = document.createElement("canvas");
+              c.width = img.naturalWidth;
+              c.height = img.naturalHeight;
+              c.getContext("2d")?.drawImage(img, 0, 0);
+              resolve({ still: c.toDataURL("image/png"), blob });
+            } catch {
+              resolve({ still: null, blob: null });
+            }
+            URL.revokeObjectURL(url);
+          };
+          // Without an error path a failed decode would leak the blob url forever.
+          img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve({ still: null, blob: null });
+          };
+          img.src = url;
+        }),
+    )
+    .catch((): BannerStill => ({ still: null, blob: null }));
+  bannerStillCache.set(src, promise);
+  // Don't pin failures — a later remount can retry.
+  void promise.then((result) => {
+    if (result.still === null) bannerStillCache.delete(src);
+  });
+  return promise;
+}
+
 function ArticleCard({
   article,
   basePath,
@@ -48,30 +99,16 @@ function ArticleCard({
   // swap to the animated original only on hover. Keeps GIF / animated WebP
   // banners calm until the user shows interest.
   useEffect(() => {
-    if (!article.bannerUrl) return;
+    const src = article.bannerUrl;
+    if (!src) return;
     let cancelled = false;
-    fetch(article.bannerUrl)
-      .then((r) => r.blob())
-      .then((blob) => {
-        if (cancelled) return;
-        blobRef.current = blob;
-        const url = URL.createObjectURL(blob);
-        const img = new Image();
-        img.onload = () => {
-          const c = document.createElement("canvas");
-          c.width = img.naturalWidth;
-          c.height = img.naturalHeight;
-          c.getContext("2d")?.drawImage(img, 0, 0);
-          if (!cancelled) setStillSrc(c.toDataURL("image/png"));
-          URL.revokeObjectURL(url);
-        };
-        // Without an error path a failed decode would leak the blob url forever.
-        img.onerror = () => URL.revokeObjectURL(url);
-        img.src = url;
-      })
-      .catch(() => {
-        // Network/blob failure: nothing allocated past this point, so swallow.
-      });
+    void loadBannerStill(src).then(({ still, blob }) => {
+      if (cancelled) return;
+      blobRef.current = blob;
+      // On fetch/decode failure (e.g. a cross-origin image without CORS
+      // headers) fall back to the original, possibly animated, src.
+      setStillSrc(still ?? src);
+    });
     return () => {
       cancelled = true;
     };

@@ -44,6 +44,10 @@ export function useInlineEdit({
   // current (no newer commit/value superseded it, component still mounted).
   const generation = useRef(0);
   const mounted = useRef(true);
+  // In-flight commit count. `pending` must ALWAYS resolve — a value change
+  // bumps the generation and would skip a generation-guarded reset, leaving
+  // the field disabled forever — so the reset keys on this counter instead.
+  const inflight = useRef(0);
 
   // Keep the draft in sync when the source of truth changes externally
   // (e.g. a successful commit updates `value`), but never while mid-edit.
@@ -82,6 +86,7 @@ export function useInlineEdit({
     }
     const gen = ++generation.current;
     const isCurrent = () => mounted.current && gen === generation.current;
+    inflight.current += 1;
     setPending(true);
     try {
       await onCommit(next);
@@ -90,7 +95,8 @@ export function useInlineEdit({
       // Roll back to the previous value on failure — unless superseded.
       if (isCurrent()) setDraft(value);
     } finally {
-      if (isCurrent()) setPending(false);
+      inflight.current -= 1;
+      if (mounted.current && inflight.current === 0) setPending(false);
     }
   };
 

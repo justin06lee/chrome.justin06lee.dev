@@ -193,7 +193,7 @@ function usedClassTokens(source: string): Set<string> {
       if (t) out.add(t);
     }
   }
-  // String-literal arguments anywhere (covers cn("social-tooltip-wrap", ...)).
+  // String-literal arguments anywhere (covers cn("flex gap-2", className) in tabs.tsx).
   const strRe = /(["'`])([A-Za-z][\w :/-]*?)\1/g;
   while ((m = strRe.exec(source)) !== null) {
     for (const tok of m[2]!.split(/\s+/)) {

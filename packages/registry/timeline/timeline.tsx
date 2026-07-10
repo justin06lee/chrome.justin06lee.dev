@@ -72,7 +72,9 @@ export function Timeline({ events, showNow, nowMinutes, className }: TimelinePro
     return () => clearInterval(id);
   }, [showNow, nowMinutes]);
 
-  const now = nowMinutes ?? liveNow;
+  // Gate the live value on showNow so toggling it off hides the line instead
+  // of freezing it at its last position. An explicit nowMinutes always shows.
+  const now = nowMinutes ?? (showNow ? liveNow : null);
 
   return (
     <div className={cn("relative min-h-[960px] border border-white/10 bg-white/[0.02] pl-12", className)}>

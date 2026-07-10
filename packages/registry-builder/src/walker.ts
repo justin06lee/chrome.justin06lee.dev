@@ -10,6 +10,10 @@ const KNOWN_TYPES: ReadonlyArray<RegistryItemType> = [
   "registry:hook",
 ];
 
+// Component names become output filenames (`<name>.json`), so they must be
+// simple kebab-case with no path separators.
+const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
 export interface WalkedItem {
   dir: string;
   meta: ComponentMeta;
@@ -22,6 +26,7 @@ async function findMetaFiles(root: string): Promise<string[]> {
     for (const entry of entries) {
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
+        if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
         await recurse(full);
       } else if (entry.name === "meta.ts") {
         out.push(full);
@@ -46,6 +51,16 @@ export async function walkRegistry(root: string): Promise<WalkedItem[]> {
     const meta = mod.default as ComponentMeta;
     if (!meta || typeof meta !== "object" || !meta.name) {
       throw new Error(`Invalid meta.ts at ${metaPath}: missing default export or name`);
+    }
+    if (typeof meta.name !== "string" || !NAME_RE.test(meta.name)) {
+      throw new Error(
+        `Invalid meta.ts in ${dirname(metaPath)}: "name" must match ${NAME_RE} (got ${JSON.stringify(meta.name)})`,
+      );
+    }
+    if (meta.name === "index") {
+      throw new Error(
+        `Invalid meta.ts in ${dirname(metaPath)}: "index" is reserved for the generated index.json`,
+      );
     }
     if (!KNOWN_TYPES.includes(meta.type as RegistryItemType)) {
       throw new Error(

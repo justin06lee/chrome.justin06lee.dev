@@ -12,7 +12,7 @@ echo "--> creating temp next app"
 TMP="$(mktemp -d)"
 trap "rm -rf $TMP" EXIT
 cd "$TMP"
-bun create next-app@latest smoke --yes --use-bun --typescript --tailwind --eslint --app --src-dir false --import-alias "@/*"
+bun create next-app@latest smoke --yes --use-bun --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
 cd smoke
 
 echo "--> building registry into a local /r"

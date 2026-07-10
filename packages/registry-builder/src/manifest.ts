@@ -6,10 +6,22 @@ export interface ManifestEntry {
   relativeImportPath: string;
 }
 
+// JS reserved words (plus strict-mode and module-context ones) that would make
+// `import <ident> from ...` a syntax error.
+const RESERVED_WORDS = new Set([
+  "await", "break", "case", "catch", "class", "const", "continue", "debugger",
+  "default", "delete", "do", "else", "enum", "export", "extends", "false",
+  "finally", "for", "function", "if", "implements", "import", "in",
+  "instanceof", "interface", "let", "new", "null", "package", "private",
+  "protected", "public", "return", "static", "super", "switch", "this",
+  "throw", "true", "try", "typeof", "var", "void", "while", "with", "yield",
+]);
+
 function toIdent(name: string): string {
   const ident = name.replace(/[^a-zA-Z0-9_]/g, "_");
-  // Idents can't start with a digit; prefix so e.g. `3d-card` → `_3d_card`.
-  return /^[0-9]/.test(ident) ? `_${ident}` : ident;
+  // Idents can't start with a digit or be a reserved word; prefix so e.g.
+  // `3d-card` becomes `_3d_card` and `switch` becomes `_switch`.
+  return /^[0-9]/.test(ident) || RESERVED_WORDS.has(ident) ? `_${ident}` : ident;
 }
 
 export async function writeManifest(

@@ -17,3 +17,16 @@ test("dedupes packages", () => {
     cmd: "bun", args: ["add", "clsx", "motion"],
   });
 });
+
+test("rejects package names that could be parsed as flags or shell input", () => {
+  expect(() => installCommand("bun", ["--registry=https://evil.example"])).toThrow(/not a valid npm package name/);
+  expect(() => installCommand("npm", ["-g"])).toThrow(/not a valid npm package name/);
+  expect(() => installCommand("bun", ["pkg; rm -rf /"])).toThrow(/not a valid npm package name/);
+  expect(() => installCommand("bun", ["pkg && echo pwned"])).toThrow(/not a valid npm package name/);
+});
+
+test("accepts scoped and versioned package names", () => {
+  expect(installCommand("bun", ["@types/node"])).toEqual({ cmd: "bun", args: ["add", "@types/node"] });
+  expect(installCommand("bun", ["clsx@2.1.0"])).toEqual({ cmd: "bun", args: ["add", "clsx@2.1.0"] });
+  expect(installCommand("bun", ["@scope/pkg@^1.2.3"])).toEqual({ cmd: "bun", args: ["add", "@scope/pkg@^1.2.3"] });
+});

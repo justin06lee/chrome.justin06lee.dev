@@ -4,6 +4,7 @@ export default defineComponent({
   name: "tilt",
   type: "registry:ui",
   description: "3d perspective tilt card with sweeping shine on hover.",
+  registryDependencies: ["utils"],
   files: [{ source: "tilt.tsx", target: "tilt.tsx" }],
   props: [
     { name: "rotate", type: "number", default: "14", description: "tilt angle in degrees" },

@@ -23,6 +23,18 @@ export function useToc(headings: TocHeading[], rootMargin = "-80px 0px -70% 0px"
     const ids = idsKey ? idsKey.split("|") : [];
     if (ids.length === 0) return;
 
+    // The observed zone's top edge sits below the viewport top by the
+    // rootMargin's top inset (e.g. "-80px 0px -70% 0px" starts the zone 80px
+    // down), so "scrolled past" must be measured against that same line — not
+    // the viewport edge — or a heading sitting under the sticky header snaps
+    // the highlight back to the previous section.
+    const topMargin = /^(-?\d*\.?\d+)(px|%)/.exec(rootMargin.trim());
+    const topInset = (viewportHeight: number): number => {
+      if (!topMargin) return 0;
+      const v = parseFloat(topMargin[1] ?? "0");
+      return topMargin[2] === "%" ? (-v / 100) * viewportHeight : -v;
+    };
+
     // Track which observed headings are currently intersecting; on every batch
     // pick the topmost intersecting one (in document order) so the result is
     // deterministic rather than "last entry in the batch wins".
@@ -39,10 +51,11 @@ export function useToc(headings: TocHeading[], rootMargin = "-80px 0px -70% 0px"
           setActiveId(topmost);
         } else {
           // Nothing intersecting: keep the last heading scrolled above the
-          // viewport active, falling back to the first heading at the top.
+          // observed zone active, falling back to the first heading at the top.
+          const offset = topInset(window.innerHeight);
           const passed = ids.filter((id) => {
             const el = document.getElementById(id);
-            return el ? el.getBoundingClientRect().top < 0 : false;
+            return el ? el.getBoundingClientRect().top < offset : false;
           });
           setActiveId(passed[passed.length - 1] ?? ids[0] ?? "");
         }

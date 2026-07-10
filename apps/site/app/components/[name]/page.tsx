@@ -109,6 +109,7 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
 
   return (
     <ComponentDetail
+      key={name}
       name={name}
       description={meta.description}
       source={source}
@@ -116,6 +117,7 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
       title={title}
       barePreview={name === "showcase"}
       wide={WIDE_PREVIEW.has(name)}
+      props={meta.props}
     >
       {Demo ? <Demo /> : null}
     </ComponentDetail>

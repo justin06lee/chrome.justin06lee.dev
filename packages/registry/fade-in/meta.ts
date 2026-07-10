@@ -15,7 +15,6 @@ export default defineComponent({
     { name: "y", type: "number", default: "-10", description: "starting vertical offset in px (animates to 0)." },
     { name: "x", type: "number", default: "0", description: "starting horizontal offset in px (animates to 0)." },
     { name: "duration", type: "number", default: "0.4", description: "animation duration in seconds." },
-    { name: "once", type: "boolean", default: "true", description: "animate once on mount." },
     { name: "className", type: "string" },
     { name: "children", type: "ReactNode" },
   ],
