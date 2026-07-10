@@ -8,16 +8,29 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December",
 ];
 
+const TODAY = new Date(2026, 5, 15); // June 15, 2026
+
 export default function CalendarNavDemo() {
   const [view, setView] = useState<CalendarView>("month");
-  // Absolute month index since year 0; lets prev/next roll across years.
-  const [monthIndex, setMonthIndex] = useState(2026 * 12 + 5); // June 2026
+  const [date, setDate] = useState(TODAY);
 
-  const year = Math.floor(monthIndex / 12);
-  const month = MONTHS[monthIndex % 12] ?? "";
+  // Prev/next step by the active view's unit: ±1 day, ±1 month, or ±1 year.
+  const step = (dir: 1 | -1) =>
+    setDate((d) => {
+      const next = new Date(d);
+      if (view === "day") next.setDate(d.getDate() + dir);
+      else if (view === "month") next.setMonth(d.getMonth() + dir);
+      else next.setFullYear(d.getFullYear() + dir);
+      return next;
+    });
 
+  const month = MONTHS[date.getMonth()] ?? "";
   const label =
-    view === "year" ? String(year) : `${month} ${year}`;
+    view === "day"
+      ? `${month} ${date.getDate()}, ${date.getFullYear()}`
+      : view === "month"
+        ? `${month} ${date.getFullYear()}`
+        : String(date.getFullYear());
 
   return (
     <div className="w-full max-w-2xl">
@@ -25,9 +38,9 @@ export default function CalendarNavDemo() {
         label={label}
         view={view}
         onViewChange={setView}
-        onPrev={() => setMonthIndex((i) => i - 1)}
-        onNext={() => setMonthIndex((i) => i + 1)}
-        onToday={() => setMonthIndex(2026 * 12 + 5)}
+        onPrev={() => step(-1)}
+        onNext={() => step(1)}
+        onToday={() => setDate(TODAY)}
       />
     </div>
   );
