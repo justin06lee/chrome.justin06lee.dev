@@ -19,7 +19,6 @@ export default function NowPlayingBarDemo() {
         position="sticky"
         title="Deep work — writing"
         subtitle="focus session"
-        accent="#6ee7b7"
         startedAt={startedAt}
         actions={
           running ? (

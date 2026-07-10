@@ -8,7 +8,10 @@ export type NowPlayingBarProps = {
   title: React.ReactNode;
   /** When set, a live elapsed timer ticks every second. Omit for the idle state. */
   startedAt?: number | Date;
-  /** CSS color for the left accent bar + dot. */
+  /**
+   * Optional CSS color for a small dot before the running title. The source
+   * bar has no accent; omit (default) for the faithful look.
+   */
   accent?: string;
   subtitle?: React.ReactNode;
   /** Right-side slot (e.g. a Stop button). */
@@ -34,8 +37,8 @@ function formatElapsed(startAt: number, now: number): string {
 
 /**
  * Sticky bottom "now playing" bar: a running activity with a live elapsed
- * timer, an accent color, and a right-side action slot. All data is driven by
- * props/callbacks. Dark-only.
+ * timer and a right-side action slot, matching the upstream calendar bar's
+ * look. All data is driven by props/callbacks. Dark-only.
  */
 export function NowPlayingBar({
   title,
@@ -81,48 +84,41 @@ export function NowPlayingBar({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2 px-3 py-2">
+      <div className="flex items-center justify-between px-3 py-2">
         <button
           type="button"
           onClick={onClick}
           disabled={!onClick}
           className={cn(
-            "flex min-w-0 flex-1 items-center gap-3 text-left",
+            "mr-2 flex min-w-0 flex-1 flex-col items-start text-left",
             onClick ? "cursor-pointer" : "cursor-default",
           )}
         >
-          <span
-            aria-hidden
-            className="h-8 w-1 shrink-0 rounded-full"
-            style={{ background: accent ?? "rgba(255,255,255,0.25)" }}
-          />
-          <span className="flex min-w-0 flex-col">
-            <span className="text-[10px] uppercase tracking-wider text-white/50">
-              Now playing
-            </span>
-            {startMs !== undefined ? (
-              <span className="flex items-center gap-2 truncate text-sm text-white">
+          <span className="text-[10px] uppercase tracking-wider text-white/50">
+            Now playing
+          </span>
+          {startMs !== undefined ? (
+            <span className="flex min-w-0 max-w-full items-center gap-2 text-sm text-white">
+              {accent && (
                 <span
                   aria-hidden
                   className="size-1.5 shrink-0 rounded-full"
-                  style={{ background: accent ?? "currentColor" }}
+                  style={{ background: accent }}
                 />
-                <span className="truncate">{title}</span>
-                {elapsed && (
-                  <span className="shrink-0 tabular-nums text-white/60">
-                    · {elapsed}
-                  </span>
-                )}
+              )}
+              <span className="truncate">
+                {title}
+                {elapsed && <span className="tabular-nums"> · {elapsed}</span>}
               </span>
-            ) : (
-              <span className="truncate text-sm text-white/50">
-                Nothing running
-              </span>
-            )}
-            {subtitle && (
-              <span className="truncate text-xs text-white/40">{subtitle}</span>
-            )}
-          </span>
+            </span>
+          ) : (
+            <span className="truncate text-sm text-white/50">
+              Nothing running
+            </span>
+          )}
+          {subtitle && (
+            <span className="truncate text-xs text-white/40">{subtitle}</span>
+          )}
         </button>
         {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
       </div>
