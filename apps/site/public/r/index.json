@@ -35,7 +35,7 @@
   {
     "name": "ascii",
     "type": "registry:ui",
-    "description": "seamless ascii-art renderer — a mono pre locked to a fixed character grid (no ligatures, tight leading) so art never breaks. wrap it in chrome to foil every glyph.",
+    "description": "seamless ascii-art renderer — point src at a .txt file (or pass a string child) and it renders on a fixed character grid, no ligatures, no spacing drift. wrap it in chrome to foil every glyph.",
     "dependencies": [],
     "registryDependencies": [
       "utils"

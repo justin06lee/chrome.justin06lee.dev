@@ -14,7 +14,6 @@ import {
 import { Ascii } from "../../../../../packages/registry/ascii/ascii";
 import { Chrome } from "../../../../../packages/registry/chrome/chrome";
 import { NotFound } from "../../../../../packages/registry/not-found/not-found";
-import { CAT_ASCII } from "../../../../../packages/registry/not-found/cat-ascii";
 import { CountUp } from "../../../../../packages/registry/count-up/count-up";
 import { FadeIn, staggerDelay } from "../../../../../packages/registry/fade-in/fade-in";
 import { Gallery, type GalleryItem } from "../../../../../packages/registry/gallery/gallery";
@@ -252,21 +251,25 @@ function IntroExample({
 export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
   ascii: [
     {
-      label: "Basic",
-      code: "<Ascii label=\"ascii cat\">{art}</Ascii>",
-      render: <Ascii label="ascii cat">{CAT_ASCII[1] ?? ""}</Ascii>,
+      label: "From a file",
+      code: '<Ascii src="/ascii/ascii1.txt" label="ascii cat" />',
+      render: <Ascii src="/ascii/ascii1.txt" label="ascii cat" />,
     },
     {
-      label: "Sized",
-      code: '<Ascii size={16} lineHeight={1.05}>{art}</Ascii>',
-      render: <Ascii size={16} lineHeight={1.05}>{CAT_ASCII[6] ?? ""}</Ascii>,
+      label: "Inline string",
+      code: "<Ascii size={16}>{art}</Ascii>",
+      render: (
+        <Ascii size={16}>
+          {"  /\\_/\\\n ( o.o )\n  > ^ <"}
+        </Ascii>
+      ),
     },
     {
       label: "Chrome foil",
-      code: '<Chrome as="div">\n  <Ascii>{art}</Ascii>\n</Chrome>',
+      code: '<Chrome as="div">\n  <Ascii src="/ascii/ascii5.txt" />\n</Chrome>',
       render: (
         <Chrome as="div">
-          <Ascii>{CAT_ASCII[4] ?? ""}</Ascii>
+          <Ascii src="/ascii/ascii5.txt" />
         </Chrome>
       ),
     },
