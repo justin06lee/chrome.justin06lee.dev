@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { detectProject } from "../project";
+import { detectProject, detectAliasBase } from "../project";
 import { defaultConfig, writeConfig } from "../writers/config";
 import { patchGlobalsCss } from "../writers/css";
 import { runInstall } from "../writers/deps";
@@ -61,12 +61,14 @@ export async function runInit(opts: InitOptions): Promise<void> {
         console.log(`✓ patched ${cssPath}`);
       }
     } else if (item.type === "registry:lib") {
-      // Each lib file lands at the utils alias (lib/utils.ts).
+      // Each lib file lands at the utils alias (lib/utils.ts), under src/ on
+      // src-layout projects so the @/* tsconfig alias resolves.
+      const libRel = join(detectAliasBase(cwd), "lib");
       for (const file of item.files) {
-        const dest = join(cwd, "lib", file.path);
+        const dest = join(cwd, libRel, file.path);
         const result = await writeFileSafe(dest, file.content, { cwdGuard: cwd });
-        if (result.action === "written") console.log(`✓ wrote lib/${file.path}`);
-        else console.log(`✓ skipped lib/${file.path} (already present)`);
+        if (result.action === "written") console.log(`✓ wrote ${join(libRel, file.path)}`);
+        else console.log(`✓ skipped ${join(libRel, file.path)} (already present)`);
       }
     }
   }

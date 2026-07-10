@@ -52,7 +52,8 @@ export async function patchGlobalsCss(
   }
   const re = new RegExp(`${escape(start)}[\\s\\S]*?${escape(END)}`, "g");
   const next = re.test(current)
-    ? current.replace(re, fenced)
+    // replacer function so `$&`, `$'`, `$1`… in registry css aren't expanded
+    ? current.replace(re, () => fenced)
     : current.trimEnd() + "\n\n" + fenced + "\n";
   await writeFile(path, next);
 }

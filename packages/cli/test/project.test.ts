@@ -2,7 +2,7 @@ import { test, expect } from "bun:test";
 import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { detectProject } from "../src/project";
+import { detectAliasBase, detectProject } from "../src/project";
 
 function tempProject(setup: (dir: string) => void): string {
   const dir = mkdtempSync(join(tmpdir(), "chrome-ui-proj-"));
@@ -44,4 +44,48 @@ test("throws on tailwind v3", () => {
   });
   expect(() => detectProject(dir)).toThrow(/tailwind v4/i);
   rmSync(dir, { recursive: true, force: true });
+});
+
+test("parseMajor anchors to the leading major version", async () => {
+  const { parseMajor } = await import("../src/project");
+  expect(parseMajor("^4")).toBe(4);
+  expect(parseMajor("~4.1.0")).toBe(4);
+  expect(parseMajor(">=4.0.0 <5")).toBe(4);
+  expect(parseMajor("4.0.0-beta.1")).toBe(4);
+  // non-semver ranges must not grab a stray digit
+  expect(parseMajor("workspace:*")).toBeNull();
+  expect(parseMajor("latest")).toBeNull();
+  expect(parseMajor("catalog:tw3")).toBeNull();
+  expect(parseMajor(undefined)).toBeNull();
+});
+
+test("throws a parse error for non-semver tailwind ranges", () => {
+  const dir = tempProject((d) => {
+    writeFileSync(join(d, "package.json"), '{"name":"x","devDependencies":{"tailwindcss":"workspace:*"}}');
+  });
+  expect(() => detectProject(dir)).toThrow(/could not parse tailwindcss version/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("detectAliasBase reads the tsconfig @/* mapping", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-alias-"));
+  writeFileSync(
+    join(dir, "tsconfig.json"),
+    `{\n  // comment allowed\n  "compilerOptions": { "paths": { "@/*": ["./src/*"] } }\n}`,
+  );
+  expect(detectAliasBase(dir)).toBe("src");
+  writeFileSync(
+    join(dir, "tsconfig.json"),
+    JSON.stringify({ compilerOptions: { paths: { "@/*": ["./*"] } } }),
+  );
+  expect(detectAliasBase(dir)).toBe("");
+});
+
+test("detectAliasBase falls back to probing for src/ without a tsconfig", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-alias-"));
+  expect(detectAliasBase(dir)).toBe("");
+  mkdirSync(join(dir, "src"));
+  expect(detectAliasBase(dir)).toBe("src");
+  mkdirSync(join(dir, "app"));
+  expect(detectAliasBase(dir)).toBe("");
 });

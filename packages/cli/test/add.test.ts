@@ -143,3 +143,88 @@ test("add errors when chrome.json missing", async () => {
   ).rejects.toThrow(/chrome\.json/);
   rmSync(dir, { recursive: true, force: true });
 });
+
+test("add rejects with a conflict error when the file exists and differs", async () => {
+  const dir = makeProject();
+  mkdirSync(join(dir, "components/chrome"), { recursive: true });
+  writeFileSync(join(dir, "components/chrome/socials.tsx"), "// my local edits\n");
+  await expect(
+    runAdd({
+      cwd: dir, names: ["socials"], skipInstall: true,
+      fetch: async (n) => FAKE_REGISTRY[n]!,
+    }),
+  ).rejects.toThrow(/conflict/);
+  // local file untouched
+  expect(readFileSync(join(dir, "components/chrome/socials.tsx"), "utf8")).toContain("my local edits");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add --overwrite replaces a conflicting file", async () => {
+  const dir = makeProject();
+  mkdirSync(join(dir, "components/chrome"), { recursive: true });
+  writeFileSync(join(dir, "components/chrome/socials.tsx"), "// my local edits\n");
+  await runAdd({
+    cwd: dir, names: ["socials"], skipInstall: true, overwrite: true,
+    fetch: async (n) => FAKE_REGISTRY[n]!,
+  });
+  expect(readFileSync(join(dir, "components/chrome/socials.tsx"), "utf8")).toContain("Socials");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add --yes replaces a conflicting file", async () => {
+  const dir = makeProject();
+  mkdirSync(join(dir, "components/chrome"), { recursive: true });
+  writeFileSync(join(dir, "components/chrome/socials.tsx"), "// my local edits\n");
+  await runAdd({
+    cwd: dir, names: ["socials"], skipInstall: true, yes: true,
+    fetch: async (n) => FAKE_REGISTRY[n]!,
+  });
+  expect(readFileSync(join(dir, "components/chrome/socials.tsx"), "utf8")).toContain("Socials");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add errors when chrome.json's tailwind.css escapes the project root", async () => {
+  const dir = makeProject();
+  writeFileSync(
+    join(dir, "chrome.json"),
+    JSON.stringify({
+      $schema: "x", registry: "x", style: "default", tsx: true,
+      tailwind: { css: "../outside/globals.css", baseColor: "black" },
+      aliases: { components: "@/components/chrome", utils: "@/lib/utils", hooks: "@/hooks" },
+    }),
+  );
+  await expect(
+    runAdd({
+      cwd: dir, names: ["socials"], skipInstall: true, yes: true,
+      fetch: async (n) => FAKE_REGISTRY[n]!,
+    }),
+  ).rejects.toThrow(/escapes the project root/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add writes under src/ when tsconfig maps @/* to ./src/*", async () => {
+  const dir = makeProject();
+  writeFileSync(
+    join(dir, "tsconfig.json"),
+    JSON.stringify({ compilerOptions: { paths: { "@/*": ["./src/*"] } } }),
+  );
+  await runAdd({
+    cwd: dir, names: ["button"], skipInstall: true, yes: true,
+    fetch: async (n) => {
+      if (n === "button")
+        return {
+          name: "button", type: "registry:ui", description: "", dependencies: [],
+          registryDependencies: ["utils"],
+          files: [{ path: "button.tsx", content: "// b", type: "registry:ui", target: "button.tsx" }],
+        };
+      return {
+        name: "utils", type: "registry:lib", description: "", dependencies: [],
+        registryDependencies: [],
+        files: [{ path: "utils.ts", content: "// u", type: "registry:lib", target: "utils.ts" }],
+      };
+    },
+  });
+  expect(existsSync(join(dir, "src/components/chrome/button.tsx"))).toBe(true);
+  expect(existsSync(join(dir, "src/lib/utils.ts"))).toBe(true);
+  expect(existsSync(join(dir, "components/chrome/button.tsx"))).toBe(false);
+});

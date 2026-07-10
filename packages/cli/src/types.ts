@@ -1,5 +1,1 @@
-export type {
-  RegistryItem,
-  RegistryFile,
-  RegistryItemType,
-} from "chrome-ui-registry-builder";
+export type { RegistryItem } from "chrome-ui-registry-builder";

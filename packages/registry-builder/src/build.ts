@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, unlink, writeFile } from "node:fs/promises";
 import { join, relative, dirname } from "node:path";
 import { walkRegistry } from "./walker";
 import { compileItem } from "./compile";
@@ -17,6 +17,18 @@ export async function build(opts: BuildOptions): Promise<void> {
   validateRegistry(items.map((i) => i.meta));
 
   await mkdir(opts.outDir, { recursive: true });
+
+  // Remove stale JSON left behind by deleted or renamed components. Only ever
+  // touches *.json files directly inside outDir.
+  const expected = new Set([
+    "index.json",
+    ...items.map((i) => `${i.meta.name}.json`),
+  ]);
+  for (const entry of await readdir(opts.outDir, { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith(".json") && !expected.has(entry.name)) {
+      await unlink(join(opts.outDir, entry.name));
+    }
+  }
 
   const summaries: Array<{
     name: string;

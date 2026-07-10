@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
-import { join, resolve } from "node:path";
-import { detectProject } from "../project";
+import { dirname, join, resolve, sep } from "node:path";
+import { detectAliasBase, detectProject } from "../project";
 import { readConfig } from "../writers/config";
 import type { Fetcher } from "../registry";
 import { makeHttpFetcher, resolveItems } from "../registry";
@@ -28,8 +28,8 @@ export interface AddOptions {
   install?: Installer;
 }
 
-function aliasToFsRelative(alias: string): string {
-  return alias.replace(/^@\//, "");
+function aliasToFsRelative(alias: string, base: string): string {
+  return join(base, alias.replace(/^@\//, ""));
 }
 
 export async function runAdd(opts: AddOptions): Promise<void> {
@@ -55,10 +55,23 @@ export async function runAdd(opts: AddOptions): Promise<void> {
     console.log(`✓ installed ${npmDeps.join(" ")}`);
   }
 
-  const componentsRel = aliasToFsRelative(cfg.aliases.components);
-  const utilsRel = aliasToFsRelative(cfg.aliases.utils);
+  // "@/" maps to src/ on src-layout projects, the root otherwise.
+  const aliasBase = detectAliasBase(cwd);
+  const componentsRel = aliasToFsRelative(cfg.aliases.components, aliasBase);
+  const utilsRel = aliasToFsRelative(cfg.aliases.utils, aliasBase);
   // Hooks land at the hooks alias; older configs predate the field, so fall back.
-  const hooksRel = aliasToFsRelative(cfg.aliases.hooks ?? "@/hooks");
+  const hooksRel = aliasToFsRelative(cfg.aliases.hooks ?? "@/hooks", aliasBase);
+
+  // Resolve the globals.css target once and refuse paths that escape the project.
+  const cssPath = resolve(cwd, cfg.tailwind.css);
+  if (cssPath !== cwd && !cssPath.startsWith(cwd + sep)) {
+    throw new Error(
+      `tailwind.css path "${cfg.tailwind.css}" escapes the project root ${cwd} — fix tailwind.css in chrome.json`,
+    );
+  }
+
+  const overwrite = opts.overwrite || opts.yes;
+  const conflicts: string[] = [];
 
   for (const item of items) {
     for (const file of item.files) {
@@ -69,32 +82,40 @@ export async function runAdd(opts: AddOptions): Promise<void> {
         // Lib files land at <utilsDir>/<file.path>. The utils alias points at a
         // single file (e.g. lib/utils → lib/utils.ts), so use its parent dir.
         // For a bare alias (no slash, e.g. "utils") the dir is the project root.
-        const slash = utilsRel.lastIndexOf("/");
-        const utilsBase = slash === -1 ? "" : utilsRel.slice(0, slash);
-        dest = join(cwd, utilsBase, file.path);
+        const utilsDir = dirname(utilsRel);
+        dest = join(cwd, utilsDir === "." ? "" : utilsDir, file.path);
       } else if (item.type === "registry:theme") {
-        await patchGlobalsCss(join(cwd, cfg.tailwind.css), file.content);
+        await patchGlobalsCss(cssPath, file.content);
         console.log(`✓ patched ${cfg.tailwind.css}`);
         continue;
       } else {
         dest = join(cwd, componentsRel, file.path);
       }
-      const result = await writeFileSafe(dest, file.content, { overwrite: opts.overwrite, cwdGuard: cwd });
+      const result = await writeFileSafe(dest, file.content, { overwrite, cwdGuard: cwd });
       if (result.action === "written") console.log(`✓ wrote ${dest}`);
       else if (result.action === "skipped") console.log(`✓ skipped ${dest} (already present)`);
-      else console.log(`✗ conflict at ${dest} — re-run with --overwrite to replace`);
+      else {
+        conflicts.push(dest);
+        console.log(`✗ conflict at ${dest} — re-run with --overwrite to replace`);
+      }
     }
 
     if (typeof item.css === "string" && item.css.trim().length > 0) {
-      await patchGlobalsCss(join(cwd, cfg.tailwind.css), item.css, item.name);
+      await patchGlobalsCss(cssPath, item.css, item.name);
       console.log(`✓ patched ${cfg.tailwind.css} (${item.name})`);
     }
 
     const cssVars = serializeCssVars(item.cssVars);
     if (cssVars.length > 0) {
-      await patchGlobalsCss(join(cwd, cfg.tailwind.css), cssVars, `${item.name}-vars`);
+      await patchGlobalsCss(cssPath, cssVars, `${item.name}-vars`);
       console.log(`✓ patched ${cfg.tailwind.css} (${item.name} vars)`);
     }
+  }
+
+  if (conflicts.length > 0) {
+    throw new Error(
+      `${conflicts.length} file conflict${conflicts.length === 1 ? "" : "s"} — re-run with --overwrite (or --yes) to replace`,
+    );
   }
 }
 
