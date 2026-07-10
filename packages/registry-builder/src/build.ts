@@ -3,6 +3,7 @@ import { join, relative, dirname } from "node:path";
 import { walkRegistry } from "./walker";
 import { compileItem } from "./compile";
 import { validateRegistry } from "./validate";
+import { validateRegistryImports } from "./validate-imports";
 import { writeManifest } from "./manifest";
 
 export interface BuildOptions {
@@ -38,8 +39,10 @@ export async function build(opts: BuildOptions): Promise<void> {
     registryDependencies: string[];
   }> = [];
 
-  for (const item of items) {
-    const compiled = await compileItem(item);
+  const compiledItems = await Promise.all(items.map(compileItem));
+  validateRegistryImports(compiledItems);
+
+  for (const compiled of compiledItems) {
     await writeFile(
       join(opts.outDir, `${compiled.name}.json`),
       JSON.stringify(compiled, null, 2),
