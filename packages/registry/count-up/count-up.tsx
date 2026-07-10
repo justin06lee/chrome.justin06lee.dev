@@ -27,7 +27,11 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
-/** Animated number that tweens from its previous value to `value` on change. */
+/**
+ * Animated number that counts up to `value`. The first tween (from 0) is held
+ * until the element enters the viewport, so instances further down the page
+ * still animate when scrolled to; later `value` changes tween immediately.
+ */
 export function CountUp({
   value,
   duration = 1,
@@ -39,12 +43,34 @@ export function CountUp({
   className,
   ...rest
 }: CountUpProps) {
-  const [display, setDisplay] = React.useState(value);
+  const [display, setDisplay] = React.useState(0);
   // track the value currently shown so each tween starts where the last ended.
-  const displayRef = React.useRef(value);
+  const displayRef = React.useRef(0);
   const rafRef = React.useRef<number | null>(null);
+  const elRef = React.useRef<Element | null>(null);
+  // gate the first tween on visibility; once started, value changes animate
+  // immediately (each distinct value tweens exactly once, via the effect deps).
+  const [started, setStarted] = React.useState(false);
 
   React.useEffect(() => {
+    if (started) return;
+    const el = elRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setStarted(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) setStarted(true);
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [started]);
+
+  React.useEffect(() => {
+    if (!started) return;
     const from = displayRef.current;
     const to = value;
     if (from === to) return;
@@ -79,12 +105,12 @@ export function CountUp({
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     };
-  }, [value, duration]);
+  }, [value, duration, started]);
 
   const text = format ? format(display) : display.toFixed(decimals);
 
   return (
-    <Tag className={cn("tabular-nums", className)} {...rest}>
+    <Tag ref={elRef} className={cn("tabular-nums", className)} {...rest}>
       {prefix}
       {text}
       {suffix}

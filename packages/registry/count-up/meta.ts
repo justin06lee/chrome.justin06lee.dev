@@ -4,7 +4,7 @@ export default defineComponent({
   name: "count-up",
   type: "registry:ui",
   description:
-    "animated number that tweens to its target with an easeout curve. dependency-free requestanimationframe, respects prefers-reduced-motion.",
+    "animated number that tweens to its target with an easeout curve, starting when scrolled into view. dependency-free requestanimationframe, respects prefers-reduced-motion.",
   dependencies: [],
   registryDependencies: ["utils"],
   files: [{ source: "count-up.tsx", target: "count-up.tsx" }],
