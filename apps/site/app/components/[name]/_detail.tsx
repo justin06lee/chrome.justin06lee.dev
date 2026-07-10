@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { PropDoc } from "chrome-ui-registry-builder";
 import { Button } from "../../../../../packages/registry/button/button";
 import { CodeBlock } from "../../../../../packages/registry/code-block/code-block";
 import { Showcase } from "../../../../../packages/registry/showcase/showcase";
-import { USAGE_EXAMPLES } from "./_examples";
+import type { UsageExample } from "./_examples";
+import { loadUsageExamples } from "./_examples-loader";
 
 export function ComponentDetail({
   name,
@@ -17,6 +19,7 @@ export function ComponentDetail({
   barePreview,
   /** Full-width canvas for components with their own size presets; others stay at reading width. */
   wide,
+  props,
   children,
 }: {
   name: string;
@@ -26,10 +29,21 @@ export function ComponentDetail({
   title?: React.ReactNode;
   barePreview?: boolean;
   wide?: boolean;
+  props?: PropDoc[];
   children: React.ReactNode;
 }) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
-  const examples = USAGE_EXAMPLES[name] ?? [];
+  // Usage examples arrive via a per-module lazy chunk; render nothing until loaded.
+  const [examples, setExamples] = useState<UsageExample[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    loadUsageExamples(name).then((loaded) => {
+      if (!cancelled) setExamples(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [name]);
 
   return (
     <div className={wide ? undefined : "max-w-[720px] mx-auto"}>
@@ -103,6 +117,45 @@ export function ComponentDetail({
                 <CodeBlock code={ex.code} language="tsx" />
               </div>
             ))}
+          </div>
+        </>
+      )}
+
+      {props && props.length > 0 && (
+        <>
+          <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3">
+            props
+          </div>
+          <div className="mb-12 max-w-[720px] overflow-x-auto border border-white/10">
+            <table className="w-full border-collapse text-left text-[13px]">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/[0.02] font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
+                  <th className="px-4 py-2.5 font-normal">name</th>
+                  <th className="px-4 py-2.5 font-normal">type</th>
+                  <th className="px-4 py-2.5 font-normal">default</th>
+                  <th className="px-4 py-2.5 font-normal">description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {props.map((p) => (
+                  <tr key={p.name} className="border-b border-white/10 last:border-b-0 align-top">
+                    <td className="whitespace-nowrap px-4 py-2.5 font-mono text-white">
+                      {p.name}
+                      {p.required && (
+                        <span className="text-white" title="required">
+                          {" "}*
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2.5 font-mono text-white/60">{p.type}</td>
+                    <td className="whitespace-nowrap px-4 py-2.5 font-mono text-white/60">
+                      {p.default ?? <span className="text-white/25">-</span>}
+                    </td>
+                    <td className="px-4 py-2.5 text-white/65">{p.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </>
       )}

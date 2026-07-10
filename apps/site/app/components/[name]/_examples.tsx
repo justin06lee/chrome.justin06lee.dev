@@ -2,9 +2,6 @@
 
 import { useState, type ReactNode } from "react";
 import { ArrowRight, Copy, Github, ListFilter, Menu as MenuIcon } from "lucide-react";
-import { FORM_EXAMPLES } from "./_examples-forms";
-import { CONTENT_EXAMPLES } from "./_examples-content";
-import { EDITOR_EXAMPLES } from "./_examples-editor";
 import { Button } from "../../../../../packages/registry/button/button";
 import {
   Accordion,
@@ -42,7 +39,7 @@ import { Stack } from "../../../../../packages/registry/stack/stack";
 import { Tabs } from "../../../../../packages/registry/tabs/tabs";
 import { Textarea } from "../../../../../packages/registry/textarea/textarea";
 import { Tilt } from "../../../../../packages/registry/tilt/tilt";
-import { Toc } from "../../../../../packages/registry/toc/toc";
+import { Toc, type TocHeading } from "../../../../../packages/registry/toc/toc";
 import { Tooltip } from "../../../../../packages/registry/tooltip/tooltip";
 
 /** One usage example: a label, the code to copy, and a live render of it. */
@@ -150,6 +147,21 @@ function SegmentedExample() {
         { value: "day", label: "day" },
         { value: "month", label: "month" },
         { value: "year", label: "year" },
+      ]}
+    />
+  );
+}
+
+function SegmentedCompactExample() {
+  const [mode, setMode] = useState<"now" | "backfill">("now");
+  return (
+    <Segmented
+      size="compact"
+      value={mode}
+      onChange={setMode}
+      options={[
+        { value: "now", label: "Now" },
+        { value: "backfill", label: "Backfill" },
       ]}
     />
   );
@@ -295,6 +307,26 @@ function ComboboxPlainExample() {
   );
 }
 
+/** Self-contained toc demo: real sections with the listed ids live in a
+ *  scrollable mini page next to the toc, so scroll-spy and anchors work. */
+function TocExample({ label, headings }: { label?: string; headings: TocHeading[] }) {
+  return (
+    <div className="flex w-full max-w-md gap-8 text-left">
+      <Toc label={label} headings={headings} className="!static w-32 shrink-0" />
+      <div className="h-44 flex-1 overflow-y-auto border border-white/10 bg-white/[0.01] px-4">
+        {headings.map((h) => (
+          <section key={h.id} id={h.id} className="min-h-36 scroll-mt-2 py-4">
+            <h4 className="mb-1 text-sm text-white">{h.text}</h4>
+            <p className="text-xs leading-5 text-white/40">
+              scroll or click a toc link — the active row follows this section.
+            </p>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const bannerSvg =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -303,10 +335,7 @@ const bannerSvg =
 
 // --- the example table -----------------------------------------------------
 
-export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
-  ...FORM_EXAMPLES,
-  ...CONTENT_EXAMPLES,
-  ...EDITOR_EXAMPLES,
+export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
   button: [
     {
       label: "Variants",
@@ -787,17 +816,7 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
       code:
         '<Segmented size="compact" value={mode} onChange={setMode}\n' +
         '  options={[{ value: "now", label: "Now" }, { value: "backfill", label: "Backfill" }]} />',
-      render: (
-        <Segmented
-          size="compact"
-          value="now"
-          onChange={() => {}}
-          options={[
-            { value: "now", label: "Now" },
-            { value: "backfill", label: "Backfill" },
-          ]}
-        />
-      ),
+      render: <SegmentedCompactExample />,
     },
   ],
   combobox: [
@@ -886,13 +905,12 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
         '    { id: "usage", text: "usage" },\n' +
         "  ]}\n/>",
       render: (
-        <Toc
+        <TocExample
           headings={[
             { id: "ex-intro", text: "introduction" },
             { id: "ex-usage", text: "usage" },
             { id: "ex-api", text: "api reference" },
           ]}
-          className="!static"
         />
       ),
     },
@@ -900,13 +918,12 @@ export const USAGE_EXAMPLES: Record<string, UsageExample[]> = {
       label: "Custom label",
       code: '<Toc label="contents" headings={headings} />',
       render: (
-        <Toc
+        <TocExample
           label="contents"
           headings={[
             { id: "ex2-setup", text: "setup" },
             { id: "ex2-theming", text: "theming" },
           ]}
-          className="!static"
         />
       ),
     },

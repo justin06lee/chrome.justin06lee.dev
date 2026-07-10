@@ -312,21 +312,25 @@ function SheetExample() {
 }
 
 function SheetSidesExample() {
-  const [side, setSide] = useState<SheetSide | null>(null);
+  const [open, setOpen] = useState(false);
+  // Keep the last side while closing so the exit animation stays on that edge.
+  const [side, setSide] = useState<SheetSide>("right");
   const sides: SheetSide[] = ["left", "right", "top", "bottom"];
   return (
     <div className="flex flex-wrap justify-center gap-2">
       {sides.map((s) => (
-        <Button key={s} variant="outline" onClick={() => setSide(s)}>
+        <Button
+          key={s}
+          variant="outline"
+          onClick={() => {
+            setSide(s);
+            setOpen(true);
+          }}
+        >
           {s}
         </Button>
       ))}
-      <Sheet
-        open={side !== null}
-        onClose={() => setSide(null)}
-        side={side ?? "right"}
-        title={side ?? "sheet"}
-      >
+      <Sheet open={open} onClose={() => setOpen(false)} side={side} title={side}>
         <p className="text-sm text-white/60">slides in from the {side} edge.</p>
       </Sheet>
     </div>
