@@ -247,17 +247,41 @@ function BadgeFilterExample() {
   );
 }
 
+// Mirrors the stack demo card exactly (kicker + three placeholder lines +
+// title) so the usage examples read as the same component as the main demo.
 function StackCard({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full flex-col justify-between p-4">
       <div className="space-y-2">
         <div className="h-px w-full bg-white/15" />
+        <div className="h-px w-5/6 bg-white/15" />
         <div className="h-px w-2/3 bg-white/15" />
       </div>
-      <p className="text-sm font-medium text-white">{children}</p>
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
+          article
+        </p>
+        <p className="mt-2 text-sm font-medium leading-6">{children}</p>
+      </div>
     </div>
   );
 }
+
+// Shared code string for the stack examples — kept in sync with StackCard.
+const stackCardCode = (title: string) =>
+  '  <div className="flex h-full flex-col justify-between p-4">\n' +
+  '    <div className="space-y-2">\n' +
+  '      <div className="h-px w-full bg-white/15" />\n' +
+  '      <div className="h-px w-5/6 bg-white/15" />\n' +
+  '      <div className="h-px w-2/3 bg-white/15" />\n' +
+  "    </div>\n" +
+  "    <div>\n" +
+  '      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">\n' +
+  "        article\n" +
+  "      </p>\n" +
+  `      <p className="mt-2 text-sm font-medium leading-6">${title}</p>\n` +
+  "    </div>\n" +
+  "  </div>";
 
 
 function DialogPlainTrigger() {
@@ -532,7 +556,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
   stack: [
     {
       label: "Basic",
-      code: "<Stack>\n  {/* front card content */}\n</Stack>",
+      code: "<Stack>\n" + stackCardCode("stacked paper card") + "\n</Stack>",
       render: (
         <Stack>
           <StackCard>stacked paper card</StackCard>
@@ -541,7 +565,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
     },
     {
       label: "More layers",
-      code: "<Stack layers={3}>\n  {/* front card content */}\n</Stack>",
+      code: "<Stack layers={3}>\n" + stackCardCode("three layers") + "\n</Stack>",
       render: (
         <Stack layers={3}>
           <StackCard>three layers</StackCard>
