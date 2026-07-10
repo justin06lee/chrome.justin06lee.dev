@@ -1,0 +1,18 @@
+{
+  "name": "ascii",
+  "type": "registry:ui",
+  "description": "seamless ascii-art renderer — a mono pre locked to a fixed character grid (no ligatures, tight leading) so art never breaks. wrap it in chrome to foil every glyph.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "ascii.tsx",
+      "content": "import * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface AsciiProps {\n  /** The ASCII art, exactly as authored. Trailing newline and \\r\\n are normalized. */\n  children: string | string[];\n  /** Accessible name (role=\"img\"). Omit for purely decorative art (aria-hidden). */\n  label?: string;\n  /** Font size in px. Default 12. */\n  size?: number;\n  /** Line-height multiplier. Default 1.15 — tight enough that box-drawing rows touch. */\n  lineHeight?: number;\n  className?: string;\n}\n\n/**\n * Seamless ASCII-art renderer: a mono <pre> locked to a fixed character grid —\n * ligatures and contextual alternates off, tabs normalized, tight line height —\n * so art never shifts, collapses, or renders \"weirdly\". Static and paint-plain,\n * which means wrapping it in `<Chrome>` foils every glyph with zero extra setup.\n */\nexport function Ascii({\n  children,\n  label,\n  size = 12,\n  lineHeight = 1.15,\n  className,\n}: AsciiProps) {\n  const art = (Array.isArray(children) ? children.join(\"\") : children)\n    .replace(/\\r\\n/g, \"\\n\")\n    .replace(/\\n+$/, \"\");\n\n  return (\n    <pre\n      {...(label ? { role: \"img\", \"aria-label\": label } : { \"aria-hidden\": true })}\n      className={cn(\n        \"inline-block select-none whitespace-pre text-left font-mono text-white/80\",\n        className,\n      )}\n      style={{\n        fontSize: size,\n        lineHeight,\n        // Ligatures/alternates merge glyph pairs (=>, |-, fi) and break the grid.\n        fontVariantLigatures: \"none\",\n        fontFeatureSettings: '\"liga\" 0, \"calt\" 0',\n        tabSize: 4,\n        textRendering: \"geometricPrecision\",\n      }}\n    >\n      {art}\n    </pre>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "ascii.tsx"
+    }
+  ]
+}

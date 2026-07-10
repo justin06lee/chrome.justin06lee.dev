@@ -60,6 +60,8 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
     () => import("./_examples-content").then((m) => m.CONTENT_EXAMPLES),
     [
       "article-list",
+      "ascii",
+      "not-found",
       "breadcrumb",
       "calendar-nav",
       "count-up",

@@ -33,6 +33,15 @@
     ]
   },
   {
+    "name": "ascii",
+    "type": "registry:ui",
+    "description": "seamless ascii-art renderer — a mono pre locked to a fixed character grid (no ligatures, tight leading) so art never breaks. wrap it in chrome to foil every glyph.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "asset-sidebar",
     "type": "registry:ui",
     "description": "scrollable image/asset sidebar. drag a row into a textarea or click insert; optional drop zone for uploads.",
@@ -349,6 +358,18 @@
       "motion"
     ],
     "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "not-found",
+    "type": "registry:ui",
+    "description": "the justin06lee.dev 404 block: a random ascii cat fades in above a big mono headline, a muted excuse, and footer links. ten cats ship embedded.",
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [
+      "ascii",
       "utils"
     ]
   },

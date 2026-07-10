@@ -13,6 +13,8 @@ import { Chrome } from "../../../../../packages/registry/chrome/chrome";
 const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   accordion: () => import("../../../../../packages/registry/accordion/demo"),
   article: () => import("../../../../../packages/registry/article/demo"),
+  ascii: () => import("../../../../../packages/registry/ascii/demo"),
+  "not-found": () => import("../../../../../packages/registry/not-found/demo"),
   "asset-sidebar": () => import("../../../../../packages/registry/asset-sidebar/demo"),
   badge: () => import("../../../../../packages/registry/badge/demo"),
   button: () => import("../../../../../packages/registry/button/demo"),

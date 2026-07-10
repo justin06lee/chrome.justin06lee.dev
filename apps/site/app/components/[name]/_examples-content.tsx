@@ -11,6 +11,10 @@ import {
   CalendarNav,
   type CalendarView,
 } from "../../../../../packages/registry/calendar-nav/calendar-nav";
+import { Ascii } from "../../../../../packages/registry/ascii/ascii";
+import { Chrome } from "../../../../../packages/registry/chrome/chrome";
+import { NotFound } from "../../../../../packages/registry/not-found/not-found";
+import { CAT_ASCII } from "../../../../../packages/registry/not-found/cat-ascii";
 import { CountUp } from "../../../../../packages/registry/count-up/count-up";
 import { FadeIn, staggerDelay } from "../../../../../packages/registry/fade-in/fade-in";
 import { Gallery, type GalleryItem } from "../../../../../packages/registry/gallery/gallery";
@@ -246,6 +250,52 @@ function IntroExample({
 // --- the example table -----------------------------------------------------
 
 export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
+  ascii: [
+    {
+      label: "Basic",
+      code: "<Ascii label=\"ascii cat\">{art}</Ascii>",
+      render: <Ascii label="ascii cat">{CAT_ASCII[1] ?? ""}</Ascii>,
+    },
+    {
+      label: "Sized",
+      code: '<Ascii size={16} lineHeight={1.05}>{art}</Ascii>',
+      render: <Ascii size={16} lineHeight={1.05}>{CAT_ASCII[6] ?? ""}</Ascii>,
+    },
+    {
+      label: "Chrome foil",
+      code: '<Chrome as="div">\n  <Ascii>{art}</Ascii>\n</Chrome>',
+      render: (
+        <Chrome as="div">
+          <Ascii>{CAT_ASCII[4] ?? ""}</Ascii>
+        </Chrome>
+      ),
+    },
+  ],
+  "not-found": [
+    {
+      label: "Basic",
+      code: '<NotFound links={[{ label: "home", href: "/" }]} />',
+      render: <NotFound links={[{ label: "home", href: "#" }]} className="py-6" />,
+    },
+    {
+      label: "Custom copy & fixed cat",
+      code:
+        '<NotFound\n  title="lost?"\n  message="nothing lives at this address."\n  cat={2}\n' +
+        '  links={[{ label: "home", href: "/" }, { label: "docs", href: "/docs" }]}\n/>',
+      render: (
+        <NotFound
+          title="lost?"
+          message="nothing lives at this address."
+          cat={2}
+          links={[
+            { label: "home", href: "#" },
+            { label: "docs", href: "#" },
+          ]}
+          className="py-6"
+        />
+      ),
+    },
+  ],
   "article-list": [
     {
       label: "Basic",
