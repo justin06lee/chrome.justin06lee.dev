@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
+import { Tilt } from "@/components/ui/tilt";
 
 export type PfpProps = {
   /** Image url. */
@@ -17,47 +18,36 @@ export type PfpProps = {
 };
 
 /**
- * Profile-picture tile: an image framed in a bordered square that tilts in 3D
- * and sweeps a shine across itself on hover. Use `x`/`y`/`scale` to frame the
- * subject within the tile. Size it via `className` (defaults to `size-16`).
+ * Profile-picture tile: an image framed in a bordered square, composed on the
+ * Tilt component for the 3D hover, with an angled specular sweep that glints
+ * diagonally across the tile. Use `x`/`y`/`scale` to frame the subject within
+ * the tile. Size it via `className` (defaults to `size-16`).
  */
 export function Pfp({ src, alt = "", x = 0, y = 0, scale = 1, className }: PfpProps) {
-  const [hover, setHover] = useState(false);
   const shineRef = useRef<HTMLDivElement>(null);
+  const animRef = useRef<Animation | null>(null);
 
-  useEffect(() => {
-    if (!hover || !shineRef.current) return;
-    const anim = shineRef.current.animate(
+  // One diagonal glint per hover: transform + opacity only, so it stays on
+  // the compositor.
+  const sweep = () => {
+    if (!shineRef.current) return;
+    animRef.current?.cancel();
+    animRef.current = shineRef.current.animate(
       [
-        { transform: "translateX(-220%)", opacity: 0, offset: 0 },
-        { opacity: 1, offset: 0.15 },
-        { opacity: 1, offset: 0.85 },
-        { transform: "translateX(320%)", opacity: 0, offset: 1 },
+        { transform: "translate3d(-45%, -45%, 0)", opacity: 0, offset: 0 },
+        { opacity: 1, offset: 0.2 },
+        { opacity: 1, offset: 0.8 },
+        { transform: "translate3d(45%, 45%, 0)", opacity: 0, offset: 1 },
       ],
       { duration: 900, easing: "ease-in-out", fill: "forwards" },
     );
-    return () => anim.cancel();
-  }, [hover]);
+  };
 
   return (
-    <div style={{ perspective: "500px" }}>
-      <div
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        className={cn(
-          "relative size-16 cursor-pointer overflow-hidden border border-white/70 bg-white/5",
-          "shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_8px_24px_-8px_rgba(0,0,0,0.6)]",
-          className,
-        )}
-        style={{
-          transform: hover
-            ? "rotateX(14deg) rotateY(14deg) translateZ(0)"
-            : "rotateX(0deg) rotateY(0deg) translateZ(0)",
-          transformStyle: "preserve-3d",
-          transition: "transform 0.4s cubic-bezier(0.2, 0.9, 0.2, 1)",
-          willChange: "transform",
-        }}
-      >
+    // Shine handlers live on a wrapper: Tilt spreads its rest props after its
+    // own hover handlers, so passing ours directly would replace the tilt.
+    <div onMouseEnter={sweep} onMouseLeave={() => animRef.current?.cancel()}>
+      <Tilt shine={false} className={cn("size-16", className)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
@@ -69,20 +59,23 @@ export function Pfp({ src, alt = "", x = 0, y = 0, scale = 1, className }: PfpPr
             transformOrigin: "center",
           }}
         />
+        {/* Oversized angled gradient band; translating it diagonally reads as
+            a glossy specular glint crossing the tile. */}
         <div
           ref={shineRef}
           aria-hidden
-          className="pointer-events-none absolute top-0 bottom-0 w-1/2"
+          className="pointer-events-none absolute -inset-1/2"
           style={{
             background:
-              "linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.75) 50%, transparent 80%)",
-            filter: "blur(1px)",
+              "linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.35) 47%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.35) 53%, transparent 60%)",
+            filter: "blur(2px)",
             mixBlendMode: "screen",
-            transform: "translateX(-220%)",
+            transform: "translate3d(-45%, -45%, 0)",
             opacity: 0,
+            willChange: "transform, opacity",
           }}
         />
-      </div>
+      </Tilt>
     </div>
   );
 }
