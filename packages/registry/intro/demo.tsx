@@ -2,6 +2,19 @@
 
 import { useState } from "react";
 import { Intro } from "./intro";
+import { Chrome } from "../chrome/chrome";
+import { Donut } from "../donut/donut";
+
+// Mirrors the justin06lee.dev homepage intro: "hi." -> a spinning ascii donut
+// (here wrapped in the chrome foil) -> a welcome line, each step holding a few
+// seconds with a soft fade between, in the site's text-lg typography.
+const STEPS = [
+  "hi.",
+  <Chrome key="donut" as="div">
+    <Donut width={44} height={20} isolate={false} />
+  </Chrome>,
+  "welcome to my component library.",
+];
 
 export default function IntroDemo() {
   // Remount key so the intro can be replayed from the start each time.
@@ -21,8 +34,8 @@ export default function IntroDemo() {
         // No persistKey here, so it replays on every click. onComplete unmounts it.
         <Intro
           key={cycle}
-          steps={["hi.", "im a registry component.", "welcome."]}
-          stepDuration={1500}
+          steps={STEPS}
+          stepDuration={3000}
           onComplete={() => setCycle(null)}
         />
       )}
