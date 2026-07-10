@@ -34,15 +34,17 @@ export type ImageCropperProps = {
 
 /**
  * Drag-to-reposition + scroll/slider-to-zoom image cropper. Dark only.
- * Drag inside the frame nudges x/y (clamped -100..100), the wheel and the
- * sliders drive zoom. Emits `{ url, scale, x, y }` via `onChange` only.
+ * Drag inside the frame nudges x/y, the wheel and the sliders drive zoom.
+ * Offsets and zoom are clamped so the image always covers the frame — no
+ * empty space can show inside the crop. Emits `{ url, scale, x, y }` via
+ * `onChange` only.
  */
 export function ImageCropper({
   value,
   onChange,
   size = 240,
   aspect = 1,
-  minScale = 0.5,
+  minScale = 1,
   maxScale = 4,
   circle = false,
   className,
@@ -56,8 +58,28 @@ export function ImageCropper({
     w: number;
   } | null>(null);
 
-  const clampScale = (s: number) => Math.min(maxScale, Math.max(minScale, s));
-  const clampPct = (p: number) => Math.min(100, Math.max(-100, p));
+  // The image is rendered frame-sized with `object-cover`, so at scale 1 it
+  // exactly covers the frame; below 1 it would be smaller than the frame on
+  // both axes. Floor the zoom there regardless of the `minScale` prop.
+  const effectiveMinScale = Math.max(minScale, 1);
+  const clampScale = (s: number) =>
+    Math.min(maxScale, Math.max(effectiveMinScale, s));
+  // Max |offset| (in % of the frame, per axis) that still keeps the scaled
+  // image covering the frame: the overhang is (scale - 1) / 2 of the frame,
+  // i.e. (scale - 1) * 50 in translate percent. Shrinks to 0 at scale 1.
+  const maxOffset = (s: number) => Math.max(0, (s - 1) * 50);
+  const clampPct = (p: number, s: number = value.scale) =>
+    Math.min(maxOffset(s), Math.max(-maxOffset(s), p));
+  // Zooming out shrinks the allowed offset, so re-clamp x/y with the new scale.
+  const changeScale = (raw: number) => {
+    const scale = clampScale(raw);
+    onChange({
+      ...value,
+      scale,
+      x: clampPct(value.x, scale),
+      y: clampPct(value.y, scale),
+    });
+  };
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (!boxRef.current) return;
@@ -94,7 +116,7 @@ export function ImageCropper({
   onWheelRef.current = (e: WheelEvent) => {
     e.preventDefault();
     const delta = -e.deltaY * 0.002;
-    onChange({ ...value, scale: clampScale(value.scale + delta) });
+    changeScale(value.scale + delta);
   };
   useEffect(() => {
     const box = boxRef.current;
@@ -147,8 +169,8 @@ export function ImageCropper({
           </span>
           <Range
             value={value.scale}
-            onChange={(scale) => onChange({ ...value, scale: clampScale(scale) })}
-            min={minScale}
+            onChange={changeScale}
+            min={effectiveMinScale}
             max={maxScale}
             step={0.01}
             ariaLabel="zoom"
@@ -160,8 +182,8 @@ export function ImageCropper({
             <Range
               value={value.x}
               onChange={(x) => onChange({ ...value, x: clampPct(x) })}
-              min={-100}
-              max={100}
+              min={-maxOffset(value.scale)}
+              max={maxOffset(value.scale)}
               step={0.5}
               ariaLabel="horizontal offset"
             />
@@ -171,8 +193,8 @@ export function ImageCropper({
             <Range
               value={value.y}
               onChange={(y) => onChange({ ...value, y: clampPct(y) })}
-              min={-100}
-              max={100}
+              min={-maxOffset(value.scale)}
+              max={maxOffset(value.scale)}
               step={0.5}
               ariaLabel="vertical offset"
             />

@@ -4,7 +4,7 @@ export default defineComponent({
   name: "image-cropper",
   type: "registry:ui",
   description:
-    "drag-to-reposition, scroll/slider-to-zoom image cropper. emits { url, scale, x, y }.",
+    "drag-to-reposition, scroll/slider-to-zoom image cropper. pan and zoom are clamped so the image always covers the frame. emits { url, scale, x, y }.",
   dependencies: [],
   registryDependencies: ["utils", "range"],
   files: [{ source: "image-cropper.tsx", target: "image-cropper.tsx" }],
@@ -13,7 +13,7 @@ export default defineComponent({
     { name: "onChange", type: "(value: CropValue) => void", required: true },
     { name: "size", type: "number", default: "240", description: "frame size in px." },
     { name: "aspect", type: "number", default: "1", description: "width / height ratio of the frame." },
-    { name: "minScale", type: "number", default: "0.5" },
+    { name: "minScale", type: "number", default: "1", description: "floored at 1 so the image can never be smaller than the frame." },
     { name: "maxScale", type: "number", default: "4" },
     { name: "circle", type: "boolean", default: "false", description: "render a circular crop guide." },
   ],

@@ -5,8 +5,10 @@ import { ImageCropper, type CropValue } from "./image-cropper";
 
 export default function ImageCropperDemo() {
   const [crop, setCrop] = useState<CropValue>({
+    // start zoomed in a little so there's room to pan (at scale 1 the image
+    // exactly covers the frame and x/y are locked at 0).
     url: "https://picsum.photos/id/1025/600/600",
-    scale: 1,
+    scale: 1.5,
     x: 0,
     y: 0,
   });
