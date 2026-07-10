@@ -11,5 +11,10 @@ export default defineComponent({
     { name: "events", type: "TimelineEvent[]", required: true, description: "{ startMin, endMin, label?, color? }[]" },
     { name: "showNow", type: "boolean", description: "live red now-line, ticks each minute." },
     { name: "nowMinutes", type: "number", description: "override now-line position (minutes of day)." },
+    {
+      name: "markers",
+      type: "Array<{ minutes: number; label: string; color?: string }>",
+      description: "labeled full-width marker lines at minutes-of-day (e.g. prayer times), label at the right edge.",
+    },
   ],
 });

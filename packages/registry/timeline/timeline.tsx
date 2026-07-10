@@ -18,6 +18,12 @@ export type TimelineProps = {
   showNow?: boolean;
   /** Override the now-line position (minutes of day). Implies the line shows. */
   nowMinutes?: number;
+  /**
+   * Labeled horizontal marker lines (e.g. prayer times): a thin full-width
+   * line at each minutes-of-day position with a small mono uppercase label at
+   * the right edge. `color` tints the line.
+   */
+  markers?: Array<{ minutes: number; label: string; color?: string }>;
   className?: string;
 };
 
@@ -41,6 +47,34 @@ function HourGrid() {
   );
 }
 
+// Labeled marker line, styled after the upstream prayer-time markers: a thin
+// full-width rule with a mono uppercase label sitting at the right edge.
+function MarkerLine({
+  minutes,
+  label,
+  color,
+}: {
+  minutes: number;
+  label: string;
+  color?: string;
+}) {
+  const clamped = Math.min(1440, Math.max(0, minutes));
+  return (
+    <div
+      className="pointer-events-none absolute left-0 right-0 flex items-center"
+      style={{ top: `${(clamped / 1440) * 100}%` }}
+    >
+      <div
+        className={cn("h-px flex-1", color == null && "bg-white/40")}
+        style={color != null ? { background: color } : undefined}
+      />
+      <div className="mx-2 whitespace-nowrap font-mono text-[10px] uppercase tracking-widest text-white/70">
+        {label}
+      </div>
+    </div>
+  );
+}
+
 function NowLine({ minutes }: { minutes: number }) {
   return (
     <div
@@ -58,7 +92,7 @@ function NowLine({ minutes }: { minutes: number }) {
  * optional live now-line. Blocks are placed by minutes-of-day. Generalized
  * from the justin06lee.dev calendar day view.
  */
-export function Timeline({ events, showNow, nowMinutes, className }: TimelineProps) {
+export function Timeline({ events, showNow, nowMinutes, markers, className }: TimelineProps) {
   const [liveNow, setLiveNow] = useState<number | null>(null);
 
   useEffect(() => {
@@ -79,6 +113,9 @@ export function Timeline({ events, showNow, nowMinutes, className }: TimelinePro
   return (
     <div className={cn("relative min-h-[960px] border border-white/10 bg-white/[0.02] pl-12", className)}>
       <HourGrid />
+      {markers?.map((m, i) => (
+        <MarkerLine key={i} minutes={m.minutes} label={m.label} color={m.color} />
+      ))}
       {now != null && <NowLine minutes={now} />}
       {events.map((e, i) => {
         // Clamp into the 0–1440 axis so out-of-range (negative or >24h) events
