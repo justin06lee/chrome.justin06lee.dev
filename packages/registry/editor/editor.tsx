@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EditorPreview } from "@/components/ui/editor-preview";
@@ -70,6 +70,13 @@ export function EditorTextarea({
     clearSelection,
     handleScroll,
   } = sync;
+
+  // On mount, sync the overlay to the fresh textarea's scroll position — after
+  // a remount (e.g. a desk mode toggle) the shared ref still holds the old
+  // textarea's scrollTop, which would offset the overlay until the next scroll.
+  useLayoutEffect(() => {
+    handleScroll(textareaRef.current?.scrollTop ?? 0);
+  }, [handleScroll, textareaRef]);
 
   return (
     <div className={cn("relative min-h-0 overflow-hidden", className)}>

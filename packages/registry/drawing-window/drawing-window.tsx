@@ -43,15 +43,17 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-function loadSnapshot(canvas: HTMLCanvasElement, snapshot: string, onLoad?: () => void) {
+function loadSnapshot(canvas: HTMLCanvasElement, snapshot: string, onDone?: () => void) {
   const context = canvas.getContext("2d");
   if (!context) return;
   const image = new Image();
   image.onload = () => {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0);
-    onLoad?.();
+    onDone?.();
   };
+  // Release the caller even if the snapshot fails to decode.
+  image.onerror = () => onDone?.();
   image.src = snapshot;
 }
 
@@ -324,6 +326,9 @@ export function DrawingWindow({
   const sizeRef = useRef(initialSize);
   const pointerIdRef = useRef<number | null>(null);
   const darkMappingRef = useRef(darkMapping);
+  // Snapshot restores are async (Image.onload); ignore undo/redo until done so
+  // rapid clicks can't snapshot the stale canvas into history.
+  const restoringRef = useRef(false);
 
   const [canvasPreset, setCanvasPreset] = useState<string>(
     () => presets[1]?.key ?? presets[0]?.key ?? "landscape",
@@ -398,20 +403,23 @@ export function DrawingWindow({
     return () => container.removeEventListener("wheel", handleWheel);
   }, [active]);
 
+  // Key on the preset's stable fields, not the object identity — an inline
+  // `presets` prop would otherwise wipe the drawing on every parent re-render.
+  const { key: presetKey, width: presetWidth, height: presetHeight } = activePreset;
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const sourceCanvas = getSourceCanvas();
-    sourceCanvas.width = activePreset.width;
-    sourceCanvas.height = activePreset.height;
-    canvas.width = activePreset.width;
-    canvas.height = activePreset.height;
+    sourceCanvas.width = presetWidth;
+    sourceCanvas.height = presetHeight;
+    canvas.width = presetWidth;
+    canvas.height = presetHeight;
     createBlankCanvas(sourceCanvas, bgFill);
     syncDisplayCanvas();
     undoRef.current = [];
     redoRef.current = [];
     syncHistoryState();
-  }, [activePreset, syncDisplayCanvas, bgFill]);
+  }, [presetKey, presetWidth, presetHeight, syncDisplayCanvas, bgFill]);
 
   useEffect(() => {
     darkMappingRef.current = darkMapping;
@@ -614,21 +622,29 @@ export function DrawingWindow({
 
   function handleUndo() {
     const canvas = sourceCanvasRef.current;
-    if (!canvas || undoRef.current.length === 0) return;
+    if (!canvas || restoringRef.current || undoRef.current.length === 0) return;
     const snapshot = undoRef.current.pop();
     if (!snapshot) return;
     redoRef.current = [...redoRef.current, canvas.toDataURL("image/png")].slice(-HISTORY_LIMIT);
-    loadSnapshot(canvas, snapshot, syncDisplayCanvas);
+    restoringRef.current = true;
+    loadSnapshot(canvas, snapshot, () => {
+      restoringRef.current = false;
+      syncDisplayCanvas();
+    });
     syncHistoryState();
   }
 
   function handleRedo() {
     const canvas = sourceCanvasRef.current;
-    if (!canvas || redoRef.current.length === 0) return;
+    if (!canvas || restoringRef.current || redoRef.current.length === 0) return;
     const snapshot = redoRef.current.pop();
     if (!snapshot) return;
     undoRef.current = [...undoRef.current, canvas.toDataURL("image/png")].slice(-HISTORY_LIMIT);
-    loadSnapshot(canvas, snapshot, syncDisplayCanvas);
+    restoringRef.current = true;
+    loadSnapshot(canvas, snapshot, () => {
+      restoringRef.current = false;
+      syncDisplayCanvas();
+    });
     syncHistoryState();
   }
 

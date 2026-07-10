@@ -12,8 +12,6 @@ export interface FadeInProps extends React.HTMLAttributes<HTMLElement> {
   x?: number;
   /** animation duration in seconds. default 0.4. */
   duration?: number;
-  /** animate once on mount. default true. */
-  once?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
@@ -32,7 +30,6 @@ export function FadeIn({
   y = -10,
   x = 0,
   duration = 0.4,
-  once = true,
   className,
   style,
   children,
@@ -42,7 +39,6 @@ export function FadeIn({
   return (
     <Tag
       data-fade-in=""
-      data-once={once ? "" : undefined}
       className={cn("chrome-fade-in", className)}
       style={
         {

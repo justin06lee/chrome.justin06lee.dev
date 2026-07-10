@@ -14,6 +14,7 @@ export default defineComponent({
     { name: "tags", type: "string[]" },
     { name: "banner", type: "string", description: "banner image URL." },
     { name: "backHref", type: "string", description: "renders a back link." },
+    { name: "backLabel", type: "string", default: "'back'", description: "back link label." },
     { name: "children", type: "ReactNode", description: "body — typically <Prose>{markdown}</Prose>." },
   ],
 });

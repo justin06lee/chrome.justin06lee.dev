@@ -4,6 +4,7 @@ export default defineComponent({
   name: "stack",
   type: "registry:ui",
   description: "stacked paper card with hovered fan-out spring animation.",
+  registryDependencies: ["utils"],
   files: [{ source: "stack.tsx", target: "stack.tsx" }],
   props: [
     { name: "layers", type: "number", default: "1", description: "paper layers behind the front card" },

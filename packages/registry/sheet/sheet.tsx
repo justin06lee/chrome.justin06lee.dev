@@ -120,12 +120,14 @@ export function Sheet({
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  // Body scroll lock — lock on open, restore on close/unmount.
+  // Body scroll lock — lock on open, restore the previous value on
+  // close/unmount so another overlay's lock isn't clobbered.
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previous;
     };
   }, [open]);
 

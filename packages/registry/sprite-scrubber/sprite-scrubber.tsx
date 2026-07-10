@@ -45,6 +45,9 @@ export function SpriteScrubber({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const spriteRef = React.useRef<HTMLDivElement>(null);
   const rafRef = React.useRef<number | null>(null);
+  // Container rect for the current pointer session — measured once on
+  // enter/down instead of on every pointermove (layout read per move).
+  const rectRef = React.useRef<DOMRect | null>(null);
   const pendingFrameRef = React.useRef<number | null>(null);
   const currentFrameRef = React.useRef(-1);
   const onFrameChangeRef = React.useRef(onFrameChange);
@@ -95,16 +98,20 @@ export function SpriteScrubber({
     };
   }, []);
 
+  const measureRect = React.useCallback(() => {
+    const c = containerRef.current;
+    rectRef.current = c ? c.getBoundingClientRect() : null;
+    return rectRef.current;
+  }, []);
+
   const updateFromClientX = React.useCallback(
     (clientX: number) => {
-      const c = containerRef.current;
-      if (!c) return;
-      const rect = c.getBoundingClientRect();
-      if (rect.width <= 0) return;
+      const rect = rectRef.current ?? measureRect();
+      if (!rect || rect.width <= 0) return;
       const relX = (clientX - rect.left) / rect.width;
       scheduleFrame(relXToFrame(relX));
     },
-    [relXToFrame, scheduleFrame],
+    [measureRect, relXToFrame, scheduleFrame],
   );
 
   const handleMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -115,12 +122,14 @@ export function SpriteScrubber({
 
   const handleEnter = (e: React.PointerEvent<HTMLDivElement>) => {
     if (mode !== "pointer") return;
+    measureRect();
     updateFromClientX(e.clientX);
   };
 
   const handleDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (mode !== "pointer") return;
     e.currentTarget.setPointerCapture?.(e.pointerId);
+    measureRect();
     updateFromClientX(e.clientX);
   };
 

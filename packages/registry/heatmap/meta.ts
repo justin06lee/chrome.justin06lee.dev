@@ -14,5 +14,6 @@ export default defineComponent({
     { name: "max", type: "number", description: "bucketing cap; defaults to max value." },
     { name: "today", type: "string", description: '"YYYY-MM-DD" to ring.' },
     { name: "onSelectDay", type: "(date: string) => void", description: "makes cells clickable." },
+    { name: "title", type: "(date: string, value: number) => string", description: "cell tooltip formatter." },
   ],
 });

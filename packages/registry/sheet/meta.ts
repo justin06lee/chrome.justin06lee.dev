@@ -15,5 +15,6 @@ export default defineComponent({
     { name: "title", type: "string", description: "optional heading atop the panel." },
     { name: "children", type: "ReactNode", description: "panel body." },
     { name: "className", type: "string", description: "extra classes for the panel." },
+    { name: "ariaLabel", type: "string", description: "accessible name for the panel when no title is rendered. ignored when title is set." },
   ],
 });

@@ -80,7 +80,7 @@ export type CrumbsFromPathOptions = {
 };
 
 /**
- * Split a pathname into a Crumb[] — mirrors the OperatorHeader segment-to-label logic.
+ * Split a pathname into a Crumb[] — each segment is decoded and dashes become spaces.
  * Each crumb's href is the cumulative path; the final segment is still given an href
  * (the Breadcrumb component renders the last item as current regardless).
  */
@@ -92,8 +92,14 @@ export function crumbsFromPath(
   const rest = base && pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
   const segments = rest.split("/").filter(Boolean);
 
-  const defaultLabel = (segment: string) =>
-    decodeURIComponent(segment).replace(/-/g, " ");
+  const defaultLabel = (segment: string) => {
+    // An invalid percent-escape throws — fall back to the raw segment.
+    let decoded = segment;
+    try {
+      decoded = decodeURIComponent(segment);
+    } catch {}
+    return decoded.replace(/-/g, " ");
+  };
 
   return segments.map((segment, i) => ({
     label: labels?.(segment, i) ?? defaultLabel(segment),

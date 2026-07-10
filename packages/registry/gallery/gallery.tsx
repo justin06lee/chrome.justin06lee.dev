@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { ListFilter, Pin } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -74,14 +74,13 @@ export function Gallery({
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [sort, setSort] = useState<GallerySort>(initialSort);
-  const hasAnimated = useRef(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // After first render, stop applying staggered entrance delays.
+  // After the initial entrance, stop applying staggered delays — filtering or
+  // searching should update the grid instantly, not replay the stagger.
+  // (Already-running entrance animations keep their original delays.)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      hasAnimated.current = true;
-    }, 1500);
-    return () => clearTimeout(timer);
+    setHasMounted(true);
   }, []);
 
   const allTags = useMemo(() => {
@@ -131,7 +130,7 @@ export function Gallery({
   }));
 
   // Only stagger on the first render.
-  const shouldAnimate = !hasAnimated.current;
+  const shouldAnimate = !hasMounted;
   const animStart = shouldAnimate ? chipBase + allTags.length * chipStep : 0;
 
   return (

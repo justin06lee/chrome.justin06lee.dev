@@ -85,10 +85,11 @@ export function useCombobox<T extends string | number>({
     return options.filter((o) => o.label.toLowerCase().includes(q));
   }, [options, query]);
 
-  // Reset the highlight whenever the navigable rows change (e.g. filtering).
+  // Reset the highlight whenever the navigable rows change (filtering or an
+  // options update) so it never points at a stale row.
   useEffect(() => {
     setActiveIndex(-1);
-  }, [query]);
+  }, [filtered]);
 
   const selected = useMemo(
     () => options.find((o) => o.value === value) ?? null,
@@ -99,12 +100,11 @@ export function useCombobox<T extends string | number>({
     (rowCount: number, onActivate: (i: number) => void) => (e: KeyboardEvent) => {
       const move = (dir: 1 | -1) => {
         if (rowCount === 0) return;
-        setActiveIndex((i) => {
-          const next = i + dir;
-          if (next < 0) return rowCount - 1;
-          if (next > rowCount - 1) return 0;
-          return next;
-        });
+        const raw = activeIndex + dir;
+        const next = raw < 0 ? rowCount - 1 : raw > rowCount - 1 ? 0 : raw;
+        setActiveIndex(next);
+        // Keep the highlighted row visible inside the scrollable list.
+        document.getElementById(rowId(next))?.scrollIntoView({ block: "nearest" });
       };
       switch (e.key) {
         case "ArrowDown":

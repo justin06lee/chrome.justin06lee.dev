@@ -25,6 +25,10 @@ export const DEFAULT_MANAGER_PALETTE: readonly string[] = [
   "#5b5b8a",
 ] as const;
 
+// Stable default for the `palette` prop — a fresh array literal in the
+// parameter default would defeat the palette-keyed useMemo every render.
+const DEFAULT_PALETTE: string[] = [...DEFAULT_MANAGER_PALETTE];
+
 export type ManagerTableProps = {
   /** Rows to render — the source of truth, owned by the caller. */
   rows: ManagerRow[];
@@ -48,7 +52,7 @@ export type ManagerTableProps = {
  */
 export function ManagerTable({
   rows,
-  palette = [...DEFAULT_MANAGER_PALETTE],
+  palette = DEFAULT_PALETTE,
   onRename,
   onRecolor,
   onArchive,

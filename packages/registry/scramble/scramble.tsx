@@ -60,11 +60,14 @@ function ScrambleWord({ text, speed = 30, step = 1 / 3 }: { text: string; speed?
         {text}
       </span>
       <span
-        aria-label={text}
         className="inline-block whitespace-nowrap align-baseline cursor-default"
         style={widthPx ? { minWidth: `${widthPx}px` } : undefined}
         onMouseEnter={handleEnter}
       >
+        {/* Real text for assistive tech — aria-label on a generic span is
+            unreliable, so an sr-only element carries the accessible name while
+            the scrambling glyphs stay aria-hidden. */}
+        <span className="sr-only">{text}</span>
         <span ref={visRef} aria-hidden>{text}</span>
       </span>
     </>

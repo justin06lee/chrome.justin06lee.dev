@@ -56,7 +56,10 @@ export function NowPlayingBar({
         : startedAt;
   const running = visible && startMs !== undefined;
 
-  const [now, setNow] = useState<number>(() => Date.now());
+  // Null until mounted — Date.now() as the initial state would differ between
+  // the server render and hydration. Until the clock starts, elapsed renders
+  // the stable zero form.
+  const [now, setNow] = useState<number | null>(null);
 
   // Tick every second only while running and visible; clean up otherwise.
   useEffect(() => {
@@ -68,7 +71,7 @@ export function NowPlayingBar({
 
   if (!visible) return null;
 
-  const elapsed = startMs !== undefined ? formatElapsed(startMs, now) : null;
+  const elapsed = startMs !== undefined ? formatElapsed(startMs, now ?? startMs) : null;
 
   return (
     <div

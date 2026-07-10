@@ -39,16 +39,34 @@ const DIALOG_KEYFRAMES = `@keyframes chrome-dialog-overlay {
   to   { opacity: 1; transform: translateY(0); }
 }`;
 
+// Opening a dialog over a pending one replaces its state — settle the stranded
+// promise first (a superseded confirm resolves false) so callers never hang.
+function settleStranded(prev: DialogState) {
+  if (!prev) return;
+  if (prev.kind === "confirm") prev.resolve(false);
+  else prev.resolve();
+}
+
 export function DialogProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<DialogState>(null);
   const confirm = useCallback(
     (options: ConfirmOptions) =>
-      new Promise<boolean>((resolve) => setState({ kind: "confirm", options, resolve })),
+      new Promise<boolean>((resolve) =>
+        setState((prev) => {
+          settleStranded(prev);
+          return { kind: "confirm", options, resolve };
+        }),
+      ),
     [],
   );
   const alert = useCallback(
     (options: AlertOptions) =>
-      new Promise<void>((resolve) => setState({ kind: "alert", options, resolve })),
+      new Promise<void>((resolve) =>
+        setState((prev) => {
+          settleStranded(prev);
+          return { kind: "alert", options, resolve };
+        }),
+      ),
     [],
   );
   const panelRef = useRef<HTMLDivElement>(null);
