@@ -14,6 +14,11 @@ export type ShowcaseProps = {
   note?: string;
   /** Backdrop pattern. Defaults to "dots". */
   background?: ShowcaseBackground;
+  /**
+   * Clip children to the frame (default). Set false for demos whose popups
+   * (menus, dropdowns) should overflow the frame.
+   */
+  clip?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
@@ -39,6 +44,7 @@ export function Showcase({
   source,
   note,
   background = "dots",
+  clip = true,
   className,
   children,
 }: ShowcaseProps) {
@@ -56,7 +62,10 @@ export function Showcase({
         </div>
       )}
       <div
-        className="border border-white/10 px-6 py-10 flex flex-col gap-6 mb-2 overflow-hidden"
+        className={cn(
+          "border border-white/10 px-6 py-10 flex flex-col gap-6 mb-2",
+          clip && "overflow-hidden",
+        )}
         style={BACKGROUNDS[background]}
       >
         {hasRow ? children : <Row>{children}</Row>}

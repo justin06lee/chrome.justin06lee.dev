@@ -114,20 +114,32 @@ const MONTHS = [
 
 function CalendarNavExample() {
   const [view, setView] = useState<CalendarView>("month");
-  // Absolute month index so prev/next roll across years.
-  const [monthIndex, setMonthIndex] = useState(2026 * 12 + 5); // June 2026
-  const year = Math.floor(monthIndex / 12);
-  const month = MONTHS[monthIndex % 12] ?? "";
-  const label = view === "year" ? String(year) : `${month} ${year}`;
+  const [date, setDate] = useState(() => new Date(2026, 5, 24)); // June 24, 2026
+  // Arrows step by the active view's unit: ±1 day / ±1 month / ±1 year.
+  const step = (dir: -1 | 1) =>
+    setDate((d) => {
+      const next = new Date(d);
+      if (view === "day") next.setDate(d.getDate() + dir);
+      else if (view === "month") next.setMonth(d.getMonth() + dir);
+      else next.setFullYear(d.getFullYear() + dir);
+      return next;
+    });
+  const month = MONTHS[date.getMonth()] ?? "";
+  const label =
+    view === "year"
+      ? String(date.getFullYear())
+      : view === "month"
+        ? `${month} ${date.getFullYear()}`
+        : `${month} ${date.getDate()}, ${date.getFullYear()}`;
   return (
     <div className="w-full max-w-xl">
       <CalendarNav
         label={label}
         view={view}
         onViewChange={setView}
-        onPrev={() => setMonthIndex((i) => i - 1)}
-        onNext={() => setMonthIndex((i) => i + 1)}
-        onToday={() => setMonthIndex(2026 * 12 + 5)}
+        onPrev={() => step(-1)}
+        onNext={() => step(1)}
+        onToday={() => setDate(new Date(2026, 5, 24))}
       />
     </div>
   );
@@ -254,7 +266,7 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
     },
     {
       label: "Preselected tag",
-      code: '<ArticleList articles={articles} defaultTag="react" defaultQuery="search" />',
+      code: '<ArticleList articles={articles} defaultTag="react" />',
       render: (
         <div className="w-full max-w-2xl text-left">
           <ArticleList articles={ARTICLES} basePath="#" defaultTag="react" />
@@ -311,11 +323,20 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
       label: "Controlled",
       code:
         'const [view, setView] = useState("month");\n' +
-        "const [monthIndex, setMonthIndex] = useState(2026 * 12 + 5);\n\n" +
+        "const [date, setDate] = useState(() => new Date(2026, 5, 24));\n\n" +
+        "// arrows step by the active view's unit\n" +
+        "const step = (dir) =>\n" +
+        "  setDate((d) => {\n" +
+        "    const next = new Date(d);\n" +
+        '    if (view === "day") next.setDate(d.getDate() + dir);\n' +
+        '    else if (view === "month") next.setMonth(d.getMonth() + dir);\n' +
+        "    else next.setFullYear(d.getFullYear() + dir);\n" +
+        "    return next;\n" +
+        "  });\n\n" +
         "<CalendarNav\n  label={label}\n  view={view}\n  onViewChange={setView}\n" +
-        "  onPrev={() => setMonthIndex((i) => i - 1)}\n" +
-        "  onNext={() => setMonthIndex((i) => i + 1)}\n" +
-        "  onToday={() => setMonthIndex(2026 * 12 + 5)}\n/>",
+        "  onPrev={() => step(-1)}\n" +
+        "  onNext={() => step(1)}\n" +
+        "  onToday={() => setDate(new Date(2026, 5, 24))}\n/>",
       render: <CalendarNavExample />,
     },
     {

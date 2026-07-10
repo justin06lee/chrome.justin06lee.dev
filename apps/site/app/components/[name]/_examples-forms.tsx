@@ -3,10 +3,6 @@
 import { useState } from "react";
 import type { UsageExample } from "./_examples";
 import { Checkbox } from "../../../../../packages/registry/checkbox/checkbox";
-import {
-  CategoryPicker,
-  type CategoryItem,
-} from "../../../../../packages/registry/category-picker/category-picker";
 import { InlineEdit } from "../../../../../packages/registry/inline-edit/inline-edit";
 import { LoginForm } from "../../../../../packages/registry/login-form/login-form";
 import { TagInput } from "../../../../../packages/registry/tag-input/tag-input";
@@ -33,44 +29,7 @@ function CheckboxControlledExample() {
   );
 }
 
-function CategoryPickerExample() {
-  const [value, setValue] = useState<string | null>("deep-work");
-  const items: CategoryItem[] = [
-    { id: "deep-work", label: "deep work", color: "#5b7a8a" },
-    { id: "reading", label: "reading", color: "#6b8a72" },
-    { id: "sleep", label: "sleep", color: "#5b5b8a" },
-  ];
-  return (
-    <div className="w-56">
-      <CategoryPicker value={value} onChange={setValue} items={items} ariaLabel="category" />
-    </div>
-  );
-}
 
-function CategoryPickerCreateExample() {
-  const [items, setItems] = useState<CategoryItem[]>([
-    { id: "deep-work", label: "deep work", color: "#5b7a8a" },
-    { id: "reading", label: "reading", color: "#6b8a72" },
-  ]);
-  const [value, setValue] = useState<string | null>(null);
-  return (
-    <div className="w-56">
-      <CategoryPicker
-        value={value}
-        onChange={setValue}
-        items={items}
-        ariaLabel="category"
-        allowClear
-        onCreate={(label) => {
-          const id = label.toLowerCase().replace(/\s+/g, "-") || `cat-${items.length}`;
-          const color = CATEGORY_PALETTE[items.length % CATEGORY_PALETTE.length]!.hex;
-          setItems((prev) => [...prev, { id, label: label || "new", color }]);
-          setValue(id);
-        }}
-      />
-    </div>
-  );
-}
 
 function InlineEditExample() {
   const [name, setName] = useState("untitled note");
@@ -262,25 +221,6 @@ export const FORM_EXAMPLES: Record<string, UsageExample[]> = {
           <Checkbox label="locked on" disabled defaultChecked />
         </div>
       ),
-    },
-  ],
-  "category-picker": [
-    {
-      label: "Basic",
-      code:
-        "const [value, setValue] = useState(null);\n\n" +
-        "<CategoryPicker\n  value={value}\n  onChange={setValue}\n  items={[\n" +
-        '    { id: "deep-work", label: "deep work", color: "#5b7a8a" },\n' +
-        '    { id: "reading", label: "reading", color: "#6b8a72" },\n' +
-        "  ]}\n/>",
-      render: <CategoryPickerExample />,
-    },
-    {
-      label: "Clear + create",
-      code:
-        "<CategoryPicker\n  value={value}\n  onChange={setValue}\n  items={items}\n  allowClear\n" +
-        "  onCreate={(label) => addCategory(label)}\n/>",
-      render: <CategoryPickerCreateExample />,
     },
   ],
   "inline-edit": [

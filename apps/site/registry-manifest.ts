@@ -9,7 +9,6 @@ import button from "../../packages/registry/button/meta";
 import calendar from "../../packages/registry/calendar/meta";
 import calendar_nav from "../../packages/registry/calendar-nav/meta";
 import card from "../../packages/registry/card/meta";
-import category_picker from "../../packages/registry/category-picker/meta";
 import checkbox from "../../packages/registry/checkbox/meta";
 import chrome from "../../packages/registry/chrome/meta";
 import code_block from "../../packages/registry/code-block/meta";
@@ -58,4 +57,4 @@ import toc from "../../packages/registry/toc/meta";
 import tooltip from "../../packages/registry/tooltip/meta";
 import utils from "../../packages/registry/_shared/utils/meta";
 
-export const REGISTRY = [accordion, article, article_list, asset_sidebar, badge, breadcrumb, button, calendar, calendar_nav, card, category_picker, checkbox, chrome, code_block, collapsible_prose, color_swatch, combobox, copy_button, count_up, desk, dialog, donut, drawing_window, editor, editor_toolbar, fade_in, gallery, heatmap, image_cropper, inline_edit, input, intro, login_form, manager_table, menu, navbar, now_playing_bar, pfp, prose, rainbow, range, scramble, segmented, select, sheet, showcase, socials, sprite_scrubber, stack, tabs, tag_input, textarea, theme, tilt, timeline, toc, tooltip, utils];
+export const REGISTRY = [accordion, article, article_list, asset_sidebar, badge, breadcrumb, button, calendar, calendar_nav, card, checkbox, chrome, code_block, collapsible_prose, color_swatch, combobox, copy_button, count_up, desk, dialog, donut, drawing_window, editor, editor_toolbar, fade_in, gallery, heatmap, image_cropper, inline_edit, input, intro, login_form, manager_table, menu, navbar, now_playing_bar, pfp, prose, rainbow, range, scramble, segmented, select, sheet, showcase, socials, sprite_scrubber, stack, tabs, tag_input, textarea, theme, tilt, timeline, toc, tooltip, utils];

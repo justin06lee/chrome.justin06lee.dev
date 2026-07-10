@@ -19,6 +19,9 @@ export function ComponentDetail({
   barePreview,
   /** Full-width canvas for components with their own size presets; others stay at reading width. */
   wide,
+  /** Popup components (menu, select, …) — let dropdown panels overflow the
+   *  preview frame and usage-example boxes instead of getting clipped. */
+  overflowVisible,
   props,
   children,
 }: {
@@ -29,10 +32,14 @@ export function ComponentDetail({
   title?: React.ReactNode;
   barePreview?: boolean;
   wide?: boolean;
+  overflowVisible?: boolean;
   props?: PropDoc[];
   children: React.ReactNode;
 }) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
+  // On wide pages the preview spans the canvas but the reading sections would
+  // hug the left edge — center them at a wider measure instead.
+  const sectionClass = wide ? "w-full max-w-[960px] mx-auto" : undefined;
   // Usage examples arrive via a per-module lazy chunk; render nothing until loaded.
   const [examples, setExamples] = useState<UsageExample[]>([]);
   useEffect(() => {
@@ -81,29 +88,38 @@ export function ComponentDetail({
         barePreview ? (
           <div className="min-h-[260px] mb-12 overflow-hidden">{children}</div>
         ) : (
-          <Showcase className="mb-12">{children}</Showcase>
+          <Showcase className="mb-12" clip={!overflowVisible}>
+            {children}
+          </Showcase>
         )
       ) : (
         <CodeBlock code={source} language="tsx" className="mb-12" />
       )}
 
-      <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3">
-        installation
-      </div>
-      <div className="flex max-w-[720px] items-center gap-3 border border-white/10 px-4 py-3 bg-white/[0.02] mb-12">
-        <code className="font-mono text-[13px] flex-1">{installCommand}</code>
-        <Button
-          variant="link"
-          copy={installCommand}
-          copyFeedback="copied"
-          className="text-[11px] font-mono text-white/55 hover:text-white hover:no-underline border-l border-white/15 pl-3"
+      <div className={sectionClass}>
+        <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3">
+          installation
+        </div>
+        <div
+          className={
+            "flex items-center gap-3 border border-white/10 px-4 py-3 bg-white/[0.02] mb-12 " +
+            (wide ? "w-full" : "max-w-[720px]")
+          }
         >
-          copy
-        </Button>
+          <code className="font-mono text-[13px] flex-1">{installCommand}</code>
+          <Button
+            variant="link"
+            copy={installCommand}
+            copyFeedback="copied"
+            className="text-[11px] font-mono text-white/55 hover:text-white hover:no-underline border-l border-white/15 pl-3"
+          >
+            copy
+          </Button>
+        </div>
       </div>
 
       {examples.length > 0 && (
-        <>
+        <div className={sectionClass}>
           <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-4">
             usage
           </div>
@@ -111,22 +127,32 @@ export function ComponentDetail({
             {examples.map((ex) => (
               <div key={ex.label}>
                 <div className="text-[13px] text-white/70 mb-2">{ex.label}</div>
-                <div className="flex min-h-[150px] items-center justify-center overflow-hidden border border-white/10 border-b-0 p-8 bg-white/[0.01]">
+                <div
+                  className={
+                    "flex min-h-[150px] items-center justify-center border border-white/10 border-b-0 p-8 bg-white/[0.01]" +
+                    (overflowVisible ? "" : " overflow-hidden")
+                  }
+                >
                   {ex.render}
                 </div>
                 <CodeBlock code={ex.code} language="tsx" />
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
 
       {props && props.length > 0 && (
-        <>
+        <div className={sectionClass}>
           <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3">
             props
           </div>
-          <div className="mb-12 max-w-[720px] overflow-x-auto border border-white/10">
+          <div
+            className={
+              "mb-12 overflow-x-auto border border-white/10 " +
+              (wide ? "w-full" : "max-w-[720px]")
+            }
+          >
             <table className="w-full border-collapse text-left text-[13px]">
               <thead>
                 <tr className="border-b border-white/10 bg-white/[0.02] font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
@@ -157,7 +183,7 @@ export function ComponentDetail({
               </tbody>
             </table>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

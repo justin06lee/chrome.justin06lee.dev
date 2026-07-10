@@ -104,16 +104,6 @@
     ]
   },
   {
-    "name": "category-picker",
-    "type": "registry:ui",
-    "description": "a searchable dropdown of color-coded items with click-outside + escape close and an optional inline create row. controlled and domain-agnostic.",
-    "dependencies": [],
-    "registryDependencies": [
-      "utils",
-      "color-swatch"
-    ]
-  },
-  {
     "name": "checkbox",
     "type": "registry:ui",
     "description": "square checkbox with a check-on-fill. wraps a native checkbox so it works in forms; thin border, no corners, fills white with a black check when checked.",
@@ -182,7 +172,7 @@
   {
     "name": "count-up",
     "type": "registry:ui",
-    "description": "animated number that tweens to its target with an easeout curve. dependency-free requestanimationframe, respects prefers-reduced-motion.",
+    "description": "animated number that tweens to its target with an easeout curve, starting when scrolled into view. dependency-free requestanimationframe, respects prefers-reduced-motion.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -281,7 +271,7 @@
   {
     "name": "image-cropper",
     "type": "registry:ui",
-    "description": "drag-to-reposition, scroll/slider-to-zoom image cropper. emits { url, scale, x, y }.",
+    "description": "drag-to-reposition, scroll/slider-to-zoom image cropper. pan and zoom are clamped so the image always covers the frame. emits { url, scale, x, y }.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
@@ -320,7 +310,7 @@
   {
     "name": "login-form",
     "type": "registry:ui",
-    "description": "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook.",
+    "description": "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook. rate limiting and lockout belong on the consumer's backend.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
@@ -365,7 +355,7 @@
   {
     "name": "now-playing-bar",
     "type": "registry:ui",
-    "description": "sticky bottom bar for a running activity: live elapsed timer, accent dot, and an action slot. omit startedAt for an idle state.",
+    "description": "sticky bottom bar for a running activity: live elapsed timer and an action slot. omit startedAt for an idle state.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -374,10 +364,11 @@
   {
     "name": "pfp",
     "type": "registry:ui",
-    "description": "profile-picture tile: an image framed in a bordered square that tilts in 3d and sweeps a shine across itself on hover. frame the subject with x/y/scale; size it via className.",
+    "description": "profile-picture tile: an image framed in a bordered square, composed on tilt for the 3d hover, with an angled specular glint sweeping diagonally on hover. frame the subject with x/y/scale; size it via className.",
     "dependencies": [],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "tilt"
     ]
   },
   {

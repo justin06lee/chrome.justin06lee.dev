@@ -46,7 +46,6 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
   [
     () => import("./_examples-forms").then((m) => m.FORM_EXAMPLES),
     [
-      "category-picker",
       "checkbox",
       "code-block",
       "collapsible-prose",

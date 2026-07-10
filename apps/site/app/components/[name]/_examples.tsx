@@ -173,6 +173,7 @@ function TextareaExample() {
     <Textarea
       className="w-64"
       placeholder="write something…"
+      rows={4}
       value={v}
       onChange={(e) => setV(e.target.value)}
     />
@@ -460,7 +461,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
   donut: [
     {
       label: "Basic",
-      code: "<Donut />",
+      code: "<Donut width={40} height={20} />",
       render: <Donut width={40} height={20} />,
     },
     {
@@ -528,7 +529,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
       code:
         "const [value, setValue] = useState(\"a\");\n\n" +
         "<Select\n  value={value}\n  onChange={setValue}\n  options={[\n" +
-        "    { value: \"a\", label: \"alpha\" },\n    { value: \"b\", label: \"beta\" },\n  ]}\n/>",
+        "    { value: \"a\", label: \"alpha\" },\n    { value: \"b\", label: \"beta\" },\n    { value: \"c\", label: \"gamma\" },\n  ]}\n/>",
       render: <SelectExample />,
     },
   ],
@@ -649,6 +650,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "<Tabs\n  value={tab}\n  onValueChange={setTab}\n  items={[\n" +
         '    { value: "projects", label: "projects" },\n' +
         '    { value: "hobbies", label: "hobbies" },\n' +
+        '    { value: "in-dev", label: "in development" },\n' +
         "  ]}\n/>",
       render: <TabsExample />,
     },
@@ -662,6 +664,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "  links={[\n" +
         '    { label: "calendar", href: "/calendar" },\n' +
         '    { label: "articles", href: "/articles" },\n' +
+        '    { label: "gallery", href: "/gallery" },\n' +
         "  ]}\n/>",
       render: (
         // Real Navbar is fixed; `relative` (tailwind-merge wins) pins it to this cell.
@@ -823,6 +826,37 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         </div>
       ),
     },
+    {
+      label: "Prayer times",
+      code:
+        "<Timeline\n  markers={[\n" +
+        '    { minutes: 320, label: "FAJR" },\n' +
+        '    { minutes: 785, label: "DHUHR" },\n' +
+        '    { minutes: 1005, label: "ASR" },\n' +
+        '    { minutes: 1210, label: "MAGHRIB" },\n' +
+        '    { minutes: 1320, label: "ISHA" },\n' +
+        "  ]}\n  events={[\n" +
+        '    { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },\n' +
+        '    { startMin: 1230, endMin: 1290, label: "family dinner", color: "#c4b5fd" },\n' +
+        "  ]}\n/>",
+      render: (
+        <div className="h-[360px] w-full max-w-md overflow-y-auto">
+          <Timeline
+            markers={[
+              { minutes: 320, label: "FAJR" },
+              { minutes: 785, label: "DHUHR" },
+              { minutes: 1005, label: "ASR" },
+              { minutes: 1210, label: "MAGHRIB" },
+              { minutes: 1320, label: "ISHA" },
+            ]}
+            events={[
+              { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },
+              { startMin: 1230, endMin: 1290, label: "family dinner", color: "#c4b5fd" },
+            ]}
+          />
+        </div>
+      ),
+    },
   ],
   segmented: [
     {
@@ -832,6 +866,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "<Segmented\n  value={v}\n  onChange={setV}\n  options={[\n" +
         '    { value: "day", label: "day" },\n' +
         '    { value: "month", label: "month" },\n' +
+        '    { value: "year", label: "year" },\n' +
         "  ]}\n/>",
       render: <SegmentedExample />,
     },
@@ -848,6 +883,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
       label: "Searchable + create",
       code:
         "<Combobox\n  value={value}\n  onChange={setValue}\n  options={opts}\n  allowClear\n" +
+        '  placeholder="No category"\n' +
         "  onCreate={(q) => addCategory(q)}\n/>",
       render: <ComboboxExample />,
     },
@@ -863,7 +899,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
     {
       label: "With prose body",
       code:
-        '<Article\n  title="my post"\n  date="2026-05-24"\n  tags={["dev"]}\n  backHref="/articles"\n>\n' +
+        '<Article\n  title="building a component registry"\n  date="2026-05-24"\n  tags={["next", "react"]}\n  backHref="/articles"\n>\n' +
         "  <Prose>{markdown}</Prose>\n</Article>",
       render: (
         <div className="w-full text-left">
@@ -881,7 +917,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
     {
       label: "With banner",
       code:
-        '<Article title="my post" date="2026-05-24" banner="/images/banner.png">\n' +
+        '<Article title="with a banner" date="2026-05-24" banner="/images/banner.png">\n' +
         "  <Prose>{markdown}</Prose>\n</Article>",
       render: (
         <div className="w-full text-left">
@@ -927,6 +963,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "<Toc\n  headings={[\n" +
         '    { id: "intro", text: "introduction" },\n' +
         '    { id: "usage", text: "usage" },\n' +
+        '    { id: "api", text: "api reference" },\n' +
         "  ]}\n/>",
       render: (
         <TocExample
@@ -955,7 +992,8 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
   prose: [
     {
       label: "Render markdown",
-      code: "<Prose>{`# title\n\nsome **markdown** with \\`code\\`.`}</Prose>",
+      code:
+        "<Prose>{`# title\n\nsome **markdown** with \\`code\\` and a [link](https://example.com).\n\n- list item\n- another`}</Prose>",
       render: (
         <div className="text-left">
           <Prose>{"# title\n\nsome **markdown** with `code` and a [link](https://example.com).\n\n- list item\n- another"}</Prose>
@@ -982,6 +1020,9 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "  </AccordionItem>\n" +
         '  <AccordionItem title="second" name="faq">\n' +
         "    siblings sharing a name auto-close.\n" +
+        "  </AccordionItem>\n" +
+        '  <AccordionItem title="third" name="faq">\n' +
+        "    zero javascript — native <details>.\n" +
         "  </AccordionItem>\n" +
         "</Accordion>",
       render: (

@@ -232,15 +232,33 @@ function EditorToolbarDrawingExample() {
 
 function DrawingWindowExample({ darkMapping }: { darkMapping?: boolean }) {
   const [open, setOpen] = useState(false);
-  const [saved, setSaved] = useState<string | null>(null);
+  const [saved, setSaved] = useState<{ dataUrl: string; darkDataUrl?: string } | null>(null);
   return (
     <div className="flex flex-col items-center gap-3">
       <Button variant="outline" onClick={() => setOpen(true)}>
         open drawing
       </Button>
       {saved ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={saved} alt="saved drawing" className="max-h-32 border border-white/15" />
+        saved.darkDataUrl ? (
+          // Dark mapping: show the as-drawn png next to the dark-remapped one.
+          <div className="flex flex-wrap items-start justify-center gap-4">
+            {(
+              [
+                ["as drawn", saved.dataUrl],
+                ["dark-mapped", saved.darkDataUrl],
+              ] as const
+            ).map(([label, src]) => (
+              <figure key={label} className="flex flex-col items-center gap-1.5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={label} className="max-h-32 border border-white/15" />
+                <figcaption className="font-mono text-[10px] text-white/40">{label}</figcaption>
+              </figure>
+            ))}
+          </div>
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={saved.dataUrl} alt="saved drawing" className="max-h-32 border border-white/15" />
+        )
       ) : (
         <p className="text-xs text-white/40">draw, then save to preview here.</p>
       )}
@@ -251,7 +269,7 @@ function DrawingWindowExample({ darkMapping }: { darkMapping?: boolean }) {
           darkMapping={darkMapping}
           onClose={() => setOpen(false)}
           onSave={({ dataUrl, darkDataUrl }) => {
-            setSaved(darkDataUrl ?? dataUrl);
+            setSaved({ dataUrl, darkDataUrl });
             setOpen(false);
           }}
         />
@@ -334,6 +352,61 @@ function SheetSidesExample() {
         <p className="text-sm text-white/60">slides in from the {side} edge.</p>
       </Sheet>
     </div>
+  );
+}
+
+const SHEET_LABEL = "font-mono text-[11px] uppercase tracking-[0.18em] text-white/40";
+
+function SheetActivityExample() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        open activity sheet
+      </Button>
+      <Sheet open={open} onClose={() => setOpen(false)} side="bottom" title="today">
+        <div className="flex flex-col gap-6">
+          <section>
+            <div className={SHEET_LABEL}>now playing</div>
+            <div className="mt-2 flex items-center justify-between border border-white/10 bg-white/[0.02] px-3 py-2">
+              <span className="text-sm text-white">deep work</span>
+              <span className="font-mono text-xs tabular-nums text-white/50">00:42:10</span>
+            </div>
+          </section>
+          <section>
+            <div className={SHEET_LABEL}>planned today</div>
+            <div className="mt-2 flex flex-col divide-y divide-white/5 border border-white/10">
+              {["review pull requests", "write field notes", "evening run"].map((t) => (
+                <div key={t} className="flex items-center justify-between px-3 py-2">
+                  <span className="text-sm text-white/60">{t}</span>
+                  <span className="font-mono text-[11px] text-white/30">planned</span>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="mt-2 w-full border border-dashed border-white/20 px-3 py-2 text-left text-sm text-white/40 transition-colors hover:border-white/40 hover:text-white/70"
+            >
+              + new activity
+            </button>
+          </section>
+          <section>
+            <div className={SHEET_LABEL}>activity log</div>
+            <div className="mt-2 flex flex-col gap-1.5">
+              {[
+                ["08:00 – 09:30", "deep work"],
+                ["13:00 – 13:40", "reading"],
+              ].map(([time, what]) => (
+                <div key={time} className="flex items-center gap-3 font-mono text-xs text-white/40">
+                  <span className="tabular-nums">{time}</span>
+                  <span className="text-white/60">{what}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </Sheet>
+    </>
   );
 }
 
@@ -476,7 +549,7 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
       code:
         "// draw in light colors on white; save emits a dark-remapped variant too\n" +
         "<DrawingWindow\n  darkMapping\n" +
-        "  onSave={({ dataUrl, darkDataUrl }) => saveImage(darkDataUrl ?? dataUrl)}\n/>",
+        "  onSave={({ dataUrl, darkDataUrl }) => setSaved({ dataUrl, darkDataUrl })}\n/>",
       render: <DrawingWindowExample darkMapping />,
     },
   ],
@@ -534,6 +607,22 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
         '<Sheet open={open} onClose={close} side="top" title="top" />\n' +
         '<Sheet open={open} onClose={close} side="bottom" title="bottom" />',
       render: <SheetSidesExample />,
+    },
+    {
+      label: "Rich content (bottom)",
+      code:
+        "// sheets carry arbitrary layouts — sections, rows, actions\n" +
+        '<Sheet open={open} onClose={close} side="bottom" title="today">\n' +
+        "  <section>\n" +
+        '    <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">\n' +
+        "      now playing\n" +
+        "    </div>\n" +
+        "    {/* … */}\n" +
+        "  </section>\n" +
+        "  {/* planned today, activity log … */}\n" +
+        '  <button className="border border-dashed border-white/20 …">+ new activity</button>\n' +
+        "</Sheet>",
+      render: <SheetActivityExample />,
     },
   ],
   socials: [

@@ -18,7 +18,6 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   button: () => import("../../../../../packages/registry/button/demo"),
   calendar: () => import("../../../../../packages/registry/calendar/demo"),
   card: () => import("../../../../../packages/registry/card/demo"),
-  "category-picker": () => import("../../../../../packages/registry/category-picker/demo"),
   checkbox: () => import("../../../../../packages/registry/checkbox/demo"),
   chrome: () => import("../../../../../packages/registry/chrome/demo"),
   "code-block": () => import("../../../../../packages/registry/code-block/demo"),
@@ -72,7 +71,11 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
 // Components that need the full wide canvas — size-adjustable ones (editor,
 // desk) and grid layouts that cramp at reading width; everything else renders
 // at reading width.
-const WIDE_PREVIEW = new Set(["editor", "desk", "article-list"]);
+const WIDE_PREVIEW = new Set(["editor", "desk", "article-list", "gallery"]);
+
+// Popup-driven components (dropdown panels) need to leak outside the preview
+// and example frames instead of getting clipped by them.
+const POPUP_PREVIEW = new Set(["menu", "select", "combobox"]);
 
 export async function generateStaticParams() {
   return REGISTRY.filter((m) => m.type === "registry:ui").map((m) => ({ name: m.name }));
@@ -118,6 +121,7 @@ export default async function ComponentPage(props: { params: Promise<{ name: str
       title={title}
       barePreview={name === "showcase"}
       wide={WIDE_PREVIEW.has(name)}
+      overflowVisible={POPUP_PREVIEW.has(name)}
       props={meta.props}
     >
       {Demo ? <Demo /> : null}
