@@ -170,21 +170,6 @@ each \`##\` heading becomes its own collapsible section.
 
 pure native details — no javascript state.`;
 
-const svg = (inner: string) =>
-  `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">${inner}</svg>`,
-  )}`;
-
-const PFP_GRADIENT = svg(
-  `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#60a5fa"/></linearGradient></defs>` +
-    `<rect width="64" height="64" fill="url(#g)"/>` +
-    `<text x="32" y="42" font-family="monospace" font-size="28" fill="white" text-anchor="middle">j</text>`,
-);
-
-const PFP_DOT = svg(
-  `<rect width="64" height="64" fill="#111"/><circle cx="32" cy="32" r="18" fill="#6ee7b7"/>`,
-);
-
 // --- the example table -----------------------------------------------------
 
 export const FORM_EXAMPLES: Record<string, UsageExample[]> = {
@@ -361,18 +346,18 @@ export const FORM_EXAMPLES: Record<string, UsageExample[]> = {
   pfp: [
     {
       label: "Basic",
-      code: '<Pfp src="/avatar.png" alt="avatar" />',
-      render: <Pfp src={PFP_GRADIENT} alt="avatar" />,
+      code: '<Pfp src="/pfp.png" alt="avatar" />',
+      render: <Pfp src="/pfp.png" alt="avatar" />,
     },
     {
       label: "Sized & framed",
-      code: '<Pfp src="/avatar.png" alt="avatar" className="size-24" scale={1.2} />',
-      render: <Pfp src={PFP_DOT} alt="avatar" className="size-24" scale={1.2} />,
+      code: '<Pfp src="/pfp.png" alt="avatar" className="size-24" scale={1.2} />',
+      render: <Pfp src="/pfp.png" alt="avatar" className="size-24" scale={1.2} />,
     },
     {
       label: "Framing offsets",
-      code: '<Pfp src="/avatar.png" alt="avatar" x={-10} y={8} scale={1.4} />',
-      render: <Pfp src={PFP_GRADIENT} alt="avatar" x={-10} y={8} scale={1.4} />,
+      code: '<Pfp src="/pfp.png" alt="avatar" x={-10} y={8} scale={1.4} />',
+      render: <Pfp src="/pfp.png" alt="avatar" x={-10} y={8} scale={1.4} />,
     },
   ],
 };

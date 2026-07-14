@@ -14,7 +14,28 @@ const HERO = (
   </Chrome>
 );
 
-const LINES = ["hi.", "im justin06lee.", "welcome to my component library"];
+// The "im justin." line embeds the pfp inline in parens, exactly like the
+// justin06lee.dev intro does.
+const JUSTIN_LINE = (
+  <span className="inline-flex items-center gap-1.5">
+    <span>im justin.</span>
+    <span className="inline-flex items-center gap-0.5">
+      <span>(</span>
+      <span className="relative inline-block size-7 overflow-hidden align-middle">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/pfp.png"
+          alt=""
+          draggable={false}
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        />
+      </span>
+      <span>)</span>
+    </span>
+  </span>
+);
+
+const LINES = ["hi.", JUSTIN_LINE, "welcome to my component library."];
 
 export default function IntroDemo() {
   // Remount key so the intro can be replayed from the start each time.

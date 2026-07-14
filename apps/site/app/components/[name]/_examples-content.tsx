@@ -588,10 +588,21 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
     {
       label: "Hero + lines",
       code:
+        "// lines take ReactNodes — embed an inline pfp like the original\n" +
+        "const justinLine = (\n" +
+        '  <span className="inline-flex items-center gap-1.5">\n' +
+        "    <span>im justin.</span>\n" +
+        '    <span>(</span>\n' +
+        '    <span className="relative inline-block size-7 overflow-hidden align-middle">\n' +
+        '      <img src="/pfp.png" alt="" className="absolute inset-0 h-full w-full object-cover" />\n' +
+        "    </span>\n" +
+        '    <span>)</span>\n' +
+        "  </span>\n" +
+        ");\n\n" +
         "// remount via key to replay; onComplete unmounts it\n" +
         "<Intro\n  key={cycle}\n" +
         '  hero={\n    <Chrome as="div">\n      <Donut width={44} height={20} isolate={false} />\n    </Chrome>\n  }\n' +
-        '  lines={["hi.", "im justin06lee.", "welcome to my component library"]}\n' +
+        '  lines={["hi.", justinLine, "welcome to my component library."]}\n' +
         "  onComplete={() => setCycle(null)}\n/>",
       render: (
         <IntroExample
@@ -600,7 +611,26 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
               <Donut width={44} height={20} isolate={false} />
             </Chrome>
           }
-          lines={["hi.", "im justin06lee.", "welcome to my component library"]}
+          lines={[
+            "hi.",
+            <span key="justin" className="inline-flex items-center gap-1.5">
+              <span>im justin.</span>
+              <span className="inline-flex items-center gap-0.5">
+                <span>(</span>
+                <span className="relative inline-block size-7 overflow-hidden align-middle">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/pfp.png"
+                    alt=""
+                    draggable={false}
+                    className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+                  />
+                </span>
+                <span>)</span>
+              </span>
+            </span>,
+            "welcome to my component library.",
+          ]}
           buttonLabel="play intro"
         />
       ),
