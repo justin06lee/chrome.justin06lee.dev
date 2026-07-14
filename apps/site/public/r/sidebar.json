@@ -1,0 +1,20 @@
+{
+  "name": "sidebar",
+  "type": "registry:ui",
+  "description": "grouped docs sidebar with active-item highlighting and an optional search filter. framework-agnostic links via linkComponent.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "sidebar.tsx",
+      "content": "\"use client\";\n\nimport { useMemo, useState } from \"react\";\nimport { Search } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type SidebarItem = {\n  label: string;\n  href: string;\n};\n\nexport type SidebarGroup = {\n  label: string;\n  items: SidebarItem[];\n};\n\nexport type SidebarProps = {\n  groups: SidebarGroup[];\n  /** href of the current page; the matching item gets the active treatment. */\n  activeHref?: string;\n  /** Renders a search input above the groups that filters items by label. */\n  searchable?: boolean;\n  /** Placeholder for the search input. Default \"search…\". */\n  searchPlaceholder?: string;\n  /** Anchor element/component for items — pass your router's Link. Default \"a\". */\n  linkComponent?: React.ElementType;\n  className?: string;\n};\n\nexport function Sidebar({\n  groups,\n  activeHref,\n  searchable = false,\n  searchPlaceholder = \"search…\",\n  linkComponent: LinkComponent = \"a\",\n  className,\n}: SidebarProps) {\n  const [query, setQuery] = useState(\"\");\n\n  const visibleGroups = useMemo(() => {\n    const q = query.trim().toLowerCase();\n    if (!searchable || q === \"\") return groups;\n    return groups\n      .map((group) => ({\n        ...group,\n        items: group.items.filter((item) =>\n          item.label.toLowerCase().includes(q),\n        ),\n      }))\n      .filter((group) => group.items.length > 0);\n  }, [groups, query, searchable]);\n\n  return (\n    <aside\n      className={cn(\n        \"w-[240px] shrink-0 border-r border-white/10 px-6 py-10 text-[13px]\",\n        className,\n      )}\n    >\n      {searchable && (\n        <div className=\"mb-7\">\n          <div className=\"relative\">\n            <Search className=\"pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-white/30\" />\n            <input\n              type=\"text\"\n              value={query}\n              onChange={(e) => setQuery(e.target.value)}\n              placeholder={searchPlaceholder}\n              className=\"w-full border border-white/15 bg-transparent py-1.5 pl-8 pr-2.5 font-mono text-xs text-white placeholder:text-white/30 focus:border-white/40 focus:outline-none\"\n            />\n          </div>\n          {visibleGroups.length === 0 && (\n            <div className=\"mt-3 font-mono text-[11px] text-white/35\">\n              no matches.\n            </div>\n          )}\n        </div>\n      )}\n      {visibleGroups.map((group) => (\n        <div key={group.label} className=\"mb-7\">\n          <div className=\"font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 mb-3\">\n            {group.label}\n          </div>\n          <ul className=\"space-y-1.5\">\n            {group.items.map((item) => {\n              const active = item.href === activeHref;\n              return (\n                <li key={item.href}>\n                  <LinkComponent\n                    href={item.href}\n                    className={cn(\n                      \"block py-0.5 transition-colors\",\n                      active\n                        ? \"text-white border-l-2 border-white pl-2.5 -ml-3 font-medium\"\n                        : \"text-white/55 hover:text-white pl-0\",\n                    )}\n                  >\n                    {item.label}\n                  </LinkComponent>\n                </li>\n              );\n            })}\n          </ul>\n        </div>\n      ))}\n    </aside>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "sidebar.tsx"
+    }
+  ]
+}

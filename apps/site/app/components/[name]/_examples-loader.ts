@@ -34,6 +34,8 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
       "segmented",
       "select",
       "showcase",
+      "sidebar",
+      "command-palette",
       "stack",
       "tabs",
       "textarea",

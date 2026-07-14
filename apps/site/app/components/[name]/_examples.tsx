@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { ArrowRight, Copy, Github, ListFilter, Menu as MenuIcon } from "lucide-react";
 import { Button } from "../../../../../packages/registry/button/button";
 import {
@@ -35,6 +36,8 @@ import { Scramble } from "../../../../../packages/registry/scramble/scramble";
 import { Segmented } from "../../../../../packages/registry/segmented/segmented";
 import Select from "../../../../../packages/registry/select/select";
 import { Showcase } from "../../../../../packages/registry/showcase/showcase";
+import { Sidebar, type SidebarGroup } from "../../../../../packages/registry/sidebar/sidebar";
+import { CommandPalette } from "../../../../../packages/registry/command-palette/command-palette";
 import { Stack } from "../../../../../packages/registry/stack/stack";
 import { Tabs } from "../../../../../packages/registry/tabs/tabs";
 import { Textarea } from "../../../../../packages/registry/textarea/textarea";
@@ -331,6 +334,53 @@ function ComboboxPlainExample() {
   );
 }
 
+const SIDEBAR_GROUPS: SidebarGroup[] = [
+  {
+    label: "getting started",
+    items: [
+      { label: "introduction", href: "#" },
+      { label: "installation", href: "#sidebar-active" },
+    ],
+  },
+  {
+    label: "components",
+    items: [
+      { label: "accordion", href: "#" },
+      { label: "button", href: "#" },
+      { label: "card", href: "#" },
+      { label: "dialog", href: "#" },
+    ],
+  },
+];
+
+function CommandPaletteExample() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="border border-white/40 px-3 py-1 text-xs text-white transition hover:bg-white hover:text-black"
+      >
+        open palette
+      </button>
+      <CommandPalette
+        open={open}
+        onOpenChange={setOpen}
+        items={[
+          { label: "introduction", href: "#", group: "docs" },
+          { label: "installation", href: "#", group: "docs" },
+          { label: "accordion", href: "#", group: "components" },
+          { label: "button", href: "#", group: "components" },
+          { label: "dialog", href: "#", group: "components" },
+          { label: "donut", href: "#", group: "components", keywords: ["ascii", "torus"] },
+        ]}
+        placeholder="search components…"
+      />
+    </>
+  );
+}
+
 /** Self-contained toc demo: real sections with the listed ids live in a
  *  scrollable mini page next to the toc, wired via `container` so scroll-spy
  *  and clicks stay inside the panel instead of scrolling the docs page. */
@@ -580,6 +630,65 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
           <StackCard>three layers</StackCard>
         </Stack>
       ),
+    },
+  ],
+  sidebar: [
+    {
+      label: "Grouped nav with search",
+      code:
+        "<Sidebar\n" +
+        "  groups={[\n" +
+        '    { label: "getting started", items: [{ label: "introduction", href: "/docs" }] },\n' +
+        '    { label: "components", items: [{ label: "accordion", href: "/components/accordion" }] },\n' +
+        "  ]}\n" +
+        "  activeHref={pathname}\n  searchable\n/>",
+      render: (
+        <div className="flex h-72 w-full max-w-md overflow-hidden border border-white/10 text-left">
+          <Sidebar groups={SIDEBAR_GROUPS} activeHref="#sidebar-active" searchable />
+        </div>
+      ),
+    },
+    {
+      label: "Framework links",
+      code:
+        "// pass your router's link for client-side navigation\n" +
+        'import Link from "next/link";\n\n' +
+        "<Sidebar groups={groups} activeHref={pathname} linkComponent={Link} />",
+      render: (
+        <div className="flex h-56 w-full max-w-md overflow-hidden border border-white/10 text-left">
+          <Sidebar groups={SIDEBAR_GROUPS.slice(1)} activeHref="#" linkComponent={Link} />
+        </div>
+      ),
+    },
+  ],
+  "command-palette": [
+    {
+      label: "Cmd+K anywhere",
+      code:
+        "// mount once (e.g. in your layout); opens on cmd/ctrl+k\n" +
+        "<CommandPalette\n" +
+        "  items={[\n" +
+        '    { label: "introduction", href: "/docs", group: "docs" },\n' +
+        '    { label: "accordion", href: "/components/accordion", group: "components" },\n' +
+        "  ]}\n" +
+        '  placeholder="search components…"\n/>',
+      render: (
+        <p className="max-w-sm text-sm text-white/60">
+          mounted globally on this site — press{" "}
+          <kbd className="border border-white/20 px-1.5 py-0.5 font-mono text-[11px] text-white/80">
+            ⌘k
+          </kbd>{" "}
+          right now to try it.
+        </p>
+      ),
+    },
+    {
+      label: "Controlled",
+      code:
+        "const [open, setOpen] = useState(false);\n\n" +
+        "<button onClick={() => setOpen(true)}>open palette</button>\n" +
+        "<CommandPalette open={open} onOpenChange={setOpen} items={items} />",
+      render: <CommandPaletteExample />,
     },
   ],
   card: [

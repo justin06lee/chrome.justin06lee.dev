@@ -172,6 +172,17 @@
     ]
   },
   {
+    "name": "command-palette",
+    "type": "registry:ui",
+    "description": "spotlight-style command palette: cmd+k opens a centered search overlay with grouped, keyboard-navigable results.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "copy-button",
     "type": "registry:ui",
     "description": "copy-to-clipboard button with copied/error feedback states.",
@@ -464,6 +475,17 @@
     "type": "registry:ui",
     "description": "framed preview container with a dotted background, optional label, caption, and note. exports a Row helper for explicit row breaks.",
     "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "sidebar",
+    "type": "registry:ui",
+    "description": "grouped docs sidebar with active-item highlighting and an optional search filter. framework-agnostic links via linkComponent.",
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]

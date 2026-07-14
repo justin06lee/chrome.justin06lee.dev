@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
+import { SiteCommandPalette } from "./_components/site-command-palette";
 import "./globals.css";
 
 const poppins = localFont({
@@ -28,6 +29,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
+        <SiteCommandPalette />
         <Analytics />
       </body>
     </html>
