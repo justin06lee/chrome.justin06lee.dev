@@ -309,7 +309,7 @@
   {
     "name": "intro",
     "type": "registry:ui",
-    "description": "full-screen intro overlay: an optional hero above lines that fade in one by one, hold, then the whole scene fades out. skippable, with a play-once localStorage gate.",
+    "description": "full-screen intro overlay: a hero holds on top while lines take turns in a fixed slot beneath it, then the whole scene fades out. skippable, with a play-once localStorage gate.",
     "dependencies": [
       "motion"
     ],

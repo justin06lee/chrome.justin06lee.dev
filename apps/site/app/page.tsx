@@ -41,10 +41,8 @@ function Hero() {
         <Button href="/components" variant="solid" iconRight={ArrowRight}>
           browse components
         </Button>
-        <Button
-          href="https://github.com/justin06lee/chrome.justin06lee.dev"
-          variant="outline"
-        >
+        {/* Points at the profile until the registry repo is public. */}
+        <Button href="https://github.com/justin06lee" variant="outline">
           view on github
         </Button>
       </div>

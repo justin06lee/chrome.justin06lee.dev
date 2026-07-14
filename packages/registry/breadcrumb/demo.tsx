@@ -5,16 +5,16 @@ export default function BreadcrumbDemo() {
     <div className="flex flex-col gap-8 p-6">
       <Breadcrumb
         items={[
-          { label: "desk", href: "/desk" },
-          { label: "articles", href: "/desk/articles" },
-          { label: "field notes", href: "/desk/articles/field-notes" },
+          { label: "desk", href: "#" },
+          { label: "articles", href: "#" },
+          { label: "field notes", href: "#" },
           { label: "edit" },
         ]}
       />
 
       <Breadcrumb
         items={crumbsFromPath("/desk/articles/field-notes/edit", {
-          basePath: "/desk",
+          basePath: "#",
         })}
         homeHref="/"
       />

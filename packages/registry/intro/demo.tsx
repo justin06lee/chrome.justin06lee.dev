@@ -5,9 +5,9 @@ import { Intro } from "./intro";
 import { Chrome } from "../chrome/chrome";
 import { Donut } from "../donut/donut";
 
-// Mirrors the justin06lee.dev homepage: a chrome-foiled ascii donut on top,
-// then the greeting lines fading in one by one beneath it, holding together,
-// and the whole scene fading out to reveal the page.
+// Mirrors the justin06lee.dev homepage intro: a chrome-foiled ascii donut
+// holds on top while the greeting lines take turns in the slot beneath it,
+// then the whole scene fades out to reveal the page.
 const HERO = (
   <Chrome as="div">
     <Donut width={44} height={20} isolate={false} />

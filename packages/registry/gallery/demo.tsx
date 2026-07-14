@@ -11,7 +11,7 @@ const ITEMS: GalleryItem[] = [
       "A dark-only, shadcn-style component registry distributed over the CLI.",
     year: 2026,
     tech: ["Next.js", "TypeScript", "Tailwind"],
-    repo: "https://github.com/justin06lee/chrome.justin06lee.dev",
+    repo: "#",
     live: "https://chrome.justin06lee.dev",
     notes: "The registry you are reading right now.",
     pinned: true,
@@ -33,7 +33,7 @@ const ITEMS: GalleryItem[] = [
       "A spinning torus rendered with characters, ported to a React canvas.",
     year: 2024,
     tech: ["React", "Canvas", "Math"],
-    repo: "https://github.com/justin06lee/donut",
+    repo: "#",
   },
   {
     id: "prose",

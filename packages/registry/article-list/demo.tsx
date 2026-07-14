@@ -58,7 +58,7 @@ const ARTICLES: ArticlePreview[] = [
 export default function ArticleListDemo() {
   return (
     <div className="mx-auto w-full max-w-6xl p-4">
-      <ArticleList articles={ARTICLES} basePath="/articles" />
+      <ArticleList articles={ARTICLES} basePath="#" />
     </div>
   );
 }

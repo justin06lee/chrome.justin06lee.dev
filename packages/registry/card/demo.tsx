@@ -14,7 +14,7 @@ export default function CardDemo() {
     <div className="grid w-full max-w-2xl grid-cols-1 gap-5 sm:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle href="https://example.com">chrome registry</CardTitle>
+          <CardTitle href="https://chrome.justin06lee.dev">chrome registry</CardTitle>
           <CardMeta>2026</CardMeta>
         </CardHeader>
         <CardBody>

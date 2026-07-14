@@ -34,9 +34,10 @@ export function Nav() {
         >
           examples
         </Button>
+        {/* Points at the profile until the registry repo is public. */}
         <Button
           variant="link"
-          href="https://github.com/justin06lee/chrome.justin06lee.dev"
+          href="https://github.com/justin06lee"
           className="text-white/65 hover:text-white hover:no-underline"
         >
           github

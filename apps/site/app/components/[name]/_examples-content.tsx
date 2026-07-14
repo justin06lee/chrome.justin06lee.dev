@@ -66,7 +66,7 @@ const GALLERY_ITEMS: GalleryItem[] = [
     description: "dark-only, shadcn-style component registry distributed over the CLI.",
     year: 2026,
     tech: ["Next.js", "TypeScript"],
-    repo: "https://github.com/justin06lee/chrome.justin06lee.dev",
+    live: "https://chrome.justin06lee.dev",
     pinned: true,
   },
   {
@@ -225,13 +225,13 @@ function SpriteScrubberExample() {
 function IntroExample({
   lines,
   hero,
-  holdDuration,
+  speed,
   skipLabel,
   buttonLabel,
 }: {
   lines: ReactNode[];
   hero?: ReactNode;
-  holdDuration?: number;
+  speed?: number;
   skipLabel?: string;
   buttonLabel: string;
 }) {
@@ -252,7 +252,7 @@ function IntroExample({
           key={cycle}
           lines={lines}
           hero={hero}
-          holdDuration={holdDuration}
+          speed={speed}
           skipLabel={skipLabel}
           onComplete={() => setCycle(null)}
         />
@@ -606,14 +606,14 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
       ),
     },
     {
-      label: "Lines only, shorter hold",
+      label: "Lines only, double speed",
       code:
-        '<Intro\n  lines={["one.", "two.", "three."]}\n  holdDuration={800}\n' +
+        '<Intro\n  lines={["one.", "two.", "three."]}\n  speed={2}\n' +
         '  skipLabel="close"\n  onComplete={() => setCycle(null)}\n/>',
       render: (
         <IntroExample
           lines={["one.", "two.", "three."]}
-          holdDuration={800}
+          speed={2}
           skipLabel="close"
           buttonLabel="play fast intro"
         />

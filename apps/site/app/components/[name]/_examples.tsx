@@ -588,7 +588,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
       code:
         "<Card>\n" +
         "  <CardHeader>\n" +
-        '    <CardTitle href="https://example.com">chrome registry</CardTitle>\n' +
+        '    <CardTitle href="https://chrome.justin06lee.dev">chrome registry</CardTitle>\n' +
         "    <CardMeta>2026</CardMeta>\n" +
         "  </CardHeader>\n" +
         "  <CardBody>own-the-code components.</CardBody>\n" +
@@ -599,7 +599,7 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
       render: (
         <Card className="w-64">
           <CardHeader>
-            <CardTitle href="https://example.com">chrome registry</CardTitle>
+            <CardTitle href="https://chrome.justin06lee.dev">chrome registry</CardTitle>
             <CardMeta>2026</CardMeta>
           </CardHeader>
           <CardBody>own-the-code components.</CardBody>

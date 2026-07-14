@@ -8,8 +8,8 @@ export default function SocialsDemo() {
       <Socials
         links={{
           github: "https://github.com/justin06lee",
-          x: "https://x.com/justin06lee",
-          linkedin: "https://linkedin.com/in/justin06lee",
+          x: "#",
+          linkedin: "#",
           email: "hi@example.com",
           website: "https://justin06lee.dev",
         }}
@@ -19,8 +19,8 @@ export default function SocialsDemo() {
         gap="tight"
         links={{
           github: "https://github.com/justin06lee",
-          youtube: "https://youtube.com/@justin06lee",
-          instagram: "https://instagram.com/justin06lee",
+          youtube: "#",
+          instagram: "#",
         }}
       />
     </div>

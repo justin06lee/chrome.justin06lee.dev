@@ -6,12 +6,12 @@ import { AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export type IntroProps = {
-  /** Lines that fade in one by one under the hero and stay visible. */
+  /** Lines shown one at a time in a fixed slot under the hero, in order. */
   lines: React.ReactNode[];
-  /** Optional visual rendered above the lines (e.g. ascii art). */
+  /** Optional visual rendered above the lines for the whole intro (e.g. ascii art). */
   hero?: React.ReactNode;
-  /** How long the finished scene holds before fading out, in ms. */
-  holdDuration?: number;
+  /** Playback speed multiplier — 2 plays the sequence twice as fast. Default 1. */
+  speed?: number;
   /** Called once after the overlay finishes fading out (also on skip). */
   onComplete?: () => void;
   /** Whether to show the skip button. Defaults to true. */
@@ -27,24 +27,31 @@ export type IntroProps = {
   className?: string;
 };
 
-// Timeline (seconds). Lines accumulate: each fades in and stays put while the
-// next one appears below it, mirroring the justin06lee.dev homepage stagger.
-const HERO_DELAY = 0.4;
-const LINE_STEP = 0.3;
-const ENTER_DURATION = 0.8;
+// Timeline (seconds), mirroring the justin06lee.dev homepage intro: the hero
+// enters at 1 and holds; each line fades in from above, holds, and fades out
+// downward before the next takes its place; the hero leaves with the last
+// line, then the whole overlay fades so the page beneath fades in.
+const HERO_IN = 1;
+const FIRST_LINE_IN = 2;
+const LINE_HOLD = 3; // fully-visible time per line
+const LINE_GAP = 1; // empty-slot beat between lines
+const FADE = 1; // per-element fade duration
 const EXIT_DURATION = 0.7;
 
+const lineIn = (i: number) => FIRST_LINE_IN + i * (FADE + LINE_HOLD + LINE_GAP);
+const lineOut = (i: number) => lineIn(i) + FADE + LINE_HOLD;
+
 /**
- * Full-screen intro/splash overlay rendered as one scene: an optional hero on
- * top with lines fading in one by one beneath it. Once the last line has held
- * for `holdDuration`, the whole overlay fades out (never snaps), then calls
- * onComplete and unmounts. Locks body scroll while visible. Dark-only. An
- * optional persistKey gates it to play only once via localStorage.
+ * Full-screen intro/splash overlay: an optional hero sits on top for the whole
+ * sequence while lines cycle one at a time in a fixed slot beneath it. After
+ * the last line leaves, the hero and overlay fade out (never snap), then
+ * onComplete fires and it unmounts. Locks body scroll while visible. Dark-only.
+ * An optional persistKey gates it to play only once via localStorage.
  */
 export function Intro({
   lines,
   hero,
-  holdDuration = 1400,
+  speed = 1,
   onComplete,
   skippable = true,
   skipLabel = "skip",
@@ -68,7 +75,7 @@ export function Intro({
     setVisible(!played);
   }, [persistKey]);
 
-  // Starts the fade-out; completion is settled in AnimatePresence's
+  // Starts the fade-out; completion settles in AnimatePresence's
   // onExitComplete so onComplete only fires once the fade has finished.
   const beginExit = useCallback(() => {
     setVisible(false);
@@ -81,23 +88,26 @@ export function Intro({
     onCompleteRef.current?.();
   }, [persistKey]);
 
-  const hasHero = hero != null;
-  // First line waits for the hero to be underway; without a hero it leads.
-  const lineBase = hasHero ? HERO_DELAY + 0.6 : HERO_DELAY;
+  // Everything scales by 1/speed; reduced motion collapses the timeline.
+  const t = useCallback(
+    (seconds: number) => (reduceMotion ? 0 : seconds / speed),
+    [reduceMotion, speed],
+  );
 
-  // Hold the finished scene, then fade the whole overlay out.
+  const hasHero = hero != null;
+  // The hero leaves as the last line does (or on its own if there are none).
+  const heroOut = lines.length > 0 ? lineOut(lines.length - 1) : HERO_IN + LINE_HOLD;
+
+  // Once the last exit fade lands, fade the whole overlay out.
   useEffect(() => {
     if (visible !== true) return;
     if (lines.length === 0 && !hasHero) {
       beginExit();
       return;
     }
-    const lastDelay =
-      lines.length > 0 ? lineBase + (lines.length - 1) * LINE_STEP : HERO_DELAY;
-    const settleMs = reduceMotion ? 0 : (lastDelay + ENTER_DURATION) * 1000;
-    const id = window.setTimeout(beginExit, settleMs + holdDuration);
+    const id = window.setTimeout(beginExit, t(heroOut + FADE) * 1000);
     return () => window.clearTimeout(id);
-  }, [visible, lines.length, hasHero, lineBase, holdDuration, reduceMotion, beginExit]);
+  }, [visible, lines.length, hasHero, heroOut, t, beginExit]);
 
   // Body scroll lock while visible.
   useEffect(() => {
@@ -110,9 +120,8 @@ export function Intro({
 
   if (visible === null) return null;
 
-  const duration = reduceMotion ? 0 : ENTER_DURATION;
+  const fade = reduceMotion ? 0 : FADE / speed;
   const offset = reduceMotion ? 0 : 10;
-  const delay = (d: number) => (reduceMotion ? 0 : d);
 
   return (
     <AnimatePresence onExitComplete={handleExited}>
@@ -129,45 +138,60 @@ export function Intro({
             className,
           )}
         >
-          <div className="flex flex-col items-center gap-8 px-6 text-center">
-            {hasHero && (
+          {hasHero && (
+            // Outer div fades the hero out at the end; inner fades it in.
+            <motion.div
+              initial={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 0, y: offset }}
+              transition={{ duration: fade * 0.8, delay: t(heroOut) }}
+              className="mb-12"
+            >
               <motion.div
-                initial={{ opacity: 0, y: offset }}
+                initial={{ opacity: 0, y: -offset }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration, delay: delay(HERO_DELAY) }}
+                transition={{ duration: fade * 0.8, delay: t(HERO_IN) }}
               >
                 {hero}
               </motion.div>
-            )}
+            </motion.div>
+          )}
 
-            {lines.length > 0 && (
-              <div className="flex flex-col items-center gap-4 text-lg leading-tight">
-                {lines.map((line, i) => (
+          {lines.length > 0 && (
+            // Fixed slot: every line renders absolutely into the same box so
+            // they take turns without the layout shifting.
+            <div
+              className="relative min-w-64 text-center text-lg leading-tight"
+              style={{ height: "1.75em" }}
+            >
+              {lines.map((line, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 0, y: offset }}
+                  transition={{ duration: fade, delay: t(lineOut(i)) }}
+                >
                   <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: offset }}
+                    initial={{ opacity: 0, y: -offset }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration, delay: delay(lineBase + i * LINE_STEP) }}
+                    transition={{ duration: fade, delay: t(lineIn(i)) }}
                   >
                     {line}
                   </motion.div>
-                ))}
-              </div>
-            )}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {skippable && (
-            <motion.button
+            <button
               type="button"
               onClick={beginExit}
               aria-label={skipLabel}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration, delay: delay(HERO_DELAY) }}
               className="fixed bottom-12 text-sm text-white/80 underline-offset-4 transition hover:text-white hover:underline"
             >
               {skipLabel}
-            </motion.button>
+            </button>
           )}
         </motion.div>
       )}

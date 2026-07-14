@@ -631,7 +631,7 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
       code:
         "<Socials\n  links={{\n" +
         '    github: "https://github.com/justin06lee",\n' +
-        '    x: "https://x.com/justin06lee",\n' +
+        '    x: "https://x.com/your-handle",\n' +
         '    email: "hi@example.com",  // click copies the address\n' +
         '    website: "https://justin06lee.dev",\n' +
         "  }}\n/>",
@@ -639,7 +639,7 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
         <Socials
           links={{
             github: "https://github.com/justin06lee",
-            x: "https://x.com/justin06lee",
+            x: "#",
             email: "hi@example.com",
             website: "https://justin06lee.dev",
           }}
@@ -658,8 +658,8 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
             gap="tight"
             links={{
               github: "https://github.com/justin06lee",
-              youtube: "https://youtube.com/@justin06lee",
-              instagram: "https://instagram.com/justin06lee",
+              youtube: "#",
+              instagram: "#",
             }}
           />
           <Socials
@@ -667,8 +667,8 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
             gap="loose"
             links={{
               github: "https://github.com/justin06lee",
-              youtube: "https://youtube.com/@justin06lee",
-              instagram: "https://instagram.com/justin06lee",
+              youtube: "#",
+              instagram: "#",
             }}
           />
         </div>
