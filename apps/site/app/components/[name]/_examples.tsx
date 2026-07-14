@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Copy, Github, ListFilter, Menu as MenuIcon } from "lucide-react";
 import { Button } from "../../../../../packages/registry/button/button";
 import {
@@ -38,7 +38,6 @@ import { Showcase } from "../../../../../packages/registry/showcase/showcase";
 import { Stack } from "../../../../../packages/registry/stack/stack";
 import { Tabs } from "../../../../../packages/registry/tabs/tabs";
 import { Textarea } from "../../../../../packages/registry/textarea/textarea";
-import { Tilt } from "../../../../../packages/registry/tilt/tilt";
 import { Toc, type TocHeading } from "../../../../../packages/registry/toc/toc";
 import { Tooltip } from "../../../../../packages/registry/tooltip/tooltip";
 
@@ -333,14 +332,23 @@ function ComboboxPlainExample() {
 }
 
 /** Self-contained toc demo: real sections with the listed ids live in a
- *  scrollable mini page next to the toc, so scroll-spy and anchors work. */
+ *  scrollable mini page next to the toc, wired via `container` so scroll-spy
+ *  and clicks stay inside the panel instead of scrolling the docs page. */
 function TocExample({ label, headings }: { label?: string; headings: TocHeading[] }) {
+  const panelRef = useRef<HTMLDivElement>(null);
   return (
     <div className="flex w-full max-w-md gap-8 text-left">
-      <Toc label={label} headings={headings} className="!static w-32 shrink-0" />
-      <div className="h-44 flex-1 overflow-y-auto border border-white/10 bg-white/[0.01] px-4">
-        {headings.map((h) => (
-          <section key={h.id} id={h.id} className="min-h-36 scroll-mt-2 py-4">
+      <Toc label={label} headings={headings} container={panelRef} className="!static w-32 shrink-0" />
+      <div
+        ref={panelRef}
+        className="h-44 flex-1 overflow-y-auto border border-white/10 bg-white/[0.01] px-4"
+      >
+        {headings.map((h, i) => (
+          <section
+            key={h.id}
+            id={h.id}
+            className={i === headings.length - 1 ? "min-h-full py-4" : "min-h-36 py-4"}
+          >
             <h4 className="mb-1 text-sm text-white">{h.text}</h4>
             <p className="text-xs leading-5 text-white/40">
               scroll or click a toc link — the active row follows this section.
@@ -571,30 +579,6 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         <Stack layers={3}>
           <StackCard>three layers</StackCard>
         </Stack>
-      ),
-    },
-  ],
-  tilt: [
-    {
-      label: "Basic",
-      code: '<Tilt className="size-32">\n  {children}\n</Tilt>',
-      render: (
-        <Tilt className="size-32 flex items-center justify-center">
-          <span className="font-mono text-xs uppercase tracking-widest text-white/60">
-            hover
-          </span>
-        </Tilt>
-      ),
-    },
-    {
-      label: "Steeper, no shine",
-      code: '<Tilt rotate={22} shine={false} className="size-32">\n  {children}\n</Tilt>',
-      render: (
-        <Tilt rotate={22} shine={false} className="size-32 flex items-center justify-center">
-          <span className="font-mono text-xs uppercase tracking-widest text-white/60">
-            hover
-          </span>
-        </Tilt>
       ),
     },
   ],
@@ -964,7 +948,9 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         '    { id: "intro", text: "introduction" },\n' +
         '    { id: "usage", text: "usage" },\n' +
         '    { id: "api", text: "api reference" },\n' +
-        "  ]}\n/>",
+        "  ]}\n/>\n\n" +
+        "// contained: scroll-spy + clicks stay inside a scrollable panel\n" +
+        "<Toc headings={headings} container={panelRef} />",
       render: (
         <TocExample
           headings={[

@@ -53,10 +53,9 @@ import tabs from "../../packages/registry/tabs/meta";
 import tag_input from "../../packages/registry/tag-input/meta";
 import textarea from "../../packages/registry/textarea/meta";
 import theme from "../../packages/registry/_shared/theme/meta";
-import tilt from "../../packages/registry/tilt/meta";
 import timeline from "../../packages/registry/timeline/meta";
 import toc from "../../packages/registry/toc/meta";
 import tooltip from "../../packages/registry/tooltip/meta";
 import utils from "../../packages/registry/_shared/utils/meta";
 
-export const REGISTRY = [accordion, article, article_list, ascii, asset_sidebar, badge, breadcrumb, button, calendar, calendar_nav, card, checkbox, chrome, code_block, collapsible_prose, color_swatch, combobox, copy_button, count_up, desk, dialog, donut, drawing_window, editor, editor_toolbar, fade_in, gallery, heatmap, image_cropper, inline_edit, input, intro, login_form, manager_table, menu, navbar, not_found, now_playing_bar, pfp, prose, rainbow, range, scramble, segmented, select, sheet, showcase, socials, sprite_scrubber, stack, tabs, tag_input, textarea, theme, tilt, timeline, toc, tooltip, utils];
+export const REGISTRY = [accordion, article, article_list, ascii, asset_sidebar, badge, breadcrumb, button, calendar, calendar_nav, card, checkbox, chrome, code_block, collapsible_prose, color_swatch, combobox, copy_button, count_up, desk, dialog, donut, drawing_window, editor, editor_toolbar, fade_in, gallery, heatmap, image_cropper, inline_edit, input, intro, login_form, manager_table, menu, navbar, not_found, now_playing_bar, pfp, prose, rainbow, range, scramble, segmented, select, sheet, showcase, socials, sprite_scrubber, stack, tabs, tag_input, textarea, theme, timeline, toc, tooltip, utils];

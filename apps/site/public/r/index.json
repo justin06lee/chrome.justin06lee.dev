@@ -256,7 +256,7 @@
   {
     "name": "gallery",
     "type": "registry:ui",
-    "description": "searchable, filterable, sortable project card grid with pinned markers, tech chips, and repo/live links. composes card, badge, and menu.",
+    "description": "searchable, filterable, sortable project card grid with chrome-foiled pinned markers, tech chips, and repo/live links. composes card, badge, menu, and chrome.",
     "dependencies": [
       "lucide-react",
       "motion"
@@ -265,7 +265,8 @@
       "utils",
       "card",
       "badge",
-      "menu"
+      "menu",
+      "chrome"
     ]
   },
   {
@@ -308,7 +309,7 @@
   {
     "name": "intro",
     "type": "registry:ui",
-    "description": "full-screen timed multi-step intro overlay with staggered enter/exit, auto-advance, optional skip, and a play-once localStorage gate.",
+    "description": "full-screen intro overlay: an optional hero above lines that fade in one by one, hold, then the whole scene fades out. skippable, with a play-once localStorage gate.",
     "dependencies": [
       "motion"
     ],
@@ -364,7 +365,7 @@
   {
     "name": "not-found",
     "type": "registry:ui",
-    "description": "the justin06lee.dev 404 block: a random ascii cat fades in above a big mono headline, a muted excuse, and footer links. ten cats ship embedded.",
+    "description": "the justin06lee.dev 404 block: a random ascii cat fades in above a big mono headline, a muted excuse, and footer links. ten cats ship embedded. installs app/not-found.tsx so next.js picks it up with zero wiring.",
     "dependencies": [
       "motion"
     ],
@@ -385,11 +386,10 @@
   {
     "name": "pfp",
     "type": "registry:ui",
-    "description": "profile-picture tile: an image framed in a bordered square, composed on tilt for the 3d hover, with an angled specular glint sweeping diagonally on hover. frame the subject with x/y/scale; size it via className.",
+    "description": "profile-picture tile: an image framed in a bordered square that tilts in 3d on hover with a thick white cartoon glint sweeping diagonally across it. frame the subject with x/y/scale; size it via className.",
     "dependencies": [],
     "registryDependencies": [
-      "utils",
-      "tilt"
+      "utils"
     ]
   },
   {
@@ -531,15 +531,6 @@
     "description": "dark-only chrome CSS variables and @theme inline tokens.",
     "dependencies": [],
     "registryDependencies": []
-  },
-  {
-    "name": "tilt",
-    "type": "registry:ui",
-    "description": "3d perspective tilt card with sweeping shine on hover.",
-    "dependencies": [],
-    "registryDependencies": [
-      "utils"
-    ]
   },
   {
     "name": "timeline",

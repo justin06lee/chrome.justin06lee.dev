@@ -37,7 +37,6 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
       "stack",
       "tabs",
       "textarea",
-      "tilt",
       "timeline",
       "toc",
       "tooltip",

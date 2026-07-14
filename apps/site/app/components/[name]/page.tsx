@@ -52,7 +52,6 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   "editor": () => import("../../../../../packages/registry/editor/demo"),
   tabs: () => import("../../../../../packages/registry/tabs/demo"),
   textarea: () => import("../../../../../packages/registry/textarea/demo"),
-  tilt: () => import("../../../../../packages/registry/tilt/demo"),
   timeline: () => import("../../../../../packages/registry/timeline/demo"),
   toc: () => import("../../../../../packages/registry/toc/demo"),
   tooltip: () => import("../../../../../packages/registry/tooltip/demo"),
