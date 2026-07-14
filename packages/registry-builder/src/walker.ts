@@ -1,13 +1,20 @@
 import { readdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { ComponentMeta, RegistryItemType } from "./schema";
+import type { ComponentMeta, RegistryFileType, RegistryItemType } from "./schema";
 
 const KNOWN_TYPES: ReadonlyArray<RegistryItemType> = [
   "registry:ui",
   "registry:lib",
   "registry:theme",
   "registry:hook",
+];
+
+// Per-file types additionally allow registry:page (app-directory page files);
+// registry:page is not a valid item-level type.
+const KNOWN_FILE_TYPES: ReadonlyArray<RegistryFileType> = [
+  ...KNOWN_TYPES,
+  "registry:page",
 ];
 
 // Component names become output filenames (`<name>.json`), so they must be
@@ -76,6 +83,11 @@ export async function walkRegistry(root: string): Promise<WalkedItem[]> {
       if (!f || typeof f.source !== "string" || typeof f.target !== "string") {
         throw new Error(
           `Invalid meta.ts at ${metaPath}: every "files" entry needs string "source" and "target"`,
+        );
+      }
+      if (f.type !== undefined && !KNOWN_FILE_TYPES.includes(f.type)) {
+        throw new Error(
+          `Invalid meta.ts at ${metaPath}: file "type" must be one of ${KNOWN_FILE_TYPES.join(", ")} (got ${JSON.stringify(f.type)})`,
         );
       }
     }

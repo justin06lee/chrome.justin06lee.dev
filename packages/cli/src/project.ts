@@ -60,6 +60,18 @@ export function detectAliasBase(cwd: string): string {
   return existsSync(join(cwd, "src")) && !existsSync(join(cwd, "app")) ? "src" : "";
 }
 
+/**
+ * Next.js app directory relative to the project root: "app" for root layouts,
+ * "src/app" for src/ layouts. Prefers an existing directory; when neither
+ * exists yet, derives the location from the `@/*` alias base.
+ */
+export function detectAppDir(cwd: string): string {
+  if (existsSync(join(cwd, "app"))) return "app";
+  if (existsSync(join(cwd, "src", "app"))) return join("src", "app");
+  const base = detectAliasBase(cwd);
+  return base ? join(base, "app") : "app";
+}
+
 export function parseMajor(range: string | undefined): number | null {
   if (!range) return null;
   // strip leading range operators (^ ~ >= etc.) then require the major at the start.

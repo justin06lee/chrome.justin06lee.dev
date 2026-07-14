@@ -2,7 +2,7 @@ import { test, expect } from "bun:test";
 import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { detectAliasBase, detectProject } from "../src/project";
+import { detectAliasBase, detectAppDir, detectProject } from "../src/project";
 
 function tempProject(setup: (dir: string) => void): string {
   const dir = mkdtempSync(join(tmpdir(), "chrome-ui-proj-"));
@@ -88,4 +88,29 @@ test("detectAliasBase falls back to probing for src/ without a tsconfig", () => 
   expect(detectAliasBase(dir)).toBe("src");
   mkdirSync(join(dir, "app"));
   expect(detectAliasBase(dir)).toBe("");
+});
+
+test("detectAppDir prefers an existing app directory", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-appdir-"));
+  mkdirSync(join(dir, "app"));
+  expect(detectAppDir(dir)).toBe("app");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("detectAppDir finds src/app on src layouts", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-appdir-"));
+  mkdirSync(join(dir, "src/app"), { recursive: true });
+  expect(detectAppDir(dir)).toBe("src/app");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("detectAppDir falls back to the alias base when no app dir exists", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-appdir-"));
+  expect(detectAppDir(dir)).toBe("app");
+  writeFileSync(
+    join(dir, "tsconfig.json"),
+    JSON.stringify({ compilerOptions: { paths: { "@/*": ["./src/*"] } } }),
+  );
+  expect(detectAppDir(dir)).toBe("src/app");
+  rmSync(dir, { recursive: true, force: true });
 });

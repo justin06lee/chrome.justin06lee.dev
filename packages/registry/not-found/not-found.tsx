@@ -20,6 +20,8 @@ export interface NotFoundProps {
   links?: NotFoundLink[];
   /** Override the random pick with a fixed cat (0-9) — e.g. for visual tests. */
   cat?: number;
+  /** Show the subtle "made by justin06lee.dev" line at the bottom. Default true. */
+  credit?: boolean;
   className?: string;
 }
 
@@ -34,6 +36,7 @@ export function NotFound({
   message = "this page wandered off. the cat hasn't seen it either.",
   links = [{ label: "home", href: "/" }],
   cat,
+  credit = true,
   className,
 }: NotFoundProps) {
   // Picked on mount so server and client markup agree.
@@ -96,6 +99,22 @@ export function NotFound({
               {link.label}
             </a>
           ))}
+        </motion.div>
+      ) : null}
+
+      {credit ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="mt-10"
+        >
+          <a
+            href="https://justin06lee.dev"
+            className="font-mono text-[11px] text-white/30 transition-colors hover:text-white/60"
+          >
+            made by justin06lee.dev
+          </a>
         </motion.div>
       ) : null}
     </div>

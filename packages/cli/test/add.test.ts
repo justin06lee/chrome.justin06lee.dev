@@ -31,6 +31,14 @@ const FAKE_REGISTRY: Record<string, RegistryItem> = {
     ],
     cssVars: { ":root": { "--tab-accent": "#fff" } },
   },
+  "not-found": {
+    name: "not-found", type: "registry:ui",
+    dependencies: [], registryDependencies: [],
+    files: [
+      { path: "not-found.tsx", type: "registry:ui", target: "not-found.tsx", content: "export const NotFound = () => null;\n" },
+      { path: "app/not-found.tsx", type: "registry:page", target: "app/not-found.tsx", content: "export default function Page() { return null; }\n" },
+    ],
+  },
 };
 
 function makeProject(): string {
@@ -199,6 +207,65 @@ test("add errors when chrome.json's tailwind.css escapes the project root", asyn
       fetch: async (n) => FAKE_REGISTRY[n]!,
     }),
   ).rejects.toThrow(/escapes the project root/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add routes registry:page files into the app directory", async () => {
+  const dir = makeProject(); // root layout: app/ exists
+  await runAdd({
+    cwd: dir, names: ["not-found"], skipInstall: true, yes: true,
+    fetch: async (n) => FAKE_REGISTRY[n]!,
+  });
+  // ui file → components alias, page file → app/not-found.tsx
+  expect(existsSync(join(dir, "components/chrome/not-found.tsx"))).toBe(true);
+  expect(readFileSync(join(dir, "app/not-found.tsx"), "utf8")).toContain("export default");
+  // the page file must not also land under the components alias
+  expect(existsSync(join(dir, "components/chrome/app/not-found.tsx"))).toBe(false);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add routes registry:page files into src/app on src layouts", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-add-"));
+  writeFileSync(join(dir, "bun.lock"), "");
+  writeFileSync(
+    join(dir, "package.json"),
+    JSON.stringify({ name: "x", dependencies: { next: "16.0.0" }, devDependencies: { tailwindcss: "^4" } }),
+  );
+  writeFileSync(
+    join(dir, "tsconfig.json"),
+    JSON.stringify({ compilerOptions: { paths: { "@/*": ["./src/*"] } } }),
+  );
+  mkdirSync(join(dir, "src/app"), { recursive: true });
+  writeFileSync(join(dir, "src/app/globals.css"), `@import "tailwindcss";\n`);
+  writeFileSync(
+    join(dir, "chrome.json"),
+    JSON.stringify({
+      $schema: "x", registry: "x", style: "default", tsx: true,
+      tailwind: { css: "src/app/globals.css", baseColor: "black" },
+      aliases: { components: "@/components/chrome", utils: "@/lib/utils", hooks: "@/hooks" },
+    }),
+  );
+  await runAdd({
+    cwd: dir, names: ["not-found"], skipInstall: true, yes: true,
+    fetch: async (n) => FAKE_REGISTRY[n]!,
+  });
+  expect(existsSync(join(dir, "src/components/chrome/not-found.tsx"))).toBe(true);
+  expect(existsSync(join(dir, "src/app/not-found.tsx"))).toBe(true);
+  expect(existsSync(join(dir, "app/not-found.tsx"))).toBe(false);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add reports a conflict for an existing, differing app page file", async () => {
+  const dir = makeProject();
+  writeFileSync(join(dir, "app/not-found.tsx"), "// my custom 404\n");
+  await expect(
+    runAdd({
+      cwd: dir, names: ["not-found"], skipInstall: true,
+      fetch: async (n) => FAKE_REGISTRY[n]!,
+    }),
+  ).rejects.toThrow(/conflict/);
+  // local page untouched
+  expect(readFileSync(join(dir, "app/not-found.tsx"), "utf8")).toContain("my custom 404");
   rmSync(dir, { recursive: true, force: true });
 });
 

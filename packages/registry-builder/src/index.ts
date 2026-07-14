@@ -5,6 +5,7 @@ export type {
   RegistryItem,
   RegistryFile,
   RegistryItemType,
+  RegistryFileType,
   MetaFile,
   PropDoc,
 } from "./schema";

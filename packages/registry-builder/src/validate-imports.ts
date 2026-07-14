@@ -9,7 +9,9 @@ const IMPORTABLE_EXT = /\.(tsx|ts|jsx|js)$/;
  * Mirrors packages/cli install targets: registry:ui files land under the
  * components alias (`@/components/ui/...` in shipped source), registry:hook
  * files under `@/hooks`, registry:lib files under `@/lib`. Theme/CSS files
- * are not importable modules.
+ * are not importable modules, and registry:page files land in the Next.js
+ * app directory (outside any alias) — their imports are still validated,
+ * but they never own an alias specifier themselves.
  */
 export function installedSpecifier(file: RegistryFile): string | null {
   if (!IMPORTABLE_EXT.test(file.target)) return null;
@@ -21,6 +23,7 @@ export function installedSpecifier(file: RegistryFile): string | null {
       return `@/hooks/${base}`;
     case "registry:lib":
       return `@/lib/${base}`;
+    case "registry:page":
     default:
       return null;
   }

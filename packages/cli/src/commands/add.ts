@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import { dirname, join, resolve, sep } from "node:path";
-import { detectAliasBase, detectProject } from "../project";
+import { detectAliasBase, detectAppDir, detectProject } from "../project";
 import { readConfig } from "../writers/config";
 import type { Fetcher } from "../registry";
 import { makeHttpFetcher, resolveItems } from "../registry";
@@ -61,6 +61,8 @@ export async function runAdd(opts: AddOptions): Promise<void> {
   const utilsRel = aliasToFsRelative(cfg.aliases.utils, aliasBase);
   // Hooks land at the hooks alias; older configs predate the field, so fall back.
   const hooksRel = aliasToFsRelative(cfg.aliases.hooks ?? "@/hooks", aliasBase);
+  // Page files land in the Next.js app directory (app/ or src/app/).
+  const appRel = detectAppDir(cwd);
 
   // Resolve the globals.css target once and refuse paths that escape the project.
   const cssPath = resolve(cwd, cfg.tailwind.css);
@@ -76,7 +78,12 @@ export async function runAdd(opts: AddOptions): Promise<void> {
   for (const item of items) {
     for (const file of item.files) {
       let dest: string;
-      if (file.type === "registry:hook") {
+      if (file.type === "registry:page") {
+        // Registry page targets are declared app-relative with an `app/`
+        // prefix (e.g. "app/not-found.tsx"); strip it and re-root at the
+        // detected app dir so src/ layouts get src/app/not-found.tsx.
+        dest = join(cwd, appRel, file.path.replace(/^app\//, ""));
+      } else if (file.type === "registry:hook") {
         dest = join(cwd, hooksRel, file.path);
       } else if (item.type === "registry:lib") {
         // Lib files land at <utilsDir>/<file.path>. The utils alias points at a

@@ -4,10 +4,15 @@ export type RegistryItemType =
   | "registry:theme"
   | "registry:hook";
 
+/** Per-file types are the item types plus `registry:page`, which installs a
+ *  framework page file (e.g. `app/not-found.tsx`) relative to the Next.js app
+ *  directory instead of a component alias. Only valid on individual files. */
+export type RegistryFileType = RegistryItemType | "registry:page";
+
 export interface RegistryFile {
   path: string;
   content: string;
-  type: RegistryItemType;
+  type: RegistryFileType;
   target: string;
 }
 
@@ -37,8 +42,10 @@ export interface MetaFile {
   source: string;
   target: string;
   /** Per-file type override. Defaults to the component's `type`. Use `registry:hook`
-   *  to ship a headless hook alongside a `registry:ui` styled component. */
-  type?: RegistryItemType;
+   *  to ship a headless hook alongside a `registry:ui` styled component, or
+   *  `registry:page` to install a page file under the Next.js app directory
+   *  (target like `app/not-found.tsx`). */
+  type?: RegistryFileType;
 }
 
 export interface ComponentMeta {

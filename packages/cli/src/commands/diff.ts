@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { readConfig } from "../writers/config";
-import { detectAliasBase } from "../project";
+import { detectAliasBase, detectAppDir } from "../project";
 import { makeHttpFetcher } from "../registry";
 import { sanitize } from "../sanitize";
 
@@ -74,14 +74,20 @@ export const diffCommand = defineCommand({
     const libBase = utilsDir === "." ? "" : utilsDir;
     for (const file of remote.files) {
       let localDir: string;
-      if (file.type === "registry:hook") {
+      let filePath = file.path;
+      if (file.type === "registry:page") {
+        // Mirror add.ts: page files live in the app dir, target stripped of
+        // its `app/` prefix (src/ layouts resolve to src/app/...).
+        localDir = detectAppDir(cwd);
+        filePath = file.path.replace(/^app\//, "");
+      } else if (file.type === "registry:hook") {
         localDir = hooksRel;
       } else if (remote.type === "registry:lib") {
         localDir = libBase;
       } else {
         localDir = componentsRel;
       }
-      const localPath = join(cwd, localDir, file.path);
+      const localPath = join(cwd, localDir, filePath);
       // Guard against a malicious registry whose file.path (e.g. "../../etc/passwd")
       // escapes the project root — mirror add.ts's writeFileSafe cwdGuard.
       if (!resolve(localPath).startsWith(cwd + sep)) {
