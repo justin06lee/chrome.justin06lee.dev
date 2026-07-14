@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { motion } from "motion/react";
-import { ListFilter, Pin } from "lucide-react";
+import { ListFilter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Chrome, CHROME_FOIL_STYLE, CHROME_GLOW_STYLE } from "@/components/ui/chrome";
 import { Menu, type MenuItem } from "@/components/ui/menu";
 import {
   Card,
@@ -29,7 +30,7 @@ export type GalleryItem = {
   live?: string;
   /** Muted italic line under the description. */
   notes?: string;
-  /** Pins the item to the front and shows a pin marker. */
+  /** Pins the item to the front; its pin marker and title get the chrome foil treatment. */
   pinned?: boolean;
 };
 
@@ -56,11 +57,36 @@ const SORT_LABEL: Record<GallerySort, string> = {
 
 const SORT_KEYS: GallerySort[] = ["newest", "oldest", "az", "za"];
 
+// lucide's `pin` glyph (v0.540) as a CSS mask. Chrome paints its foil via
+// `background-clip: text`, which only clips to text glyphs — an SVG stroke
+// can't take it. So the pinned marker paints the same gradient stack onto a
+// plain span and clips it to the pin shape with a mask instead.
+const PIN_MASK = `url("data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>',
+)}")`;
+
+// The chrome paint stack + shine animation come straight from the chrome
+// component, so the icon shimmers in phase with the <Chrome> title next to it
+// (which also injects the keyframes). The `data-chrome` attribute on the span
+// opts it into Chrome's prefers-reduced-motion freeze.
+const PIN_FOIL_STYLE: CSSProperties = {
+  ...CHROME_FOIL_STYLE,
+  WebkitMaskImage: PIN_MASK,
+  WebkitMaskSize: "100% 100%",
+  maskImage: PIN_MASK,
+  maskSize: "100% 100%",
+};
+
+// Chrome's bevel + glow, applied on a wrapper: filters run before masks in the
+// CSS effects pipeline, so a drop-shadow on the masked span itself would be
+// clipped away with the box. On the parent it shadows the masked pin shape.
+const PIN_GLOW_STYLE: CSSProperties = CHROME_GLOW_STYLE;
+
 /**
  * Searchable / filterable / sortable card grid. A sort menu, tag filter chips,
- * and a search input drive a responsive grid of project cards (pinned badge,
- * tech chips, repo / live links). Generalized from the justin06lee.dev item
- * gallery. Dark-only.
+ * and a search input drive a responsive grid of project cards (chrome-foiled
+ * pinned marker + title, tech chips, repo / live links). Generalized from the
+ * justin06lee.dev item gallery. Dark-only.
  */
 export function Gallery({
   title,
@@ -268,12 +294,22 @@ function ProjectCard({
         <CardHeader>
           <div className="flex min-w-0 items-start gap-1.5">
             {item.pinned && (
-              <Pin
-                className="mt-1 size-3.5 shrink-0 -rotate-45 fill-white text-white"
+              <span
+                role="img"
                 aria-label="Pinned"
-              />
+                className="mt-1 size-3.5 shrink-0"
+                style={PIN_GLOW_STYLE}
+              >
+                <span
+                  data-chrome
+                  className="block size-full -rotate-45"
+                  style={PIN_FOIL_STYLE}
+                />
+              </span>
             )}
-            <CardTitle href={item.link}>{item.title}</CardTitle>
+            <CardTitle href={item.link}>
+              {item.pinned ? <Chrome>{item.title}</Chrome> : item.title}
+            </CardTitle>
           </div>
           <CardMeta>{item.year}</CardMeta>
         </CardHeader>

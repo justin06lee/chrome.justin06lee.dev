@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import type { UsageExample } from "./_examples";
 import {
   ArticleList,
@@ -23,6 +23,7 @@ import {
 } from "../../../../../packages/registry/image-cropper/image-cropper";
 import { SpriteScrubber } from "../../../../../packages/registry/sprite-scrubber/sprite-scrubber";
 import { Intro } from "../../../../../packages/registry/intro/intro";
+import { Donut } from "../../../../../packages/registry/donut/donut";
 
 // --- deterministic inline assets --------------------------------------------
 
@@ -165,11 +166,22 @@ function CalendarNavCompactExample() {
 
 const COUNT_TARGETS = [1280, 4096, 512, 9021];
 
-function CountUpExample() {
+function CountUpExample({
+  targets = COUNT_TARGETS,
+  className = "text-4xl tracking-tight",
+  ...countUpProps
+}: { targets?: number[]; className?: string } & Omit<
+  ComponentProps<typeof CountUp>,
+  "value" | "className"
+>) {
   const [i, setI] = useState(0);
   return (
     <div className="flex flex-col items-center gap-3 font-mono">
-      <CountUp value={COUNT_TARGETS[i % COUNT_TARGETS.length] ?? 0} className="text-4xl tracking-tight" />
+      <CountUp
+        value={targets[i % targets.length] ?? 0}
+        className={className}
+        {...countUpProps}
+      />
       <button
         type="button"
         onClick={() => setI((n) => n + 1)}
@@ -211,13 +223,15 @@ function SpriteScrubberExample() {
 }
 
 function IntroExample({
-  steps,
-  stepDuration,
+  lines,
+  hero,
+  holdDuration,
   skipLabel,
   buttonLabel,
 }: {
-  steps: string[];
-  stepDuration: number;
+  lines: ReactNode[];
+  hero?: ReactNode;
+  holdDuration?: number;
   skipLabel?: string;
   buttonLabel: string;
 }) {
@@ -236,8 +250,9 @@ function IntroExample({
         // No persistKey, so it replays on every click. onComplete unmounts it.
         <Intro
           key={cycle}
-          steps={steps}
-          stepDuration={stepDuration}
+          lines={lines}
+          hero={hero}
+          holdDuration={holdDuration}
           skipLabel={skipLabel}
           onComplete={() => setCycle(null)}
         />
@@ -297,6 +312,11 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
           className="py-6"
         />
       ),
+    },
+    {
+      label: "Without the credit line",
+      code: "<NotFound credit={false} />",
+      render: <NotFound credit={false} links={[{ label: "home", href: "#" }]} className="py-6" />,
     },
   ],
   "article-list": [
@@ -410,24 +430,31 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
     },
     {
       label: "Decimals + suffix",
-      code: '<CountUp value={99.5} decimals={1} suffix="%" duration={1.5} />',
+      code:
+        "const [target, setTarget] = useState(99.5);\n\n" +
+        '<CountUp value={target} decimals={1} suffix="%" duration={1.5} />',
       render: (
-        <div className="font-mono text-2xl text-white/80">
-          <CountUp value={99.5} decimals={1} suffix="%" duration={1.5} />
-        </div>
+        <CountUpExample
+          targets={[99.5, 42.3, 87.1, 12.9]}
+          className="text-2xl text-white/80"
+          decimals={1}
+          suffix="%"
+          duration={1.5}
+        />
       ),
     },
     {
       label: "Custom format",
-      code: '<CountUp\n  value={1234567}\n  prefix="$"\n  format={(n) => Math.round(n).toLocaleString("en-US")}\n/>',
+      code:
+        "const [target, setTarget] = useState(1234567);\n\n" +
+        '<CountUp\n  value={target}\n  prefix="$"\n  format={(n) => Math.round(n).toLocaleString("en-US")}\n/>',
       render: (
-        <div className="font-mono text-2xl text-white/80">
-          <CountUp
-            value={1234567}
-            prefix="$"
-            format={(n) => Math.round(n).toLocaleString("en-US")}
-          />
-        </div>
+        <CountUpExample
+          targets={[1234567, 890123, 4200000, 75300]}
+          className="text-2xl text-white/80"
+          prefix="$"
+          format={(n) => Math.round(n).toLocaleString("en-US")}
+        />
       ),
     },
   ],
@@ -559,29 +586,34 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
   ],
   intro: [
     {
-      label: "Replay on demand",
+      label: "Hero + lines",
       code:
         "// remount via key to replay; onComplete unmounts it\n" +
         "<Intro\n  key={cycle}\n" +
-        '  steps={["hi.", "im a registry component.", "welcome."]}\n' +
-        "  stepDuration={1500}\n  onComplete={() => setCycle(null)}\n/>",
+        '  hero={\n    <Chrome as="div">\n      <Donut width={44} height={20} isolate={false} />\n    </Chrome>\n  }\n' +
+        '  lines={["hi.", "im justin06lee.", "welcome to my component library"]}\n' +
+        "  onComplete={() => setCycle(null)}\n/>",
       render: (
         <IntroExample
-          steps={["hi.", "im a registry component.", "welcome."]}
-          stepDuration={1500}
+          hero={
+            <Chrome as="div">
+              <Donut width={44} height={20} isolate={false} />
+            </Chrome>
+          }
+          lines={["hi.", "im justin06lee.", "welcome to my component library"]}
           buttonLabel="play intro"
         />
       ),
     },
     {
-      label: "Faster steps, custom skip label",
+      label: "Lines only, shorter hold",
       code:
-        '<Intro\n  steps={["one.", "two.", "three."]}\n  stepDuration={900}\n' +
+        '<Intro\n  lines={["one.", "two.", "three."]}\n  holdDuration={800}\n' +
         '  skipLabel="close"\n  onComplete={() => setCycle(null)}\n/>',
       render: (
         <IntroExample
-          steps={["one.", "two.", "three."]}
-          stepDuration={900}
+          lines={["one.", "two.", "three."]}
+          holdDuration={800}
           skipLabel="close"
           buttonLabel="play fast intro"
         />

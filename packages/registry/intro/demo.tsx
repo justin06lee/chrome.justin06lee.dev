@@ -5,16 +5,16 @@ import { Intro } from "./intro";
 import { Chrome } from "../chrome/chrome";
 import { Donut } from "../donut/donut";
 
-// Mirrors the justin06lee.dev homepage intro: "hi." -> a spinning ascii donut
-// (here wrapped in the chrome foil) -> a welcome line, each step holding a few
-// seconds with a soft fade between, in the site's text-lg typography.
-const STEPS = [
-  "hi.",
-  <Chrome key="donut" as="div">
+// Mirrors the justin06lee.dev homepage: a chrome-foiled ascii donut on top,
+// then the greeting lines fading in one by one beneath it, holding together,
+// and the whole scene fading out to reveal the page.
+const HERO = (
+  <Chrome as="div">
     <Donut width={44} height={20} isolate={false} />
-  </Chrome>,
-  "welcome to my component library.",
-];
+  </Chrome>
+);
+
+const LINES = ["hi.", "im justin06lee.", "welcome to my component library"];
 
 export default function IntroDemo() {
   // Remount key so the intro can be replayed from the start each time.
@@ -34,8 +34,8 @@ export default function IntroDemo() {
         // No persistKey here, so it replays on every click. onComplete unmounts it.
         <Intro
           key={cycle}
-          steps={STEPS}
-          stepDuration={3000}
+          hero={HERO}
+          lines={LINES}
           onComplete={() => setCycle(null)}
         />
       )}

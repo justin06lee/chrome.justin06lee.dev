@@ -13,5 +13,6 @@ export default defineComponent({
   props: [
     { name: "headings", type: "TocHeading[]", required: true, description: "{ id, text }[] — ids must exist in the DOM." },
     { name: "label", type: "string", default: "'on this page'" },
+    { name: "container", type: "RefObject<HTMLElement | null>", description: "scrollable element the headings live in. scroll-spy and click scrolling stay inside it; defaults to the document." },
   ],
 });

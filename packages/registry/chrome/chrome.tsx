@@ -1,6 +1,13 @@
 import * as React from "react";
 
-const CHROME_STYLE: React.CSSProperties = {
+/**
+ * The foil paint stack + shine animation, exported so components that compose
+ * chrome (e.g. gallery's pinned marker) can clip it with a CSS mask instead of
+ * text glyphs. Pair with an element that has the `data-chrome` attribute so the
+ * prefers-reduced-motion freeze applies, and render it alongside a <Chrome>
+ * (which injects the `chrome-shine` keyframes).
+ */
+export const CHROME_FOIL_STYLE: React.CSSProperties = {
   background: [
     "linear-gradient(115deg," +
       "transparent 30%," +
@@ -26,18 +33,29 @@ const CHROME_STYLE: React.CSSProperties = {
   backgroundSize: "220% 100%, 100% 100%, 100% 100%",
   backgroundPosition: "-50% 0, 0 0, 0 0",
   backgroundRepeat: "no-repeat",
-  WebkitBackgroundClip: "text",
-  backgroundClip: "text",
-  color: "transparent",
-  // A sharp bevel (blur 0, cheap) plus ONE small-radius glow. Big-radius
-  // drop-shadows (the old 60px + 120px blurs) get re-rasterized on every repaint,
-  // so when Chrome wraps animating content — e.g. a <Donut isolate={false}> that
-  // rewrites its text each frame — they re-blur ~60×/sec and pin a core. A 24px
-  // glow keeps the halo while costing a fraction to repaint.
+  animation: "chrome-shine 5s cubic-bezier(.4,0,.6,1) infinite",
+};
+
+/**
+ * Chrome's bevel + glow, exported alongside CHROME_FOIL_STYLE. A sharp bevel
+ * (blur 0, cheap) plus ONE small-radius glow. Big-radius drop-shadows (the old
+ * 60px + 120px blurs) get re-rasterized on every repaint, so when Chrome wraps
+ * animating content — e.g. a <Donut isolate={false}> that rewrites its text
+ * each frame — they re-blur ~60×/sec and pin a core. A 24px glow keeps the
+ * halo while costing a fraction to repaint.
+ */
+export const CHROME_GLOW_STYLE: React.CSSProperties = {
   filter:
     "drop-shadow(0 2px 0 rgba(255,255,255,0.18)) " +
     "drop-shadow(0 0 24px rgba(198,206,255,0.22))",
-  animation: "chrome-shine 5s cubic-bezier(.4,0,.6,1) infinite",
+};
+
+const CHROME_STYLE: React.CSSProperties = {
+  ...CHROME_FOIL_STYLE,
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  color: "transparent",
+  ...CHROME_GLOW_STYLE,
 };
 
 // `background-clip: text` clips the wrapper's gradient to every glyph it

@@ -51,11 +51,13 @@ export function ImageCropper({
 }: ImageCropperProps) {
   const boxRef = useRef<HTMLDivElement>(null);
   const dragState = useRef<{
+    pointerId: number;
     startX: number;
     startY: number;
     origX: number;
     origY: number;
     w: number;
+    stop: () => void;
   } | null>(null);
 
   // The image is rendered frame-sized with `object-cover`, so at scale 1 it
@@ -81,22 +83,21 @@ export function ImageCropper({
     });
   };
 
-  const onPointerDown = (e: React.PointerEvent) => {
-    if (!boxRef.current) return;
-    const rect = boxRef.current.getBoundingClientRect();
-    dragState.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      origX: value.x,
-      origY: value.y,
-      w: rect.width,
-    };
-    boxRef.current.setPointerCapture(e.pointerId);
-  };
-
-  const onPointerMove = (e: React.PointerEvent) => {
+  // Drag moves/ups are handled on the window (attached on pointerdown,
+  // detached when the drag ends) so the drag keeps tracking while the pointer
+  // is outside the frame and ends reliably wherever the button is released.
+  // The listeners are long-lived within a drag, so route them through a ref
+  // that is refreshed every render (same trick as the wheel handler below).
+  const onDragMoveRef = useRef<(e: PointerEvent) => void>(null);
+  onDragMoveRef.current = (e: PointerEvent) => {
     const d = dragState.current;
-    if (!d) return;
+    if (!d || e.pointerId !== d.pointerId) return;
+    // A pointerup we never saw (e.g. released over browser chrome) leaves the
+    // mouse moving with no button held — treat that as the end of the drag.
+    if (e.pointerType === "mouse" && e.buttons === 0) {
+      d.stop();
+      return;
+    }
     const dxPct = ((e.clientX - d.startX) / d.w) * 100;
     const dyPct = ((e.clientY - d.startY) / d.w) * 100;
     onChange({
@@ -106,9 +107,46 @@ export function ImageCropper({
     });
   };
 
-  const onPointerUp = () => {
-    dragState.current = null;
+  const onPointerDown = (e: React.PointerEvent) => {
+    const box = boxRef.current;
+    if (!box || dragState.current) return;
+    const { pointerId } = e;
+    // Capture keeps other elements from reacting mid-drag where supported;
+    // the window listeners below are the source of truth either way.
+    try {
+      box.setPointerCapture(pointerId);
+    } catch {
+      // inactive pointer — the window listeners still track the drag.
+    }
+    const onMove = (ev: PointerEvent) => onDragMoveRef.current?.(ev);
+    const onEnd = (ev: PointerEvent) => {
+      if (ev.pointerId === pointerId) dragState.current?.stop();
+    };
+    const stop = () => {
+      dragState.current = null;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onEnd);
+      window.removeEventListener("pointercancel", onEnd);
+      if (box.hasPointerCapture(pointerId)) {
+        box.releasePointerCapture(pointerId);
+      }
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onEnd);
+    window.addEventListener("pointercancel", onEnd);
+    dragState.current = {
+      pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: value.x,
+      origY: value.y,
+      w: box.getBoundingClientRect().width,
+      stop,
+    };
   };
+
+  // End any in-flight drag on unmount so the window listeners don't leak.
+  useEffect(() => () => dragState.current?.stop(), []);
 
   // React registers wheel listeners as passive, so preventDefault there is a
   // no-op (the page scrolls while zooming). Attach a non-passive one instead.
@@ -131,9 +169,6 @@ export function ImageCropper({
       <div
         ref={boxRef}
         onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
         className={cn(
           "relative overflow-hidden border border-white/20 bg-white/5",
           "cursor-grab touch-none select-none active:cursor-grabbing",

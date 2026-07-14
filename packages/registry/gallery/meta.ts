@@ -4,9 +4,9 @@ export default defineComponent({
   name: "gallery",
   type: "registry:ui",
   description:
-    "searchable, filterable, sortable project card grid with pinned markers, tech chips, and repo/live links. composes card, badge, and menu.",
+    "searchable, filterable, sortable project card grid with chrome-foiled pinned markers, tech chips, and repo/live links. composes card, badge, menu, and chrome.",
   dependencies: ["lucide-react", "motion"],
-  registryDependencies: ["utils", "card", "badge", "menu"],
+  registryDependencies: ["utils", "card", "badge", "menu", "chrome"],
   files: [{ source: "gallery.tsx", target: "gallery.tsx" }],
   props: [
     { name: "title", type: "string", required: true, description: "heading shown above the grid." },

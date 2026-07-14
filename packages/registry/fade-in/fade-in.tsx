@@ -21,6 +21,9 @@ export interface FadeInProps extends React.HTMLAttributes<HTMLElement> {
  * a keyframe drives opacity 0 -> 1 and translate(x, y) -> 0, with the offsets
  * passed as CSS custom properties. Honors prefers-reduced-motion.
  *
+ * The keyframes ship inline via a hoisted <style> tag (deduped by href), so
+ * the component is self-contained — no css file to wire up.
+ *
  * Stagger a list with the `staggerDelay` helper:
  *   items.map((item, i) => <FadeIn key={i} delay={staggerDelay(i)}>…</FadeIn>)
  */
@@ -51,6 +54,34 @@ export function FadeIn({
       }
       {...rest}
     >
+      {/* Opacity 0 -> 1 and translate(--fade-x, --fade-y) -> 0. fill-mode
+          "both" keeps the element hidden during a stagger delay. React hoists
+          this to <head> and dedupes across instances by href. */}
+      <style precedence="default" href="chrome-fade-in-keyframes">{`
+        @keyframes chrome-fade-in {
+          from {
+            opacity: 0;
+            transform: translate(var(--fade-x, 0), var(--fade-y, -10px));
+          }
+          to {
+            opacity: 1;
+            transform: translate(0, 0);
+          }
+        }
+        .chrome-fade-in {
+          animation-name: chrome-fade-in;
+          animation-duration: 0.4s;
+          animation-delay: 0s;
+          animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+          animation-fill-mode: both;
+          animation-iteration-count: 1;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .chrome-fade-in {
+            animation: none;
+          }
+        }
+      `}</style>
       {children}
     </Tag>
   );

@@ -8,7 +8,6 @@ export default defineComponent({
   dependencies: [],
   registryDependencies: ["utils"],
   files: [{ source: "fade-in.tsx", target: "fade-in.tsx" }],
-  cssFile: "fade-in.css",
   props: [
     { name: "as", type: "ElementType", default: "'div'", description: "element/component to render." },
     { name: "delay", type: "number", default: "0", description: "delay before the animation starts, in seconds." },
