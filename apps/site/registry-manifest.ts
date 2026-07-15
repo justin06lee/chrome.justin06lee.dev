@@ -26,6 +26,8 @@ import drawing_window from "../../packages/registry/drawing-window/meta";
 import editor from "../../packages/registry/editor/meta";
 import editor_toolbar from "../../packages/registry/editor-toolbar/meta";
 import fade_in from "../../packages/registry/fade-in/meta";
+import file_card from "../../packages/registry/file-card/meta";
+import file_grid from "../../packages/registry/file-grid/meta";
 import gallery from "../../packages/registry/gallery/meta";
 import heatmap from "../../packages/registry/heatmap/meta";
 import image_cropper from "../../packages/registry/image-cropper/meta";
@@ -61,4 +63,4 @@ import toc from "../../packages/registry/toc/meta";
 import tooltip from "../../packages/registry/tooltip/meta";
 import utils from "../../packages/registry/_shared/utils/meta";
 
-export const REGISTRY = [accordion, article, article_list, ascii, asset_sidebar, badge, breadcrumb, button, calendar, calendar_nav, card, checkbox, chrome, code_block, collapsible_prose, color_swatch, combobox, command_palette, copy_button, count_up, desk, dialog, donut, drawing_window, editor, editor_toolbar, fade_in, gallery, heatmap, image_cropper, inline_edit, input, intro, kbd, login_form, manager_table, menu, navbar, not_found, now_playing_bar, pfp, prose, rainbow, range, scramble, segmented, select, sheet, showcase, sidebar, socials, sprite_scrubber, stack, tabs, tag_input, textarea, theme, timeline, toc, tooltip, utils];
+export const REGISTRY = [accordion, article, article_list, ascii, asset_sidebar, badge, breadcrumb, button, calendar, calendar_nav, card, checkbox, chrome, code_block, collapsible_prose, color_swatch, combobox, command_palette, copy_button, count_up, desk, dialog, donut, drawing_window, editor, editor_toolbar, fade_in, file_card, file_grid, gallery, heatmap, image_cropper, inline_edit, input, intro, kbd, login_form, manager_table, menu, navbar, not_found, now_playing_bar, pfp, prose, rainbow, range, scramble, segmented, select, sheet, showcase, sidebar, socials, sprite_scrubber, stack, tabs, tag_input, textarea, theme, timeline, toc, tooltip, utils];

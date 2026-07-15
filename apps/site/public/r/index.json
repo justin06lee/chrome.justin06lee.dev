@@ -25,11 +25,12 @@
   {
     "name": "article-list",
     "type": "registry:ui",
-    "description": "searchable, tag-filterable grid of article cards. animated banners stay frozen in grayscale until hover, then play in full color.",
+    "description": "searchable, tag-filterable grid of article cards. animated banners stay frozen in grayscale until hover, then play in full color. cards stagger their entrance fade.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
-      "badge"
+      "badge",
+      "fade-in"
     ]
   },
   {
@@ -84,7 +85,7 @@
   {
     "name": "calendar",
     "type": "registry:ui",
-    "description": "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells.",
+    "description": "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells, or renderCell + cellClassName to take over cells for agenda-style month views.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -266,6 +267,30 @@
     ]
   },
   {
+    "name": "file-card",
+    "type": "registry:ui",
+    "description": "animated stacked-paper download card — papers fan out on hover, still under reduced motion. renders as a link or button. composes stack.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "stack"
+    ]
+  },
+  {
+    "name": "file-grid",
+    "type": "registry:ui",
+    "description": "asset-browser grid of stacked-paper file cards with drag-to-trash delete and a type-the-name-to-confirm dialog. composes file-card, input, and button.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils",
+      "file-card",
+      "input",
+      "button"
+    ]
+  },
+  {
     "name": "gallery",
     "type": "registry:ui",
     "description": "searchable, filterable, sortable project card grid with chrome-foiled pinned markers, tech chips, and repo/live links. composes card, badge, menu, and chrome.",
@@ -351,7 +376,7 @@
   {
     "name": "manager-table",
     "type": "registry:ui",
-    "description": "admin table with inline rename, swatch recolor, archive, and confirmed delete. every mutation is a callback — bring your own state.",
+    "description": "admin table with inline rename, swatch recolor, archive, and confirmed delete. every mutation is a callback — bring your own state. rows can be locked (no rename/delete), and rename/delete may be async — a rejection surfaces inline under the row.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
@@ -532,7 +557,7 @@
   {
     "name": "tabs",
     "type": "registry:ui",
-    "description": "bordered pill tab-strip. controlled selection with roving-tabindex arrow-key nav and ARIA, split into a headless useTabs hook.",
+    "description": "tab-strip in a bordered pill or underline style. controlled selection with roving-tabindex arrow-key nav and ARIA, split into a headless useTabs hook.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -567,7 +592,7 @@
   {
     "name": "timeline",
     "type": "registry:ui",
-    "description": "day schedule — a 24h vertical axis with positioned event blocks and an optional live now-line. blocks placed by minutes-of-day. generalized from the justin06lee.dev day view.",
+    "description": "day schedule — a 24h vertical axis with positioned event blocks and an optional live now-line. blocks placed by minutes-of-day; supports clickable blocks, multiple labeled tracks on one axis, streamed marker slots, and opt-in drag editing. generalized from the justin06lee.dev day view.",
     "dependencies": [],
     "registryDependencies": [
       "utils"

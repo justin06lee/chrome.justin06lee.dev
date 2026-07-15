@@ -1,0 +1,19 @@
+{
+  "name": "file-card",
+  "type": "registry:ui",
+  "description": "animated stacked-paper download card — papers fan out on hover, still under reduced motion. renders as a link or button. composes stack.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils",
+    "stack"
+  ],
+  "files": [
+    {
+      "path": "file-card.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Stack } from \"@/components/ui/stack\";\n\nexport interface FileCardProps {\n  /** file name shown on the front paper. */\n  name: string;\n  /** small uppercase kicker line above the name, e.g. \"pdf · 1.2 mb\". */\n  meta?: string;\n  /** link target; renders the card as an anchor. */\n  href?: string;\n  /** click handler; without href the card renders as a <button>. */\n  onClick?: () => void;\n  /** sets the anchor's download attribute (true, or a filename to save as). */\n  download?: boolean | string;\n  /** anchor element/component — pass your router's Link. default \"a\". */\n  linkComponent?: React.ElementType;\n  /** paper layers behind the front card, forwarded to stack. default 1. */\n  layers?: number;\n  className?: string;\n}\n\n/**\n * Animated stacked-paper file card. The papers fan out on hover (a spring\n * transition handled by `stack`, which sits still under\n * prefers-reduced-motion). Renders as a link when `href` is set, a button\n * when only `onClick` is set, and a plain block otherwise.\n */\nexport function FileCard({\n  name,\n  meta,\n  href,\n  onClick,\n  download,\n  linkComponent: LinkComponent = \"a\",\n  layers = 1,\n  className,\n}: FileCardProps) {\n  const content = (\n    <Stack layers={layers} className=\"h-full w-full\">\n      <div className=\"flex h-full flex-col justify-between p-4 text-left\">\n        <div aria-hidden className=\"space-y-2\">\n          <div className=\"h-px w-full bg-white/15\" />\n          <div className=\"h-px w-5/6 bg-white/15\" />\n          <div className=\"h-px w-2/3 bg-white/15\" />\n        </div>\n        <div>\n          {meta && (\n            <p className=\"text-xs font-semibold uppercase tracking-[0.22em] text-white/55\">\n              {meta}\n            </p>\n          )}\n          <p className={cn(\"text-sm font-medium leading-6 text-white\", meta && \"mt-2\")}>\n            {name}\n          </p>\n        </div>\n      </div>\n    </Stack>\n  );\n\n  const rootClass = cn(\n    \"block h-44 w-40 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/50\",\n    className,\n  );\n\n  if (href) {\n    return (\n      <LinkComponent\n        href={href}\n        onClick={onClick}\n        className={rootClass}\n        {...(download !== undefined && { download })}\n      >\n        {content}\n      </LinkComponent>\n    );\n  }\n  if (onClick) {\n    return (\n      <button type=\"button\" onClick={onClick} className={rootClass}>\n        {content}\n      </button>\n    );\n  }\n  return <div className={rootClass}>{content}</div>;\n}\n",
+      "type": "registry:ui",
+      "target": "file-card.tsx"
+    }
+  ]
+}
