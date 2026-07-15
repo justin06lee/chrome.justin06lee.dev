@@ -346,6 +346,15 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
         </div>
       ),
     },
+    {
+      label: "No stagger",
+      code: "<ArticleList articles={articles} stagger={false} />",
+      render: (
+        <div className="w-full max-w-2xl text-left">
+          <ArticleList articles={ARTICLES} basePath="#" stagger={false} />
+        </div>
+      ),
+    },
   ],
   breadcrumb: [
     {
