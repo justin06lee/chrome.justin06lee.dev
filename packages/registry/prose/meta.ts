@@ -32,5 +32,18 @@ export default defineComponent({
       description:
         "1-based source line whose block is marked with data-sync-highlight. requires lineSync.",
     },
+    {
+      name: "linkComponent",
+      type: "React.ElementType",
+      default: '"a"',
+      description:
+        "anchor component for internal links (relative, /…, #…) — pass your router's link for client-side navigation. external links (http(s)://, mailto:, …) always render a plain <a>; http(s) opens in a new tab.",
+    },
+    {
+      name: "resolveImageSrc",
+      type: "(src: string) => string",
+      description:
+        "maps each image src to the src actually rendered (e.g. swap foo-light.png ↔ foo-dark.png theme variants). runs after imageBaseUrl resolution.",
+    },
   ],
 });
