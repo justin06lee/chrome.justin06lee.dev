@@ -921,6 +921,18 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
       code: "<Heatmap\n  values={byDay}\n  year={2026}\n  levels={3}\n  onSelectDay={(date) => setDay(date)}\n/>",
       render: <HeatmapClickExample />,
     },
+    {
+      label: "Linked months",
+      code:
+        "<Heatmap\n  values={byDay}\n  year={2026}\n" +
+        '  // month is { index (0 = jan), year, label } — build your month route\n' +
+        '  monthHref={() => "#"}\n/>',
+      render: (
+        <div className="w-full">
+          <Heatmap values={heatmapValues(2026)} year={2026} monthHref={() => "#"} />
+        </div>
+      ),
+    },
   ],
   timeline: [
     {
