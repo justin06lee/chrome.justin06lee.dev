@@ -12,6 +12,7 @@ const ITEMS: PaletteItem[] = [
   { label: "introduction", href: "/docs", group: "docs" },
   { label: "installation", href: "/docs/cli", group: "docs", keywords: ["cli", "init", "add"] },
   { label: "theming", href: "/docs/theming", group: "docs" },
+  { label: "claude code skill", href: "/docs/skill", group: "docs", keywords: ["bmo", "agent", "ai"] },
   ...REGISTRY.filter((m) => m.type === "registry:ui")
     .map((m) => ({
       label: m.name,

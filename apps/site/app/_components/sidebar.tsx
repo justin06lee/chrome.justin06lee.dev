@@ -18,6 +18,7 @@ const GROUPS: SidebarGroup[] = [
       { label: "introduction", href: "/docs" },
       { label: "installation", href: "/docs/cli" },
       { label: "theming", href: "/docs/theming" },
+      { label: "claude code skill", href: "/docs/skill" },
     ],
   },
   {
