@@ -48,6 +48,7 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   sheet: () => import("../../../../../packages/registry/sheet/demo"),
   sidebar: () => import("../../../../../packages/registry/sidebar/demo"),
   "command-palette": () => import("../../../../../packages/registry/command-palette/demo"),
+  kbd: () => import("../../../../../packages/registry/kbd/demo"),
   showcase: () => import("../../../../../packages/registry/showcase/demo"),
   socials: () => import("../../../../../packages/registry/socials/demo"),
   stack: () => import("../../../../../packages/registry/stack/demo"),

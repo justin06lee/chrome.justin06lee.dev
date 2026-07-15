@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Kbd } from "@/components/ui/kbd";
 
 export type PaletteItem = {
   /** Unique key; defaults to href ?? label. */
@@ -33,8 +34,9 @@ export type CommandPaletteProps = {
 
 const MAX_RESULTS = 12;
 
+// Label + href, so items sharing a placeholder href (e.g. "#") stay unique.
 function itemKey(item: PaletteItem) {
-  return item.id ?? item.href ?? item.label;
+  return item.id ?? `${item.label}:${item.href ?? ""}`;
 }
 
 /**
@@ -286,8 +288,20 @@ export function CommandPalette({
             })
           )}
         </div>
-        <div className="border-t border-white/10 px-4 py-1.5 font-mono text-[10px] text-white/30">
-          <span aria-hidden>↑↓</span> navigate · enter open · esc close
+        <div className="flex items-center gap-4 border-t border-white/10 px-4 py-2 font-mono text-[10px] text-white/30">
+          <span className="flex items-center gap-1">
+            <Kbd>↑</Kbd>
+            <Kbd>↓</Kbd>
+            <span className="ml-0.5">navigate</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <Kbd>↵</Kbd>
+            <span className="ml-0.5">open</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <Kbd>esc</Kbd>
+            <span className="ml-0.5">close</span>
+          </span>
         </div>
       </div>
     </div>

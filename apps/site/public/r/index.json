@@ -179,7 +179,8 @@
       "lucide-react"
     ],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "kbd"
     ]
   },
   {
@@ -324,6 +325,15 @@
     "dependencies": [
       "motion"
     ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "kbd",
+    "type": "registry:ui",
+    "description": "a macos-style keycap: mono glyph on a faint raised cap with a heavier bottom edge. compose combos by placing several side by side.",
+    "dependencies": [],
     "registryDependencies": [
       "utils"
     ]

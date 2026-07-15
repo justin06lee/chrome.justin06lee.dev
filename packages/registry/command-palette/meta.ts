@@ -6,7 +6,7 @@ export default defineComponent({
   description:
     "spotlight-style command palette: cmd+k opens a centered search overlay with grouped, keyboard-navigable results.",
   dependencies: ["lucide-react"],
-  registryDependencies: ["utils"],
+  registryDependencies: ["utils", "kbd"],
   files: [{ source: "command-palette.tsx", target: "command-palette.tsx" }],
   props: [
     {

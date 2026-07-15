@@ -25,6 +25,7 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
       "donut",
       "heatmap",
       "input",
+      "kbd",
       "menu",
       "navbar",
       "prose",

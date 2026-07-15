@@ -38,6 +38,7 @@ import Select from "../../../../../packages/registry/select/select";
 import { Showcase } from "../../../../../packages/registry/showcase/showcase";
 import { Sidebar, type SidebarGroup } from "../../../../../packages/registry/sidebar/sidebar";
 import { CommandPalette } from "../../../../../packages/registry/command-palette/command-palette";
+import { Kbd } from "../../../../../packages/registry/kbd/kbd";
 import { Stack } from "../../../../../packages/registry/stack/stack";
 import { Tabs } from "../../../../../packages/registry/tabs/tabs";
 import { Textarea } from "../../../../../packages/registry/textarea/textarea";
@@ -632,6 +633,31 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
       ),
     },
   ],
+  kbd: [
+    {
+      label: "Combos",
+      code: "<Kbd>⌘</Kbd>\n<Kbd>k</Kbd>",
+      render: (
+        <div className="flex items-center gap-1.5">
+          <Kbd>⌘</Kbd>
+          <Kbd>k</Kbd>
+          <span className="ml-2 text-sm text-white/50">open the palette</span>
+        </div>
+      ),
+    },
+    {
+      label: "Sizes",
+      code: '<Kbd size="md">esc</Kbd>\n<Kbd size="md">↵</Kbd>',
+      render: (
+        <div className="flex items-center gap-1.5">
+          <Kbd size="md">⌥</Kbd>
+          <Kbd size="md">opt</Kbd>
+          <Kbd size="md">esc</Kbd>
+          <Kbd size="md">↵</Kbd>
+        </div>
+      ),
+    },
+  ],
   sidebar: [
     {
       label: "Grouped nav with search",
@@ -673,12 +699,9 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "  ]}\n" +
         '  placeholder="search components…"\n/>',
       render: (
-        <p className="max-w-sm text-sm text-white/60">
-          mounted globally on this site — press{" "}
-          <kbd className="border border-white/20 px-1.5 py-0.5 font-mono text-[11px] text-white/80">
-            ⌘k
-          </kbd>{" "}
-          right now to try it.
+        <p className="flex max-w-sm flex-wrap items-center gap-1.5 text-sm text-white/60">
+          mounted globally on this site — press <Kbd>⌘</Kbd>
+          <Kbd>k</Kbd> right now to try it.
         </p>
       ),
     },
