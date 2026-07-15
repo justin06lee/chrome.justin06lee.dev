@@ -19,6 +19,10 @@ import {
   ManagerTable,
   type ManagerRow,
 } from "../../../../../packages/registry/manager-table/manager-table";
+import {
+  FileGrid,
+  type FileGridFile,
+} from "../../../../../packages/registry/file-grid/file-grid";
 import { NowPlayingBar } from "../../../../../packages/registry/now-playing-bar/now-playing-bar";
 
 // --- shared bits ------------------------------------------------------------
@@ -174,6 +178,38 @@ function EditorKeymapExample() {
         )}
       />
     </div>
+  );
+}
+
+const SAMPLE_FILES: FileGridFile[] = [
+  { id: "1", name: "quarterly-report.pdf", meta: "pdf · 1.2 mb", href: "#" },
+  { id: "2", name: "system-diagram.png", meta: "png · 340 kb", href: "#" },
+  { id: "3", name: "field-notes.md", meta: "md · 8 kb", href: "#" },
+];
+
+function FileGridDeleteExample() {
+  const [files, setFiles] = useState(SAMPLE_FILES);
+  return (
+    <FileGrid
+      files={files}
+      onDelete={async (file) => {
+        // fake api latency so the pending state is visible
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        setFiles((prev) => prev.filter((f) => f.id !== file.id));
+      }}
+    />
+  );
+}
+
+function FileGridErrorExample() {
+  return (
+    <FileGrid
+      files={[{ id: "locked", name: "master-key.pem", meta: "pem · 2 kb", href: "#" }]}
+      onDelete={async () => {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        throw new Error("locked by another operator.");
+      }}
+    />
   );
 }
 
@@ -808,6 +844,36 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
           />
         </div>
       ),
+    },
+  ],
+  "file-grid": [
+    {
+      label: "Delete with confirm",
+      code:
+        "const [files, setFiles] = useState(FILES);\n\n" +
+        "<FileGrid\n" +
+        "  files={files}\n" +
+        "  onDelete={async (file) => {\n" +
+        "    await api.deleteFile(file.id);\n" +
+        "    setFiles((prev) => prev.filter((f) => f.id !== file.id));\n" +
+        "  }}\n/>",
+      render: <FileGridDeleteExample />,
+    },
+    {
+      label: "Surfaced delete error",
+      code:
+        "// a rejected onDelete keeps the dialog open and shows the message\n" +
+        "<FileGrid\n" +
+        "  files={files}\n" +
+        "  onDelete={async () => {\n" +
+        '    throw new Error("locked by another operator.");\n' +
+        "  }}\n/>",
+      render: <FileGridErrorExample />,
+    },
+    {
+      label: "Empty",
+      code: '<FileGrid files={[]} emptyLabel="nothing in the locker." />',
+      render: <FileGrid files={[]} emptyLabel="nothing in the locker." />,
     },
   ],
   "manager-table": [

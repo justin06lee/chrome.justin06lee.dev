@@ -40,6 +40,7 @@ import { Sidebar, type SidebarGroup } from "../../../../../packages/registry/sid
 import { CommandPalette } from "../../../../../packages/registry/command-palette/command-palette";
 import { Kbd } from "../../../../../packages/registry/kbd/kbd";
 import { Stack } from "../../../../../packages/registry/stack/stack";
+import { FileCard } from "../../../../../packages/registry/file-card/file-card";
 import { Tabs } from "../../../../../packages/registry/tabs/tabs";
 import { Textarea } from "../../../../../packages/registry/textarea/textarea";
 import { Toc, type TocHeading } from "../../../../../packages/registry/toc/toc";
@@ -766,6 +767,32 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         <Stack layers={3}>
           <StackCard>three layers</StackCard>
         </Stack>
+      ),
+    },
+  ],
+  "file-card": [
+    {
+      label: "Download link",
+      code:
+        "<FileCard\n" +
+        '  name="quarterly-report.pdf"\n' +
+        '  meta="pdf · 1.2 mb"\n' +
+        '  href="#"\n' +
+        "  download\n/>",
+      render: (
+        <FileCard name="quarterly-report.pdf" meta="pdf · 1.2 mb" href="#" download />
+      ),
+    },
+    {
+      label: "Button + layers",
+      code:
+        "<FileCard\n" +
+        '  name="export.zip"\n' +
+        '  meta="zip · 4.7 mb"\n' +
+        "  layers={2}\n" +
+        "  onClick={() => startExport()}\n/>",
+      render: (
+        <FileCard name="export.zip" meta="zip · 4.7 mb" layers={2} onClick={() => {}} />
       ),
     },
   ],
