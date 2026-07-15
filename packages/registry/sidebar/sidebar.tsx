@@ -85,7 +85,8 @@ export function Sidebar({
             {group.items.map((item) => {
               const active = item.href === activeHref;
               return (
-                <li key={item.href}>
+                // Label + href, so items sharing a placeholder href ("#") stay unique.
+                <li key={`${item.label}:${item.href}`}>
                   <LinkComponent
                     href={item.href}
                     className={cn(
