@@ -440,6 +440,36 @@ function ManagerTableExample({ palette }: { palette?: string[] }) {
   );
 }
 
+const MANAGER_GUARDED_INITIAL: ManagerRow[] = [
+  { id: "1", name: "Sleep", color: "#5b5b8a", locked: true },
+  { id: "2", name: "Deep Work", color: "#5b7a8a" },
+  { id: "3", name: "Errands", color: "#7a6b5b" },
+];
+
+function ManagerTableGuardedExample() {
+  const [rows, setRows] = useState<ManagerRow[]>(MANAGER_GUARDED_INITIAL);
+  return (
+    <DialogProvider>
+      <div className="w-full max-w-xl">
+        <ManagerTable
+          rows={rows}
+          onRename={async (id, name) => {
+            await new Promise((done) => setTimeout(done, 600));
+            setRows((prev) => prev.map((r) => (r.id === id ? { ...r, name } : r)));
+          }}
+          onRecolor={(id, color) =>
+            setRows((prev) => prev.map((r) => (r.id === id ? { ...r, color } : r)))
+          }
+          onDelete={async () => {
+            await new Promise((done) => setTimeout(done, 600));
+            throw new Error("category is in use");
+          }}
+        />
+      </div>
+    </DialogProvider>
+  );
+}
+
 function NowPlayingBarExample() {
   const [startedAt, setStartedAt] = useState<number | undefined>(undefined);
   const running = startedAt !== undefined;
@@ -693,6 +723,25 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
         '<ManagerTable\n  rows={rows}\n  palette={["#6ee7b7", "#93c5fd", "#c4b5fd", "#fda4af"]}\n' +
         "  onRecolor={(id, color) => recolor(id, color)}\n/>",
       render: <ManagerTableExample palette={["#6ee7b7", "#93c5fd", "#c4b5fd", "#fda4af"]} />,
+    },
+    {
+      label: "Locked rows + async guards",
+      code:
+        '// "Sleep" is locked: rendered without rename/delete affordances.\n' +
+        "// async onRename shows the draft optimistically and rolls back on reject;\n" +
+        "// a rejected onDelete keeps the row and surfaces the error beneath it.\n" +
+        'const rows = [\n  { id: "1", name: "Sleep", color: "#5b5b8a", locked: true },\n' +
+        '  { id: "2", name: "Deep Work", color: "#5b7a8a" },\n' +
+        '  { id: "3", name: "Errands", color: "#7a6b5b" },\n];\n\n' +
+        "<ManagerTable\n  rows={rows}\n" +
+        "  onRename={async (id, name) => {\n" +
+        "    await new Promise((done) => setTimeout(done, 600));\n" +
+        "    rename(id, name);\n  }}\n" +
+        "  onRecolor={(id, color) => recolor(id, color)}\n" +
+        "  onDelete={async () => {\n" +
+        "    await new Promise((done) => setTimeout(done, 600));\n" +
+        '    throw new Error("category is in use");\n  }}\n/>',
+      render: <ManagerTableGuardedExample />,
     },
   ],
   "now-playing-bar": [
