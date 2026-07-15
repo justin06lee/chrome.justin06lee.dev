@@ -103,6 +103,77 @@ function CalendarExample() {
   );
 }
 
+const AGENDA_TASKS: Record<string, { title: string; done: boolean }[]> = {
+  "2026-05-04": [
+    { title: "ship registry pr", done: true },
+    { title: "review month grid", done: false },
+  ],
+  "2026-05-06": [
+    { title: "write calendar docs", done: true },
+    { title: "sync design tokens", done: true },
+    { title: "fix heatmap tint", done: false },
+  ],
+  "2026-05-12": [
+    { title: "deep work: editor", done: true },
+    { title: "inbox zero", done: false },
+    { title: "plan sprint", done: false },
+    { title: "call grandma", done: false },
+    { title: "water plants", done: false },
+  ],
+  "2026-05-19": [{ title: "publish article", done: true }],
+};
+
+function agendaTint(count: number): string {
+  if (count >= 4) return "bg-white/[0.12]";
+  if (count >= 2) return "bg-white/[0.08]";
+  if (count === 1) return "bg-white/[0.04]";
+  return "";
+}
+
+function CalendarAgendaExample() {
+  const tasks = AGENDA_TASKS;
+  return (
+    <Calendar
+      month="2026-05"
+      today="2026-05-06"
+      className="w-full"
+      cellClassName={(d) => `min-h-24 p-1.5 ${agendaTint((tasks[d.date] ?? []).length)}`}
+      renderCell={(d) => {
+        const items = tasks[d.date] ?? [];
+        const done = items.filter((t) => t.done).length;
+        const visible = items.slice(0, 3);
+        return (
+          <>
+            <div className="flex items-baseline justify-between">
+              <span className="font-mono text-xs tabular-nums text-white/80">{d.day}</span>
+              {items.length > 0 && (
+                <span className="font-mono text-[9px] tabular-nums tracking-widest text-white/40">
+                  {done}/{items.length}
+                </span>
+              )}
+            </div>
+            <div className="mt-0.5 flex flex-col gap-[2px] overflow-hidden">
+              {visible.map((t) => (
+                <span
+                  key={t.title}
+                  className={`truncate text-[10px] leading-tight ${t.done ? "text-white/30 line-through" : "text-white/70"}`}
+                >
+                  {t.title}
+                </span>
+              ))}
+              {items.length > 3 && (
+                <span className="font-mono text-[9px] tracking-widest text-white/40">
+                  +{items.length - 3} more
+                </span>
+              )}
+            </div>
+          </>
+        );
+      }}
+    />
+  );
+}
+
 function heatmapValues(year: number): Record<string, number> {
   const out: Record<string, number> = {};
   for (let m = 1; m <= 12; m++) {
@@ -903,6 +974,63 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
           }
         />
       ),
+    },
+    {
+      label: "Agenda month grid",
+      code: `const tasks: Record<string, { title: string; done: boolean }[]> = {
+  "2026-05-04": [
+    { title: "ship registry pr", done: true },
+    { title: "review month grid", done: false },
+  ],
+  // …more days
+};
+
+function agendaTint(count: number): string {
+  if (count >= 4) return "bg-white/[0.12]";
+  if (count >= 2) return "bg-white/[0.08]";
+  if (count === 1) return "bg-white/[0.04]";
+  return "";
+}
+
+<Calendar
+  month="2026-05"
+  today="2026-05-06"
+  className="w-full"
+  cellClassName={(d) => \`min-h-24 p-1.5 \${agendaTint((tasks[d.date] ?? []).length)}\`}
+  renderCell={(d) => {
+    const items = tasks[d.date] ?? [];
+    const done = items.filter((t) => t.done).length;
+    const visible = items.slice(0, 3);
+    return (
+      <>
+        <div className="flex items-baseline justify-between">
+          <span className="font-mono text-xs tabular-nums text-white/80">{d.day}</span>
+          {items.length > 0 && (
+            <span className="font-mono text-[9px] tabular-nums tracking-widest text-white/40">
+              {done}/{items.length}
+            </span>
+          )}
+        </div>
+        <div className="mt-0.5 flex flex-col gap-[2px] overflow-hidden">
+          {visible.map((t) => (
+            <span
+              key={t.title}
+              className={\`truncate text-[10px] leading-tight \${t.done ? "text-white/30 line-through" : "text-white/70"}\`}
+            >
+              {t.title}
+            </span>
+          ))}
+          {items.length > 3 && (
+            <span className="font-mono text-[9px] tracking-widest text-white/40">
+              +{items.length - 3} more
+            </span>
+          )}
+        </div>
+      </>
+    );
+  }}
+/>`,
+      render: <CalendarAgendaExample />,
     },
   ],
   heatmap: [
