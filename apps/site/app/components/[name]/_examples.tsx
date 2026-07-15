@@ -235,6 +235,23 @@ function TabsExample() {
   );
 }
 
+function TabsUnderlineExample() {
+  const [tab, setTab] = useState<"articles" | "tasks" | "site-config">("articles");
+  return (
+    <Tabs
+      variant="underline"
+      value={tab}
+      onValueChange={setTab}
+      items={[
+        { value: "articles", label: "articles" },
+        { value: "tasks", label: "tasks" },
+        { value: "site-config", label: "site config" },
+      ]}
+      className="w-full max-w-md"
+    />
+  );
+}
+
 function BadgeFilterExample() {
   const tags = ["react", "next", "tailwind"];
   const [on, setOn] = useState<string[]>(["react"]);
@@ -769,6 +786,17 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         '    { value: "in-dev", label: "in development" },\n' +
         "  ]}\n/>",
       render: <TabsExample />,
+    },
+    {
+      label: "Underline variant",
+      code:
+        'const [tab, setTab] = useState("articles");\n\n' +
+        '<Tabs\n  variant="underline"\n  value={tab}\n  onValueChange={setTab}\n  items={[\n' +
+        '    { value: "articles", label: "articles" },\n' +
+        '    { value: "tasks", label: "tasks" },\n' +
+        '    { value: "site-config", label: "site config" },\n' +
+        "  ]}\n/>",
+      render: <TabsUnderlineExample />,
     },
   ],
   navbar: [
