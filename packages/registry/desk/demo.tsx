@@ -17,8 +17,9 @@ appears; click a block on the right and the editor scrolls to it.
 
 ## images
 
-drag a row from the sidebar into the editor, or click insert. press **new
-drawing** in the toolbar to open a floating paint window.
+drag a row from the sidebar into the editor, or click insert. drop an image
+file straight onto the editor to upload it and splice the ref at the caret.
+press **new drawing** in the toolbar to open a floating paint window.
 
 \`\`\`ts
 <Desk value={md} onChange={setMd} renderMarkdown={render} />
@@ -26,6 +27,7 @@ drawing** in the toolbar to open a floating paint window.
 
 - toolbar: edit / preview / split + format buttons
 - sidebar: insert, delete, drop-to-upload
+- editor: drop a file here to upload + insert
 - drawing windows: brush, eraser, undo/redo, zoom/pan
 `;
 
@@ -53,17 +55,17 @@ export default function DeskDemo() {
         size="xl"
         assets={assets}
         onDeleteAsset={(asset) => setAssets((current) => current.filter((a) => a.id !== asset.id))}
-        onUploadAssets={(files) =>
-          setAssets((current) => [
-            ...files.map((file) => ({
-              id: `${(nextId += 1)}`,
-              url: URL.createObjectURL(file),
-              name: file.name,
-              markdownPath: `/images/${file.name}`,
-            })),
-            ...current,
-          ])
-        }
+        onUploadAssets={(files) => {
+          const uploaded = files.map((file) => ({
+            id: `${(nextId += 1)}`,
+            url: URL.createObjectURL(file),
+            name: file.name,
+            markdownPath: `/images/${file.name}`,
+          }));
+          setAssets((current) => [...uploaded, ...current]);
+          // returning the assets lets a drop on the editor insert the refs
+          return uploaded;
+        }}
         onSaveDrawing={({ dataUrl, darkDataUrl }) => {
           const id = `${(nextId += 1)}`;
           const name = `drawing-${id}.png`;

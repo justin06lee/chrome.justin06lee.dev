@@ -1,5 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { offsetToLine, lineStartOffset, trimStreakRange } from "./use-line-sync";
+import {
+  offsetToLine,
+  lineStartOffset,
+  trimStreakRange,
+  editorLineToPreviewLine,
+  previewLineToEditorLine,
+} from "./use-line-sync";
 
 // lines (1-based):
 // 1: "# Title"   offsets 0..6, "\n" at 7
@@ -63,5 +69,54 @@ describe("trimStreakRange", () => {
     const t = "alpha\nbeta\ngamma";
     // click "beta" (line 2); next block line 3 -> covers "beta" only
     expect(trimStreakRange(t, 2, 3)).toEqual({ start: 6, end: 10 });
+  });
+});
+
+// a stripped front-matter region: preview hides the first 5 source lines
+// (1: "# title", 2: "cover:", 3: "excerpt:", 4: "tags:", 5: ""), so preview
+// block line 1 corresponds to editor line 6.
+const OFFSET = 5;
+
+describe("editorLineToPreviewLine", () => {
+  test("zero offset leaves lines unchanged", () => {
+    for (const line of [1, 2, 7]) {
+      expect(editorLineToPreviewLine(line, 0)).toBe(line);
+    }
+  });
+  test("shifts body lines down by the offset", () => {
+    expect(editorLineToPreviewLine(6, OFFSET)).toBe(1);
+    expect(editorLineToPreviewLine(9, OFFSET)).toBe(4);
+  });
+  test("clamps at the boundary: the last front-matter line maps to block 1", () => {
+    expect(editorLineToPreviewLine(OFFSET, OFFSET)).toBe(1);
+  });
+  test("clamps inside the front-matter region to the first block", () => {
+    expect(editorLineToPreviewLine(1, OFFSET)).toBe(1);
+    expect(editorLineToPreviewLine(3, OFFSET)).toBe(1);
+  });
+  test("a negative offset behaves like zero", () => {
+    expect(editorLineToPreviewLine(4, -3)).toBe(4);
+  });
+});
+
+describe("previewLineToEditorLine", () => {
+  test("zero offset leaves lines unchanged", () => {
+    for (const line of [1, 2, 7]) {
+      expect(previewLineToEditorLine(line, 0)).toBe(line);
+    }
+  });
+  test("shifts preview lines up by the offset", () => {
+    expect(previewLineToEditorLine(1, OFFSET)).toBe(6);
+    expect(previewLineToEditorLine(4, OFFSET)).toBe(9);
+  });
+  test("a negative offset behaves like zero", () => {
+    expect(previewLineToEditorLine(4, -3)).toBe(4);
+  });
+  test("round-trips with editorLineToPreviewLine for lines past the region", () => {
+    for (const editorLine of [6, 7, 20]) {
+      expect(
+        previewLineToEditorLine(editorLineToPreviewLine(editorLine, OFFSET), OFFSET),
+      ).toBe(editorLine);
+    }
   });
 });

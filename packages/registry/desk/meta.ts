@@ -27,11 +27,28 @@ export default defineComponent({
     { name: "assets", type: "Asset[]", default: "[]" },
     { name: "onInsertAsset", type: "(asset: Asset) => void", description: "the markdown ref is also spliced at the caret." },
     { name: "onDeleteAsset", type: "(asset: Asset) => void", description: "parent owns any confirm flow." },
-    { name: "onUploadAssets", type: "(files: File[]) => void", description: "omit to hide the sidebar drop zone." },
+    {
+      name: "onUploadAssets",
+      type: "(files: File[]) => void | Asset[] | Promise<Asset[] | void>",
+      description:
+        "fired for files dropped on the sidebar drop zone or directly onto the editor textarea. return the created assets and a textarea drop also splices their markdown refs at the caret. omit to hide the drop zone and disable textarea drops.",
+    },
     { name: "onSave", type: "(value: string) => void | Promise<void>", description: "fired by the built-in save button and cmd/ctrl+s; the button renders disabled without it." },
     { name: "onSaveDrawing", type: "(result: { dataUrl: string; darkDataUrl?: string }) => void | Promise<void>" },
     { name: "drawingDarkMapping", type: "boolean", description: "use the drawing window's light-to-dark mapping mode." },
     { name: "actions", type: "ReactNode", description: "extra toolbar actions before Save." },
+    {
+      name: "textareaProps",
+      type: "Omit<ComponentProps<'textarea'>, 'value' | 'defaultValue'>",
+      description:
+        "escape hatch onto the underlying textarea — e.g. onKeyDown for a vim keymap. handlers compose: the desk's internal splice/save/drop glue runs first, then yours with the same event; className is merged.",
+    },
+    {
+      name: "transformSource",
+      type: "(source: string) => { body: string; lineOffset: number }",
+      description:
+        "strip a leading front-matter region from the preview: the preview renders body while line-sync shifts by lineOffset (editor line N ↔ preview block N − lineOffset; selections in the stripped region clamp to the first block). keep the reference stable.",
+    },
     {
       name: "size",
       type: "'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'screen' | 'auto'",

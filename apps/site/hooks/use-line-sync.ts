@@ -6,6 +6,8 @@ export {
   offsetToLine,
   lineStartOffset,
   trimStreakRange,
+  editorLineToPreviewLine,
+  previewLineToEditorLine,
 } from "../../../packages/registry/editor/use-line-sync";
 export type {
   SelectionRect,

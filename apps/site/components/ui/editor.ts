@@ -9,5 +9,6 @@ export {
 export type {
   EditorProps,
   EditorTextareaProps,
+  EditorTextareaElementProps,
   EditorSize,
 } from "../../../../packages/registry/editor/editor";
