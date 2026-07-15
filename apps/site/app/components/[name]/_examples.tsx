@@ -251,6 +251,33 @@ function BadgeFilterExample() {
   );
 }
 
+function NavbarGroupsExample() {
+  const [plays, setPlays] = useState(0);
+  return (
+    // Real Navbar is fixed; `relative` (tailwind-merge wins) pins it to this cell.
+    <div className="relative h-24 w-full overflow-hidden border border-white/10">
+      <Navbar
+        className="relative"
+        brand={<span className="text-sm text-white">justin06lee.dev</span>}
+        leftLinks={[
+          { id: "intro", label: "intro", onClick: () => setPlays((n) => n + 1) },
+          { id: "cat", label: <span className="font-mono tracking-tight">^cat^</span>, href: "#" },
+        ]}
+        links={[
+          { label: "calendar", href: "#" },
+          { label: "articles", href: "#" },
+          { label: "gallery", href: "#" },
+        ]}
+      />
+      {plays > 0 && (
+        <div className="flex h-full items-center justify-center text-xs text-white/40">
+          intro clicked {plays}x
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Mirrors the stack demo card exactly (kicker + three placeholder lines +
 // title) so the usage examples read as the same component as the main demo.
 function StackCard({ children }: { children: ReactNode }) {
@@ -778,9 +805,9 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "<Navbar\n" +
         '  brand={<span className="text-sm">justin06lee.dev</span>}\n' +
         "  links={[\n" +
-        '    { label: "calendar", href: "/calendar" },\n' +
-        '    { label: "articles", href: "/articles" },\n' +
-        '    { label: "gallery", href: "/gallery" },\n' +
+        '    { label: "calendar", href: "#" },\n' +
+        '    { label: "articles", href: "#" },\n' +
+        '    { label: "gallery", href: "#" },\n' +
         "  ]}\n/>",
       render: (
         // Real Navbar is fixed; `relative` (tailwind-merge wins) pins it to this cell.
@@ -796,6 +823,25 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
           />
         </div>
       ),
+    },
+    {
+      label: "Left group + button item",
+      code:
+        "const [plays, setPlays] = useState(0);\n\n" +
+        "<Navbar\n" +
+        '  brand={<span className="text-sm">justin06lee.dev</span>}\n' +
+        "  leftLinks={[\n" +
+        "    // no href — renders as a <button>\n" +
+        '    { id: "intro", label: "intro", onClick: () => setPlays((n) => n + 1) },\n' +
+        "    // labels are ReactNodes\n" +
+        '    { id: "cat", label: <span className="font-mono tracking-tight">^cat^</span>, href: "#" },\n' +
+        "  ]}\n" +
+        "  links={[\n" +
+        '    { label: "calendar", href: "#" },\n' +
+        '    { label: "articles", href: "#" },\n' +
+        '    { label: "gallery", href: "#" },\n' +
+        "  ]}\n/>",
+      render: <NavbarGroupsExample />,
     },
   ],
   badge: [

@@ -14,7 +14,17 @@ export default defineComponent({
   ],
   props: [
     { name: "brand", type: "ReactNode", description: "left-side logo / name." },
-    { name: "links", type: "NavLink[]", description: "{ label, href }[] — plain anchors." },
+    {
+      name: "leftLinks",
+      type: "NavLink[]",
+      description: "items next to the brand on desktop; listed before links in the mobile panel.",
+    },
+    {
+      name: "links",
+      type: "NavLink[]",
+      description:
+        "right-side items; listed after leftLinks in the mobile panel. NavLink = { label: ReactNode, href?, onClick?, id? } — omit href (with onClick) for a <button> item; id keys items when labels are nodes or hrefs repeat.",
+    },
     { name: "actions", type: "ReactNode", description: "right-side desktop extras." },
     { name: "menuLabel", type: "string", default: "'menu'", description: "heading atop the mobile panel." },
   ],
