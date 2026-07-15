@@ -15,5 +15,7 @@ export default defineComponent({
     { name: "today", type: "string", description: '"YYYY-MM-DD" to ring.' },
     { name: "onSelectDay", type: "(date: string) => void", description: "makes cells clickable." },
     { name: "title", type: "(date: string, value: number) => string", description: "cell tooltip formatter." },
+    { name: "monthHref", type: "(month: HeatmapMonth) => string", description: "when set, month labels link to the returned href. HeatmapMonth is { index (0 = jan), year, label }." },
+    { name: "linkComponent", type: "React.ElementType", default: "'a'", description: "anchor element/component for month links — pass your router's Link." },
   ],
 });

@@ -306,6 +306,23 @@ function TabsExample() {
   );
 }
 
+function TabsUnderlineExample() {
+  const [tab, setTab] = useState<"articles" | "tasks" | "site-config">("articles");
+  return (
+    <Tabs
+      variant="underline"
+      value={tab}
+      onValueChange={setTab}
+      items={[
+        { value: "articles", label: "articles" },
+        { value: "tasks", label: "tasks" },
+        { value: "site-config", label: "site config" },
+      ]}
+      className="w-full max-w-md"
+    />
+  );
+}
+
 function BadgeFilterExample() {
   const tags = ["react", "next", "tailwind"];
   const [on, setOn] = useState<string[]>(["react"]);
@@ -868,6 +885,17 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         "  ]}\n/>",
       render: <TabsExample />,
     },
+    {
+      label: "Underline variant",
+      code:
+        'const [tab, setTab] = useState("articles");\n\n' +
+        '<Tabs\n  variant="underline"\n  value={tab}\n  onValueChange={setTab}\n  items={[\n' +
+        '    { value: "articles", label: "articles" },\n' +
+        '    { value: "tasks", label: "tasks" },\n' +
+        '    { value: "site-config", label: "site config" },\n' +
+        "  ]}\n/>",
+      render: <TabsUnderlineExample />,
+    },
   ],
   navbar: [
     {
@@ -1094,6 +1122,18 @@ function agendaTint(count: number): string {
       label: "Clickable days",
       code: "<Heatmap\n  values={byDay}\n  year={2026}\n  levels={3}\n  onSelectDay={(date) => setDay(date)}\n/>",
       render: <HeatmapClickExample />,
+    },
+    {
+      label: "Linked months",
+      code:
+        "<Heatmap\n  values={byDay}\n  year={2026}\n" +
+        '  // month is { index (0 = jan), year, label } — build your month route\n' +
+        '  monthHref={() => "#"}\n/>',
+      render: (
+        <div className="w-full">
+          <Heatmap values={heatmapValues(2026)} year={2026} monthHref={() => "#"} />
+        </div>
+      ),
     },
   ],
   timeline: [

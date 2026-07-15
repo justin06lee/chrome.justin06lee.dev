@@ -4,14 +4,15 @@ export default defineComponent({
   name: "article-list",
   type: "registry:ui",
   description:
-    "searchable, tag-filterable grid of article cards. animated banners stay frozen in grayscale until hover, then play in full color.",
-  registryDependencies: ["utils", "badge"],
+    "searchable, tag-filterable grid of article cards. animated banners stay frozen in grayscale until hover, then play in full color. cards stagger their entrance fade.",
+  registryDependencies: ["utils", "badge", "fade-in"],
   files: [{ source: "article-list.tsx", target: "article-list.tsx" }],
   props: [
     { name: "articles", type: "ArticlePreview[]", required: true, description: "articles to render as cards." },
     { name: "basePath", type: "string", default: "''", description: "prefix for card hrefs, built as `${basePath}/${slug}`." },
     { name: "defaultQuery", type: "string", default: "''", description: "initial value of the search box." },
     { name: "defaultTag", type: "string", description: "initially selected tag filter." },
+    { name: "stagger", type: "boolean", default: "true", description: "stagger each card's entrance fade by index (60ms per card, capped; honors prefers-reduced-motion)." },
     { name: "className", type: "string" },
   ],
 });
