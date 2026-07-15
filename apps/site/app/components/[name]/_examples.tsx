@@ -12,7 +12,7 @@ import { Article } from "../../../../../packages/registry/article/article";
 import { Badge } from "../../../../../packages/registry/badge/badge";
 import { Calendar } from "../../../../../packages/registry/calendar/calendar";
 import { Heatmap } from "../../../../../packages/registry/heatmap/heatmap";
-import { Timeline } from "../../../../../packages/registry/timeline/timeline";
+import { Timeline, type TimelineEvent } from "../../../../../packages/registry/timeline/timeline";
 import { Combobox, type ComboboxOption } from "../../../../../packages/registry/combobox/combobox";
 import {
   Card,
@@ -314,6 +314,27 @@ function HeatmapClickExample() {
     <div className="w-full space-y-2">
       <Heatmap values={heatmapValues(2026)} year={2026} levels={3} onSelectDay={setDay} />
       <div className="font-mono text-[11px] text-white/45">{day ? `selected: ${day}` : "click a day"}</div>
+    </div>
+  );
+}
+
+function TimelineClickExample() {
+  const [picked, setPicked] = useState<TimelineEvent | null>(null);
+  return (
+    <div className="w-full max-w-md space-y-2">
+      <div className="font-mono text-[11px] text-white/45">
+        {picked ? `clicked: ${picked.label}` : "click a block"}
+      </div>
+      <div className="h-[320px] overflow-y-auto">
+        <Timeline
+          onEventClick={(e) => setPicked(e)}
+          events={[
+            { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },
+            { startMin: 840, endMin: 900, label: "review", color: "#6ee7b7" },
+            { startMin: 1230, endMin: 1290, label: "family dinner", color: "#c4b5fd" },
+          ]}
+        />
+      </div>
     </div>
   );
 }
@@ -968,6 +989,59 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
             events={[
               { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },
               { startMin: 1230, endMin: 1290, label: "family dinner", color: "#c4b5fd" },
+            ]}
+          />
+        </div>
+      ),
+    },
+    {
+      label: "Clickable events",
+      code:
+        "<Timeline\n  onEventClick={(e) => setPicked(e)}\n  events={[\n" +
+        '    { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },\n' +
+        '    { startMin: 840, endMin: 900, label: "review", color: "#6ee7b7" },\n' +
+        '    { startMin: 1230, endMin: 1290, label: "family dinner", color: "#c4b5fd" },\n' +
+        "  ]}\n/>",
+      render: <TimelineClickExample />,
+    },
+    {
+      label: "Dual track (plan vs actuals)",
+      code:
+        "<Timeline\n  showNow\n  tracks={[\n" +
+        "    {\n" +
+        '      label: "plan",\n' +
+        "      events: [\n" +
+        '        { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },\n' +
+        '        { startMin: 780, endMin: 840, label: "gym", color: "#6ee7b7" },\n' +
+        "      ],\n" +
+        "    },\n" +
+        "    {\n" +
+        '      label: "actuals",\n' +
+        "      events: [\n" +
+        '        { startMin: 555, endMin: 690, label: "deep work", color: "#93c5fd" },\n' +
+        '        { startMin: 800, endMin: 845, label: "gym", color: "#6ee7b7" },\n' +
+        "      ],\n" +
+        "    },\n" +
+        "  ]}\n/>",
+      render: (
+        <div className="h-[360px] w-full max-w-md overflow-y-auto">
+          <Timeline
+            showNow
+            tracks={[
+              {
+                label: "plan",
+                events: [
+                  { startMin: 540, endMin: 660, label: "deep work", color: "#93c5fd" },
+                  { startMin: 780, endMin: 840, label: "gym", color: "#6ee7b7" },
+                ],
+              },
+              {
+                label: "actuals",
+                events: [
+                  { startMin: 555, endMin: 690, label: "deep work", color: "#93c5fd" },
+                  { startMin: 800, endMin: 845, label: "gym", color: "#6ee7b7" },
+                ],
+              },
             ]}
           />
         </div>
