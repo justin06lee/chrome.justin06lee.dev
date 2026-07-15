@@ -11,7 +11,7 @@ export default function Docs() {
           chrome is a dark-only component registry in the shadcn mold: you
           don&apos;t install a package, you install <em>source</em>. the cli
           copies each component&apos;s code into your project under{" "}
-          <code>components/ui/</code>, and from then on it&apos;s yours — read
+          <code>components/chrome/</code>, and from then on it&apos;s yours — read
           it, restyle it, rip parts out. there is no runtime dependency on this
           site.
         </p>

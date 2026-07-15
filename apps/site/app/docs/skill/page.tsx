@@ -28,7 +28,7 @@ export default function Skill() {
             component fits which job.
           </li>
           <li>
-            <code>references/</code> — five deep-dive files covering all ~59
+            <code>references/</code> — five deep-dive files covering all ~61
             components by group (primitives, overlays &amp; navigation,
             effects, content &amp; data, editor suite), each with role,
             internals, full prop tables, and canonical examples.
