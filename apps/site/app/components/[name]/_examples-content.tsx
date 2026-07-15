@@ -222,6 +222,25 @@ function SpriteScrubberExample() {
   );
 }
 
+function SpriteScrubberEdgeExample() {
+  const [sweeps, setSweeps] = useState(0);
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <SpriteScrubber
+        src={SHEET}
+        frames={8}
+        cols={4}
+        rows={2}
+        aspectRatio="1 / 1"
+        onEdge={() => setSweeps((s) => s + 1)}
+        className="w-48"
+        aria-label="sprite scrubber edge example"
+      />
+      <span className="font-mono text-xs tabular-nums text-white/50">sweeps {sweeps}</span>
+    </div>
+  );
+}
+
 function IntroExample({
   lines,
   hero,
@@ -591,6 +610,15 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
         "<SpriteScrubber\n  src={sheetUrl}\n  frames={8}\n  cols={4}\n  rows={2}\n" +
         '  aspectRatio="1 / 1"\n  onFrameChange={setFrame}\n/>',
       render: <SpriteScrubberExample />,
+    },
+    {
+      label: "Edge sweeps",
+      code:
+        "// onEdge fires once per full sweep between the edge zones —\n" +
+        "// frames still map across the full width.\n" +
+        "<SpriteScrubber\n  src={sheetUrl}\n  frames={8}\n  cols={4}\n  rows={2}\n" +
+        '  aspectRatio="1 / 1"\n  onEdge={() => setSweeps((s) => s + 1)}\n/>',
+      render: <SpriteScrubberEdgeExample />,
     },
   ],
   intro: [

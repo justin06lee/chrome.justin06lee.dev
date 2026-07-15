@@ -53,6 +53,7 @@ const SHEET = buildSheet();
 
 export default function SpriteScrubberDemo() {
   const [frame, setFrame] = useState(0);
+  const [sweeps, setSweeps] = useState(0);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -61,16 +62,16 @@ export default function SpriteScrubberDemo() {
         frames={FRAMES}
         cols={COLS}
         rows={ROWS}
-        edgeLeft={0}
-        edgeRight={1}
         reverse={false}
         aspectRatio="1 / 1"
         className="w-64"
         onFrameChange={setFrame}
+        onEdge={() => setSweeps((s) => s + 1)}
         aria-label="sprite scrubber demo"
       />
       <p className="font-mono text-xs uppercase tracking-widest text-white/50">
-        drag across to scrub — frame {String(frame + 1).padStart(2, "0")}/{FRAMES}
+        drag across to scrub — frame {String(frame + 1).padStart(2, "0")}/{FRAMES} ·
+        sweeps {sweeps}
       </p>
     </div>
   );
