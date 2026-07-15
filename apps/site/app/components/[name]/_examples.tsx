@@ -1127,6 +1127,38 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
         </div>
       ),
     },
+    {
+      label: "Framework links",
+      code:
+        "// internal links (/… and #…) render through your router's link;\n" +
+        '// external links keep the plain <a target="_blank">\n' +
+        'import Link from "next/link";\n\n' +
+        "<Prose linkComponent={Link}>\n" +
+        '  {"[the docs](/docs) stay client-side; [github](https://github.com/justin06lee) opens a new tab."}\n' +
+        "</Prose>",
+      render: (
+        <div className="text-left">
+          <Prose linkComponent={Link}>
+            {"[the docs](/docs) stay client-side; [github](https://github.com/justin06lee) opens a new tab."}
+          </Prose>
+        </div>
+      ),
+    },
+    {
+      label: "Resolve image srcs",
+      code:
+        "// swap theme image variants — resolve -light sources to the asset you ship\n" +
+        '<Prose resolveImageSrc={(src) => src.replace("-light.png", ".png")}>\n' +
+        '  {"![keffiyeh cat](/pfp-light.png)"}\n' +
+        "</Prose>",
+      render: (
+        <div className="w-full max-w-xs text-left">
+          <Prose resolveImageSrc={(src) => src.replace("-light.png", ".png")}>
+            {"![keffiyeh cat](/pfp-light.png)"}
+          </Prose>
+        </div>
+      ),
+    },
   ],
   accordion: [
     {
