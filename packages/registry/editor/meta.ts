@@ -24,6 +24,18 @@ export default defineComponent({
     { name: "label", type: "ReactNode", default: "'live preview'", description: "sticky label over the preview pane." },
     { name: "placeholder", type: "string", description: "editor textarea placeholder." },
     {
+      name: "textareaProps",
+      type: "Omit<ComponentProps<'textarea'>, 'value' | 'defaultValue'>",
+      description:
+        "escape hatch onto the underlying textarea — e.g. onKeyDown for a vim keymap. handlers compose: the internal sync/selection glue runs first, then yours with the same event; className is merged.",
+    },
+    {
+      name: "transformSource",
+      type: "(source: string) => { body: string; lineOffset: number }",
+      description:
+        "strip a leading front-matter region from the preview: the preview renders body while line-sync shifts by lineOffset (editor line N ↔ preview block N − lineOffset; selections in the stripped region clamp to the first block). keep the reference stable.",
+    },
+    {
       name: "size",
       type: "'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'screen' | 'auto'",
       default: "'screen'",

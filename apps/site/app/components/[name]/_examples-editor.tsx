@@ -110,6 +110,73 @@ function EditorSizesExample() {
   );
 }
 
+const FRONT_MATTER_INITIAL =
+  "# front matter\ncover: /images/cover.png\nexcerpt: kept out of the preview\ntags: [editor, sync]\n\n" +
+  "the preview starts at this paragraph — the front-matter lines above are\nstripped, and two-way line-sync still lands on the right block.\n\n- select text here and press **preview**\n- click a preview block to scroll the editor";
+
+// Front-matter = the leading lines up to (and including) the first blank line.
+// Module scope so the reference stays stable across renders.
+const stripFrontMatter = (source: string) => {
+  const lines = source.split("\n");
+  let offset = 0;
+  while (offset < lines.length && lines[offset]?.trim() !== "") offset += 1;
+  while (offset < lines.length && lines[offset]?.trim() === "") offset += 1;
+  return { body: lines.slice(offset).join("\n"), lineOffset: offset };
+};
+
+function EditorFrontMatterExample() {
+  const [md, setMd] = useState(FRONT_MATTER_INITIAL);
+  return (
+    <div className="w-full">
+      <Editor
+        value={md}
+        onChange={setMd}
+        size="sm"
+        className="border border-white/10"
+        transformSource={stripFrontMatter}
+        renderMarkdown={(source, { highlightLine }) => (
+          <Prose lineSync highlightLine={highlightLine}>
+            {source}
+          </Prose>
+        )}
+      />
+    </div>
+  );
+}
+
+function EditorKeymapExample() {
+  const [md, setMd] = useState(
+    "# keymap escape hatch\n\nfocus the editor and press tab — two spaces land at the caret\ninstead of a focus jump. layer a full vim keymap the same way.",
+  );
+  return (
+    <div className="w-full">
+      <Editor
+        value={md}
+        onChange={setMd}
+        size="sm"
+        className="border border-white/10"
+        textareaProps={{
+          onKeyDown: (event) => {
+            if (event.key !== "Tab") return;
+            event.preventDefault();
+            const el = event.currentTarget;
+            const { selectionStart, selectionEnd, value } = el;
+            setMd(value.slice(0, selectionStart) + "  " + value.slice(selectionEnd));
+            requestAnimationFrame(() =>
+              el.setSelectionRange(selectionStart + 2, selectionStart + 2),
+            );
+          },
+        }}
+        renderMarkdown={(source, { highlightLine }) => (
+          <Prose lineSync highlightLine={highlightLine}>
+            {source}
+          </Prose>
+        )}
+      />
+    </div>
+  );
+}
+
 const DESK_INITIAL =
   "# the desk\n\na full markdown workbench: toolbar, image sidebar, and a\nsplit editor with a two-way synced preview.\n\n- click insert on a sidebar image\n- press **new drawing** in the toolbar";
 
@@ -135,7 +202,7 @@ function DeskExample() {
 }
 
 function DeskFullExample() {
-  const [md, setMd] = useState("# drafts\n\nsave with the button or cmd/ctrl+s.\ndrop images on the sidebar to upload; drawings land there too.");
+  const [md, setMd] = useState("# drafts\n\nsave with the button or cmd/ctrl+s.\ndrop images on the sidebar — or straight onto the editor to upload\nand insert the ref at the caret. drawings land in the sidebar too.");
   const [assets, setAssets] = useState<Asset[]>(SAMPLE_ASSETS);
   const [status, setStatus] = useState("unsaved");
   return (
@@ -155,17 +222,17 @@ function DeskFullExample() {
         onDeleteAsset={(asset) =>
           setAssets((current) => current.filter((a) => a.id !== asset.id))
         }
-        onUploadAssets={(files) =>
-          setAssets((current) => [
-            ...files.map((file) => ({
-              id: `${(nextId += 1)}`,
-              url: URL.createObjectURL(file),
-              name: file.name,
-              markdownPath: `/images/${file.name}`,
-            })),
-            ...current,
-          ])
-        }
+        onUploadAssets={(files) => {
+          const uploaded = files.map((file) => ({
+            id: `${(nextId += 1)}`,
+            url: URL.createObjectURL(file),
+            name: file.name,
+            markdownPath: `/images/${file.name}`,
+          }));
+          setAssets((current) => [...uploaded, ...current]);
+          // returning the assets lets a drop on the editor insert the refs
+          return uploaded;
+        }}
         onSaveDrawing={({ dataUrl, darkDataUrl }) => {
           const id = `${(nextId += 1)}`;
           const name = `drawing-${id}.png`;
@@ -492,6 +559,40 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
         '<Editor value={md} onChange={setMd} size={size} renderMarkdown={render} />',
       render: <EditorSizesExample />,
     },
+    {
+      label: "Front-matter line-sync",
+      code:
+        "// strip a leading front-matter region from the preview; report how many\n" +
+        "// lines were removed and the two-way line-sync stays aligned\n" +
+        "const stripFrontMatter = (source: string) => {\n" +
+        '  const lines = source.split("\\n");\n' +
+        "  let offset = 0;\n" +
+        '  while (offset < lines.length && lines[offset]?.trim() !== "") offset += 1;\n' +
+        '  while (offset < lines.length && lines[offset]?.trim() === "") offset += 1;\n' +
+        '  return { body: lines.slice(offset).join("\\n"), lineOffset: offset };\n' +
+        "};\n\n" +
+        "<Editor\n  value={md}\n  onChange={setMd}\n" +
+        "  transformSource={stripFrontMatter}\n  renderMarkdown={render}\n/>",
+      render: <EditorFrontMatterExample />,
+    },
+    {
+      label: "Keymap escape hatch",
+      code:
+        "// textareaProps spreads onto the underlying <textarea>; internal handlers\n" +
+        "// run first, then yours — layer a vim keymap (or tab-indent) without forking\n" +
+        "<Editor\n  value={md}\n  onChange={setMd}\n  textareaProps={{\n" +
+        "    onKeyDown: (event) => {\n" +
+        '      if (event.key !== "Tab") return;\n' +
+        "      event.preventDefault();\n" +
+        "      const el = event.currentTarget;\n" +
+        "      const { selectionStart, selectionEnd, value } = el;\n" +
+        '      setMd(value.slice(0, selectionStart) + "  " + value.slice(selectionEnd));\n' +
+        "      requestAnimationFrame(() =>\n" +
+        "        el.setSelectionRange(selectionStart + 2, selectionStart + 2),\n" +
+        "      );\n" +
+        "    },\n  }}\n  renderMarkdown={render}\n/>",
+      render: <EditorKeymapExample />,
+    },
   ],
   desk: [
     {
@@ -507,9 +608,13 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
     {
       label: "Save, uploads & drawings",
       code:
+        "// desk also takes textareaProps (keymaps) and transformSource\n" +
+        "// (front-matter stripping) — see the editor examples\n" +
         "<Desk\n  value={md}\n  onChange={setMd}\n  size=\"md\"\n  assets={assets}\n" +
         "  onSave={(value) => save(value)}          // also cmd/ctrl+s\n" +
         "  onDeleteAsset={(asset) => remove(asset)}\n" +
+        "  // return the created assets and a drop ONTO THE EDITOR also\n" +
+        "  // splices the markdown refs at the caret\n" +
         "  onUploadAssets={(files) => upload(files)}\n" +
         "  onSaveDrawing={({ darkDataUrl }) => addAsset(darkDataUrl)}\n" +
         "  drawingDarkMapping\n  renderMarkdown={render}\n/>",
