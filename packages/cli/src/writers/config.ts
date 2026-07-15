@@ -9,9 +9,16 @@ export interface ChromeUiConfig {
   tsx: boolean;
   tailwind: { css: string; baseColor: "black" };
   aliases: { components: string; utils: string; hooks: string };
+  /**
+   * Filesystem base the `@/*` alias maps to: "" for root layouts, "src" for
+   * src/ layouts. Recorded once at init so add/diff write to the same place
+   * on every run. Optional because older configs predate the field — those
+   * fall back to live detection.
+   */
+  aliasBase?: string;
 }
 
-export function defaultConfig(opts: { cssPath: string }): ChromeUiConfig {
+export function defaultConfig(opts: { cssPath: string; aliasBase?: string }): ChromeUiConfig {
   return {
     $schema: "https://chrome.justin06lee.dev/schema.json",
     registry: DEFAULT_REGISTRY,
@@ -19,6 +26,7 @@ export function defaultConfig(opts: { cssPath: string }): ChromeUiConfig {
     tsx: true,
     tailwind: { css: opts.cssPath, baseColor: "black" },
     aliases: { components: "@/components/chrome", utils: "@/lib/utils", hooks: "@/hooks" },
+    aliasBase: opts.aliasBase ?? "",
   };
 }
 

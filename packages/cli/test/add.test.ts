@@ -269,6 +269,101 @@ test("add reports a conflict for an existing, differing app page file", async ()
   rmSync(dir, { recursive: true, force: true });
 });
 
+const IMPORTY: Record<string, RegistryItem> = {
+  gallery: {
+    name: "gallery", type: "registry:ui",
+    dependencies: [], registryDependencies: [],
+    files: [{
+      path: "gallery.tsx", type: "registry:ui", target: "",
+      content:
+        `import { cn } from "@/lib/utils";\n` +
+        `import { Chrome } from "@/components/ui/chrome";\n` +
+        `import { useLineSync } from "@/hooks/use-line-sync";\n` +
+        `export const Gallery = () => null;\n`,
+    }],
+  },
+  "not-found-page": {
+    name: "not-found-page", type: "registry:ui",
+    dependencies: [], registryDependencies: [],
+    files: [{
+      path: "app/not-found.tsx", type: "registry:page", target: "app/not-found.tsx",
+      content:
+        `import { NotFound } from "@/components/ui/not-found";\n` +
+        `export default function Page() { return <NotFound />; }\n`,
+    }],
+  },
+};
+
+test("add rewrites registry imports to the configured aliases", async () => {
+  const dir = makeProject();
+  writeFileSync(
+    join(dir, "chrome.json"),
+    JSON.stringify({
+      $schema: "x", registry: "x", style: "default", tsx: true,
+      tailwind: { css: "app/globals.css", baseColor: "black" },
+      aliases: { components: "@/components/custom", utils: "@/utils/cn", hooks: "@/my-hooks" },
+    }),
+  );
+  await runAdd({
+    cwd: dir, names: ["gallery"], skipInstall: true, yes: true,
+    fetch: async (n) => IMPORTY[n]!,
+  });
+  const written = readFileSync(join(dir, "components/custom/gallery.tsx"), "utf8");
+  expect(written).toContain(`from "@/utils/cn"`);
+  expect(written).toContain(`from "@/components/custom/chrome"`);
+  expect(written).toContain(`from "@/my-hooks/use-line-sync"`);
+  expect(written).not.toContain("@/components/ui/");
+  expect(written).not.toContain(`"@/lib/utils"`);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add rewrites @/components/ui to the default @/components/chrome alias", async () => {
+  const dir = makeProject();
+  await runAdd({
+    cwd: dir, names: ["gallery"], skipInstall: true, yes: true,
+    fetch: async (n) => IMPORTY[n]!,
+  });
+  const written = readFileSync(join(dir, "components/chrome/gallery.tsx"), "utf8");
+  expect(written).toContain(`from "@/components/chrome/chrome"`);
+  // default utils/hooks aliases are identity rewrites
+  expect(written).toContain(`from "@/lib/utils"`);
+  expect(written).toContain(`from "@/hooks/use-line-sync"`);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add rewrites imports in page files too", async () => {
+  const dir = makeProject();
+  await runAdd({
+    cwd: dir, names: ["not-found-page"], skipInstall: true, yes: true,
+    fetch: async (n) => IMPORTY[n]!,
+  });
+  const page = readFileSync(join(dir, "app/not-found.tsx"), "utf8");
+  expect(page).toContain(`from "@/components/chrome/not-found"`);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("add prefers the aliasBase recorded in chrome.json over live detection", async () => {
+  const dir = makeProject(); // app/ exists, so live detection would say root
+  writeFileSync(
+    join(dir, "chrome.json"),
+    JSON.stringify({
+      $schema: "x", registry: "x", style: "default", tsx: true,
+      tailwind: { css: "app/globals.css", baseColor: "black" },
+      aliases: { components: "@/components/chrome", utils: "@/lib/utils", hooks: "@/hooks" },
+      aliasBase: "src",
+    }),
+  );
+  await runAdd({
+    cwd: dir, names: ["button"], skipInstall: true, yes: true,
+    fetch: async (n) => FAKE_REGISTRY[n]!,
+  });
+  expect(existsSync(join(dir, "src/components/chrome/button.tsx"))).toBe(true);
+  expect(existsSync(join(dir, "src/lib/utils.ts"))).toBe(true);
+  expect(existsSync(join(dir, "components/chrome/button.tsx"))).toBe(false);
+  expect(existsSync(join(dir, "lib/utils.ts"))).toBe(false);
+  rmSync(dir, { recursive: true, force: true });
+});
+
 test("add writes under src/ when tsconfig maps @/* to ./src/*", async () => {
   const dir = makeProject();
   writeFileSync(

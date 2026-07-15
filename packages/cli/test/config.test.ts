@@ -21,6 +21,11 @@ test("readConfig parses an existing file", async () => {
   rmSync(dir, { recursive: true });
 });
 
+test("defaultConfig records the alias base (root default, src when passed)", () => {
+  expect(defaultConfig({ cssPath: "app/globals.css" }).aliasBase).toBe("");
+  expect(defaultConfig({ cssPath: "src/app/globals.css", aliasBase: "src" }).aliasBase).toBe("src");
+});
+
 test("writeConfig serializes with stable shape", async () => {
   const dir = mkdtempSync(join(tmpdir(), "chrome-ui-conf-"));
   await writeConfig(dir, defaultConfig({ cssPath: "app/globals.css" }));

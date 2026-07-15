@@ -9,6 +9,7 @@ import { makeHttpFetcher, resolveItems } from "../registry";
 import type { Fetcher } from "../registry";
 import type { RegistryItem } from "../types";
 import { writeFileSafe } from "../writers/tsx";
+import { rewriteImports } from "../writers/imports";
 import { DEFAULT_REGISTRY } from "../constants";
 
 // Components declare their own runtime deps (e.g. motion) so `add` installs them
@@ -38,7 +39,10 @@ export async function runInit(opts: InitOptions): Promise<void> {
   );
 
   const cssPath = findGlobalsCss(cwd);
-  const cfg = defaultConfig({ cssPath });
+  // Detect the layout once and record it in chrome.json, so later add/diff
+  // runs write to the same place instead of re-probing the filesystem.
+  const aliasBase = detectAliasBase(cwd);
+  const cfg = defaultConfig({ cssPath, aliasBase });
   cfg.registry = opts.registry ?? DEFAULT_REGISTRY;
 
   await writeConfig(cwd, cfg);
@@ -63,10 +67,12 @@ export async function runInit(opts: InitOptions): Promise<void> {
     } else if (item.type === "registry:lib") {
       // Each lib file lands at the utils alias (lib/utils.ts), under src/ on
       // src-layout projects so the @/* tsconfig alias resolves.
-      const libRel = join(detectAliasBase(cwd), "lib");
+      const libRel = join(aliasBase, "lib");
       for (const file of item.files) {
         const dest = join(cwd, libRel, file.path);
-        const result = await writeFileSafe(dest, file.content, { cwdGuard: cwd });
+        const result = await writeFileSafe(dest, rewriteImports(file.content, cfg.aliases), {
+          cwdGuard: cwd,
+        });
         if (result.action === "written") console.log(`✓ wrote ${join(libRel, file.path)}`);
         else console.log(`✓ skipped ${join(libRel, file.path)} (already present)`);
       }
