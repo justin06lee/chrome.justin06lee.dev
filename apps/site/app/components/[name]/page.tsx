@@ -31,6 +31,7 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   dialog: () => import("../../../../../packages/registry/dialog/demo"),
   donut: () => import("../../../../../packages/registry/donut/demo"),
   "file-card": () => import("../../../../../packages/registry/file-card/demo"),
+  "file-grid": () => import("../../../../../packages/registry/file-grid/demo"),
   "drawing-window": () => import("../../../../../packages/registry/drawing-window/demo"),
   "editor-toolbar": () => import("../../../../../packages/registry/editor-toolbar/demo"),
   heatmap: () => import("../../../../../packages/registry/heatmap/demo"),

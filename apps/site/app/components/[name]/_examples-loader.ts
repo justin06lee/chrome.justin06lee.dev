@@ -83,6 +83,7 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
       "drawing-window",
       "editor",
       "editor-toolbar",
+      "file-grid",
       "manager-table",
       "now-playing-bar",
       "sheet",
