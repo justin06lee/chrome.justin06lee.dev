@@ -5,6 +5,7 @@ import { readConfig } from "../writers/config";
 import type { Fetcher } from "../registry";
 import { makeHttpFetcher, resolveItems } from "../registry";
 import { writeFileSafe } from "../writers/tsx";
+import { rewriteImports } from "../writers/imports";
 import { patchGlobalsCss, serializeCssVars } from "../writers/css";
 import { runInstall } from "../writers/deps";
 import type { PackageManager } from "../project";
@@ -55,14 +56,16 @@ export async function runAdd(opts: AddOptions): Promise<void> {
     console.log(`✓ installed ${npmDeps.join(" ")}`);
   }
 
-  // "@/" maps to src/ on src-layout projects, the root otherwise.
-  const aliasBase = detectAliasBase(cwd);
+  // "@/" maps to src/ on src-layout projects, the root otherwise. Prefer the
+  // layout init recorded in chrome.json — live detection is a fallback for
+  // older configs, and re-probing every run made later adds land elsewhere.
+  const aliasBase = cfg.aliasBase ?? detectAliasBase(cwd);
   const componentsRel = aliasToFsRelative(cfg.aliases.components, aliasBase);
   const utilsRel = aliasToFsRelative(cfg.aliases.utils, aliasBase);
   // Hooks land at the hooks alias; older configs predate the field, so fall back.
   const hooksRel = aliasToFsRelative(cfg.aliases.hooks ?? "@/hooks", aliasBase);
   // Page files land in the Next.js app directory (app/ or src/app/).
-  const appRel = detectAppDir(cwd);
+  const appRel = detectAppDir(cwd, aliasBase);
 
   // Resolve the globals.css target once and refuse paths that escape the project.
   const cssPath = resolve(cwd, cfg.tailwind.css);
@@ -98,7 +101,10 @@ export async function runAdd(opts: AddOptions): Promise<void> {
       } else {
         dest = join(cwd, componentsRel, file.path);
       }
-      const result = await writeFileSafe(dest, file.content, { overwrite, cwdGuard: cwd });
+      // Registry sources import via canonical aliases (@/components/ui/…);
+      // rewrite them to the aliases configured in chrome.json.
+      const content = rewriteImports(file.content, cfg.aliases);
+      const result = await writeFileSafe(dest, content, { overwrite, cwdGuard: cwd });
       if (result.action === "written") console.log(`✓ wrote ${dest}`);
       else if (result.action === "skipped") console.log(`✓ skipped ${dest} (already present)`);
       else {

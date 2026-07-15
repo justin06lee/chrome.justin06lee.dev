@@ -81,6 +81,24 @@ test("detectAliasBase reads the tsconfig @/* mapping", () => {
   expect(detectAliasBase(dir)).toBe("");
 });
 
+test("detectAliasBase handles tsconfig trailing commas (jsonc)", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-alias-"));
+  writeFileSync(
+    join(dir, "tsconfig.json"),
+    `{
+  // next.js writes jsonc with trailing commas
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+  },
+}`,
+  );
+  // the directory probe would say "" (no src/ dir) — the tsconfig must win
+  expect(detectAliasBase(dir)).toBe("src");
+  rmSync(dir, { recursive: true, force: true });
+});
+
 test("detectAliasBase falls back to probing for src/ without a tsconfig", () => {
   const dir = mkdtempSync(join(tmpdir(), "chrome-ui-alias-"));
   expect(detectAliasBase(dir)).toBe("");
@@ -112,5 +130,13 @@ test("detectAppDir falls back to the alias base when no app dir exists", () => {
     JSON.stringify({ compilerOptions: { paths: { "@/*": ["./src/*"] } } }),
   );
   expect(detectAppDir(dir)).toBe("src/app");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("detectAppDir prefers a passed aliasBase over live detection", () => {
+  const dir = mkdtempSync(join(tmpdir(), "chrome-ui-appdir-"));
+  // no dirs, no tsconfig: recorded base decides
+  expect(detectAppDir(dir, "src")).toBe("src/app");
+  expect(detectAppDir(dir, "")).toBe("app");
   rmSync(dir, { recursive: true, force: true });
 });

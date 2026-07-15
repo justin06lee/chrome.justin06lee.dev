@@ -22,7 +22,10 @@ export default function Cli() {
           framework, and tailwind version, then writes <code>chrome.json</code>{" "}
           (the registry config), <code>lib/utils.ts</code> (the <code>cn</code>{" "}
           helper), and patches <code>globals.css</code> with the fenced theme
-          block. re-running it is safe — only the fenced block is replaced.
+          block. whether the project uses a <code>src/</code> layout is
+          resolved once here and recorded in <code>chrome.json</code>{" "}
+          (<code>aliasBase</code>), so every later command writes to the same
+          place. re-running it is safe — only the fenced block is replaced.
         </p>
       </section>
 
@@ -44,10 +47,20 @@ export default function Cli() {
             installed in a single pass.
           </li>
           <li>
-            files land under your alias base — <code>components/ui/</code>,{" "}
-            <code>hooks/</code>, <code>lib/</code>. projects with a{" "}
-            <code>src/</code> layout are detected from tsconfig&apos;s{" "}
-            <code>@/*</code> mapping.
+            files land under your configured aliases —{" "}
+            <code>components/chrome/</code>, <code>hooks/</code>,{" "}
+            <code>lib/</code> by default, under <code>src/</code> when{" "}
+            <code>chrome.json</code>&apos;s <code>aliasBase</code> says so
+            (older configs without the field fall back to tsconfig&apos;s{" "}
+            <code>@/*</code> mapping).
+          </li>
+          <li>
+            imports are rewritten to your aliases on install — registry
+            sources reference <code>@/components/ui/</code>,{" "}
+            <code>@/lib/utils</code>, and <code>@/hooks/</code>; the cli
+            rewrites those to the <code>components</code>, <code>utils</code>,
+            and <code>hooks</code> aliases in <code>chrome.json</code>, so
+            cross-component imports resolve whatever your aliases are.
           </li>
           <li>
             page files install into the app dir: adding{" "}
@@ -73,6 +86,8 @@ export default function Cli() {
         <CodeBlock language="bash" code="bunx @justin06lee/chrome@latest diff <name>" />
         <p>
           unified diff between your local copy and the registry version. the
+          registry content gets the same alias rewrite <code>add</code>{" "}
+          applies, so your configured aliases never show up as drift. the
           installed code is yours to edit — <code>diff</code> is how you audit
           drift before deciding whether to pull an update with{" "}
           <code>add --overwrite</code>.

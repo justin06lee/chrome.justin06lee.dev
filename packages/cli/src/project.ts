@@ -41,12 +41,21 @@ function readPkg(cwd: string): { dependencies?: Record<string, string>; devDepen
  * Filesystem base the `@/*` import alias maps to: "" for root layouts,
  * "src" for src/ layouts. Prefers the tsconfig `paths` mapping; falls back
  * to probing for a src/ directory.
+ *
+ * Live detection is a heuristic — init records its result in chrome.json
+ * (`aliasBase`) and add/diff prefer that, so the layout can't drift between
+ * runs. This function is the fallback for configs that predate the field.
+ * Known gap: `extends` is not followed, so a paths mapping that lives only
+ * in a parent tsconfig falls through to the directory probe.
  */
 export function detectAliasBase(cwd: string): string {
   try {
     const raw = readFileSync(join(cwd, "tsconfig.json"), "utf8");
-    // tsconfig allows comments; strip them before parsing.
-    const cleaned = raw.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+    // tsconfig is JSONC: strip comments and trailing commas before parsing.
+    const cleaned = raw
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^\s*\/\/.*$/gm, "")
+      .replace(/,(\s*[}\]])/g, "$1");
     const ts = JSON.parse(cleaned) as {
       compilerOptions?: { paths?: Record<string, string[]> };
     };
@@ -63,12 +72,13 @@ export function detectAliasBase(cwd: string): string {
 /**
  * Next.js app directory relative to the project root: "app" for root layouts,
  * "src/app" for src/ layouts. Prefers an existing directory; when neither
- * exists yet, derives the location from the `@/*` alias base.
+ * exists yet, derives the location from the `@/*` alias base — pass the
+ * aliasBase recorded in chrome.json to keep the fallback deterministic.
  */
-export function detectAppDir(cwd: string): string {
+export function detectAppDir(cwd: string, aliasBase?: string): string {
   if (existsSync(join(cwd, "app"))) return "app";
   if (existsSync(join(cwd, "src", "app"))) return join("src", "app");
-  const base = detectAliasBase(cwd);
+  const base = aliasBase ?? detectAliasBase(cwd);
   return base ? join(base, "app") : "app";
 }
 

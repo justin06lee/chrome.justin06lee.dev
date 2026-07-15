@@ -3,7 +3,7 @@
 import {
   ArrowDown,
   Copy,
-  Github,
+  ExternalLink,
   Menu,
   X,
 } from "lucide-react";
@@ -32,10 +32,10 @@ export default function ButtonDemo() {
         <Button variant="ghost" icon={ArrowDown} label="scroll" />
         <Button
           variant="dashed"
-          icon={Github}
-          label="GitHub"
-          tooltip="GitHub"
-          href="https://github.com"
+          icon={ExternalLink}
+          label="docs"
+          tooltip="docs"
+          href="https://example.com"
         />
         <Button
           variant="link"
