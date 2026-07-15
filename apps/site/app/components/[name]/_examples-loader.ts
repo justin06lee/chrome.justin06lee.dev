@@ -38,6 +38,7 @@ const CHUNKS: Array<[ModuleLoader, string[]]> = [
       "sidebar",
       "command-palette",
       "stack",
+      "file-card",
       "tabs",
       "textarea",
       "timeline",

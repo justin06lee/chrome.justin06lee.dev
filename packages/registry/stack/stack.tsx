@@ -12,6 +12,14 @@ export interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const SPRING = "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1)";
 
+/** The fan-out is a hover flourish — skip it entirely for reduced-motion users. */
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
+  );
+}
+
 export function Stack({
   children,
   className = "",
@@ -24,7 +32,7 @@ export function Stack({
 
   return (
     <div
-      onMouseEnter={() => setHover(true)}
+      onMouseEnter={() => setHover(!prefersReducedMotion())}
       onMouseLeave={() => setHover(false)}
       className={cn("relative h-44 w-40", className)}
       style={{ ...style, background }}
