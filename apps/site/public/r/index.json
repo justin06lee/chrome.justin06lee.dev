@@ -63,7 +63,7 @@
   {
     "name": "breadcrumb",
     "type": "registry:ui",
-    "description": "breadcrumb trail from caller-supplied items; the last crumb is the muted current page. ships a crumbsFromPath helper.",
+    "description": "breadcrumb trail from caller-supplied items; the last crumb is the muted current page. framework-agnostic links via linkComponent. ships a crumbsFromPath helper.",
     "dependencies": [
       "lucide-react"
     ],
@@ -86,7 +86,9 @@
     "name": "calendar",
     "type": "registry:ui",
     "description": "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells, or renderCell + cellClassName to take over cells for agenda-style month views.",
-    "dependencies": [],
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]
@@ -376,7 +378,7 @@
   {
     "name": "manager-table",
     "type": "registry:ui",
-    "description": "admin table with inline rename, swatch recolor, archive, and confirmed delete. every mutation is a callback — bring your own state. rows can be locked (no rename/delete), and rename/delete may be async — a rejection surfaces inline under the row.",
+    "description": "admin table with inline rename, swatch recolor, archive, and confirmed delete. every mutation is a callback — bring your own state. rows can be locked (no rename/delete), and every handler may be async — a rejection surfaces inline under the row.",
     "dependencies": [],
     "registryDependencies": [
       "utils",
