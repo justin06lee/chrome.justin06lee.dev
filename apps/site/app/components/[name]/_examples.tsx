@@ -11,6 +11,7 @@ import {
 import { Article } from "../../../../../packages/registry/article/article";
 import { Badge } from "../../../../../packages/registry/badge/badge";
 import { Calendar } from "../../../../../packages/registry/calendar/calendar";
+import { CalendarNav } from "../../../../../packages/registry/calendar-nav/calendar-nav";
 import { Heatmap } from "../../../../../packages/registry/heatmap/heatmap";
 import { Timeline, type TimelineEvent } from "../../../../../packages/registry/timeline/timeline";
 import { Combobox, type ComboboxOption } from "../../../../../packages/registry/combobox/combobox";
@@ -132,46 +133,65 @@ function agendaTint(count: number): string {
 }
 
 function CalendarAgendaExample() {
+  const [month, setMonth] = useState("2026-05");
   const tasks = AGENDA_TASKS;
+  const [y, m] = month.split("-").map(Number) as [number, number];
+  const shiftMonth = (delta: number) => {
+    const d = new Date(Date.UTC(y, m - 1 + delta, 1));
+    setMonth(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`);
+  };
+  const label = new Date(Date.UTC(y, m - 1, 1))
+    .toLocaleString("en-US", { month: "long", year: "numeric" })
+    .toLowerCase();
   return (
-    <Calendar
-      month="2026-05"
-      today="2026-05-06"
-      className="w-full"
-      cellClassName={(d) => `min-h-24 p-1.5 ${agendaTint((tasks[d.date] ?? []).length)}`}
-      renderCell={(d) => {
-        const items = tasks[d.date] ?? [];
-        const done = items.filter((t) => t.done).length;
-        const visible = items.slice(0, 3);
-        return (
-          <>
-            <div className="flex items-baseline justify-between">
-              <span className="font-mono text-xs tabular-nums text-white/80">{d.day}</span>
-              {items.length > 0 && (
-                <span className="font-mono text-[9px] tabular-nums tracking-widest text-white/40">
-                  {done}/{items.length}
-                </span>
-              )}
-            </div>
-            <div className="mt-0.5 flex flex-col gap-[2px] overflow-hidden">
-              {visible.map((t) => (
-                <span
-                  key={t.title}
-                  className={`truncate text-[10px] leading-tight ${t.done ? "text-white/30 line-through" : "text-white/70"}`}
-                >
-                  {t.title}
-                </span>
-              ))}
-              {items.length > 3 && (
-                <span className="font-mono text-[9px] tracking-widest text-white/40">
-                  +{items.length - 3} more
-                </span>
-              )}
-            </div>
-          </>
-        );
-      }}
-    />
+    <div className="flex w-full flex-col gap-4">
+      <CalendarNav
+        label={label}
+        views={["month"]}
+        onPrev={() => shiftMonth(-1)}
+        onNext={() => shiftMonth(1)}
+        onToday={() => setMonth("2026-05")}
+      />
+      <Calendar
+        month={month}
+        showHeader={false}
+        today="2026-05-06"
+        className="w-full"
+        cellClassName={(d) => `min-h-24 p-1.5 ${agendaTint((tasks[d.date] ?? []).length)}`}
+        renderCell={(d) => {
+          const items = tasks[d.date] ?? [];
+          const done = items.filter((t) => t.done).length;
+          const visible = items.slice(0, 3);
+          return (
+            <>
+              <div className="flex items-baseline justify-between">
+                <span className="font-mono text-xs tabular-nums text-white/80">{d.day}</span>
+                {items.length > 0 && (
+                  <span className="font-mono text-[9px] tabular-nums tracking-widest text-white/40">
+                    {done}/{items.length}
+                  </span>
+                )}
+              </div>
+              <div className="mt-0.5 flex flex-col gap-[2px] overflow-hidden">
+                {visible.map((t) => (
+                  <span
+                    key={t.title}
+                    className={`truncate text-[10px] leading-tight ${t.done ? "text-white/30 line-through" : "text-white/70"}`}
+                  >
+                    {t.title}
+                  </span>
+                ))}
+                {items.length > 3 && (
+                  <span className="font-mono text-[9px] tracking-widest text-white/40">
+                    +{items.length - 3} more
+                  </span>
+                )}
+              </div>
+            </>
+          );
+        }}
+      />
+    </div>
   );
 }
 
@@ -1099,7 +1119,9 @@ export const BASE_EXAMPLES: Record<string, UsageExample[]> = {
     },
     {
       label: "Agenda month grid",
-      code: `const tasks: Record<string, { title: string; done: boolean }[]> = {
+      code: `const [month, setMonth] = useState("2026-05");
+
+const tasks: Record<string, { title: string; done: boolean }[]> = {
   "2026-05-04": [
     { title: "ship registry pr", done: true },
     { title: "review month grid", done: false },
@@ -1114,8 +1136,17 @@ function agendaTint(count: number): string {
   return "";
 }
 
+// calendar-nav pages the month, so hide the built-in header
+<CalendarNav
+  label={monthLabel(month)}  // e.g. "may 2026"
+  views={["month"]}
+  onPrev={() => setMonth(shiftMonth(month, -1))}
+  onNext={() => setMonth(shiftMonth(month, 1))}
+  onToday={() => setMonth("2026-05")}
+/>
 <Calendar
-  month="2026-05"
+  month={month}
+  showHeader={false}
   today="2026-05-06"
   className="w-full"
   cellClassName={(d) => \`min-h-24 p-1.5 \${agendaTint((tasks[d.date] ?? []).length)}\`}
