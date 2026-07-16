@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ComponentProps, type ReactNode } from "react";
+import Link from "next/link";
 import type { UsageExample } from "./_examples";
 import {
   ArticleList,
@@ -415,6 +416,27 @@ export const CONTENT_EXAMPLES: Record<string, UsageExample[]> = {
         <Breadcrumb
           separator={<span className="text-white/30">/</span>}
           items={[{ label: "components", href: "#" }, { label: "breadcrumb" }]}
+        />
+      ),
+    },
+    {
+      label: "Framework links",
+      code:
+        "// pass your router's link for client-side navigation\n" +
+        'import Link from "next/link";\n\n' +
+        "<Breadcrumb\n  linkComponent={Link}\n  items={[\n" +
+        '    { label: "desk", href: "/desk" },\n' +
+        '    { label: "articles", href: "/desk/articles" },\n' +
+        '    { label: "edit" },\n' +
+        "  ]}\n/>",
+      render: (
+        <Breadcrumb
+          linkComponent={Link}
+          items={[
+            { label: "desk", href: "#" },
+            { label: "articles", href: "#" },
+            { label: "edit" },
+          ]}
         />
       ),
     },
