@@ -17,6 +17,7 @@ import { Sheet, type SheetSide } from "../../../../../packages/registry/sheet/sh
 import { Socials } from "../../../../../packages/registry/socials/socials";
 import {
   ManagerTable,
+  type ManagerPaletteEntry,
   type ManagerRow,
 } from "../../../../../packages/registry/manager-table/manager-table";
 import {
@@ -519,7 +520,7 @@ const MANAGER_INITIAL: ManagerRow[] = [
   { id: "3", name: "Archived Stuff", color: "#7a5b78", archived: true },
 ];
 
-function ManagerTableExample({ palette }: { palette?: string[] }) {
+function ManagerTableExample({ palette }: { palette?: ManagerPaletteEntry[] }) {
   const [rows, setRows] = useState<ManagerRow[]>(MANAGER_INITIAL);
   return (
     <DialogProvider>
@@ -563,6 +564,10 @@ function ManagerTableGuardedExample() {
           onRecolor={(id, color) =>
             setRows((prev) => prev.map((r) => (r.id === id ? { ...r, color } : r)))
           }
+          onArchive={async () => {
+            await new Promise((done) => setTimeout(done, 600));
+            throw new Error("archive is locked while a session is running");
+          }}
           onDelete={async () => {
             await new Promise((done) => setTimeout(done, 600));
             throw new Error("category is in use");
@@ -891,16 +896,31 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
     {
       label: "Custom palette",
       code:
-        '<ManagerTable\n  rows={rows}\n  palette={["#6ee7b7", "#93c5fd", "#c4b5fd", "#fda4af"]}\n' +
+        "// entries may carry a friendly name — the swatch tooltip shows it instead of the hex\n" +
+        "<ManagerTable\n  rows={rows}\n  palette={[\n" +
+        '    { value: "#7dd3fc", name: "sky" },\n' +
+        '    { value: "#6ee7b7", name: "mint" },\n' +
+        '    { value: "#c4b5fd", name: "lavender" },\n' +
+        '    "#fda4af",\n' +
+        "  ]}\n" +
         "  onRecolor={(id, color) => recolor(id, color)}\n/>",
-      render: <ManagerTableExample palette={["#6ee7b7", "#93c5fd", "#c4b5fd", "#fda4af"]} />,
+      render: (
+        <ManagerTableExample
+          palette={[
+            { value: "#7dd3fc", name: "sky" },
+            { value: "#6ee7b7", name: "mint" },
+            { value: "#c4b5fd", name: "lavender" },
+            "#fda4af",
+          ]}
+        />
+      ),
     },
     {
       label: "Locked rows + async guards",
       code:
         '// "Sleep" is locked: rendered without rename/delete affordances.\n' +
         "// async onRename shows the draft optimistically and rolls back on reject;\n" +
-        "// a rejected onDelete keeps the row and surfaces the error beneath it.\n" +
+        "// a rejected onArchive/onDelete keeps the row and surfaces the error beneath it.\n" +
         'const rows = [\n  { id: "1", name: "Sleep", color: "#5b5b8a", locked: true },\n' +
         '  { id: "2", name: "Deep Work", color: "#5b7a8a" },\n' +
         '  { id: "3", name: "Errands", color: "#7a6b5b" },\n];\n\n' +
@@ -909,6 +929,9 @@ export const EDITOR_EXAMPLES: Record<string, UsageExample[]> = {
         "    await new Promise((done) => setTimeout(done, 600));\n" +
         "    rename(id, name);\n  }}\n" +
         "  onRecolor={(id, color) => recolor(id, color)}\n" +
+        "  onArchive={async () => {\n" +
+        "    await new Promise((done) => setTimeout(done, 600));\n" +
+        '    throw new Error("archive is locked while a session is running");\n  }}\n' +
         "  onDelete={async () => {\n" +
         "    await new Promise((done) => setTimeout(done, 600));\n" +
         '    throw new Error("category is in use");\n  }}\n/>',
