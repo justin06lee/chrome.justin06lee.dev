@@ -5,6 +5,7 @@ export default defineComponent({
   type: "registry:ui",
   description:
     "month date grid with selectable days, today ring, and prev/next header. pass renderDay to layer dots or counts onto cells, or renderCell + cellClassName to take over cells for agenda-style month views.",
+  dependencies: ["lucide-react"],
   registryDependencies: ["utils"],
   files: [{ source: "calendar.tsx", target: "calendar.tsx" }],
   props: [
@@ -24,6 +25,12 @@ export default defineComponent({
       name: "cellClassName",
       type: "string | ((day: CalendarDay) => string)",
       description: "per-cell classes — heatmap tint, min-height. works in both modes.",
+    },
+    {
+      name: "showHeader",
+      type: "boolean",
+      default: "true",
+      description: "hide the built-in month header (title + prev/next) when an external nav, e.g. calendar-nav, already pages the month.",
     },
   ],
 });
