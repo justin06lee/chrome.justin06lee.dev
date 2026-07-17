@@ -32,5 +32,11 @@ export default defineComponent({
       default: "true",
       description: "hide the built-in month header (title + prev/next) when an external nav, e.g. calendar-nav, already pages the month.",
     },
+    {
+      name: "fillHeight",
+      type: "boolean",
+      default: "false",
+      description: "stretch the day rows to equal heights (auto-rows-fr) to fill the component's height — give the root a height via className for a full-page agenda month grid. best with renderCell.",
+    },
   ],
 });
