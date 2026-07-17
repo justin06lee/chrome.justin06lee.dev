@@ -281,7 +281,7 @@
   {
     "name": "file-grid",
     "type": "registry:ui",
-    "description": "asset-browser grid of stacked-paper file cards with drag-to-trash delete and a type-the-name-to-confirm dialog. composes file-card, input, and button.",
+    "description": "asset-browser grid of stacked-paper file cards with press-and-drag-to-trash delete (pointer-driven, so it never triggers native link-drag; the trash zone only appears while dragging) and a type-the-name-to-confirm dialog. composes file-card, input, and button.",
     "dependencies": [
       "lucide-react"
     ],
