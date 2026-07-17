@@ -41,6 +41,17 @@ export default defineComponent({
       description:
         "renders as <a>. external URLs (http(s)://) get target=\"_blank\" auto-applied.",
     },
+    {
+      name: "linkComponent",
+      type: "React.ElementType",
+      description:
+        "anchor component for internal hrefs — pass your router's Link (e.g. next/link) for client-side navigation + prefetch. external http(s) hrefs always use a plain <a>.",
+    },
+    {
+      name: "prefetch",
+      type: "boolean",
+      description: "forwarded to linkComponent (e.g. next/link's prefetch) when set.",
+    },
     { name: "onClick", type: "() => void" },
     { name: "fullWidth", type: "boolean", default: "false" },
     { name: "disabled", type: "boolean", default: "false" },

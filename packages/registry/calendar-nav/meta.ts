@@ -17,6 +17,17 @@ export default defineComponent({
     { name: "onNext", type: "() => void" },
     { name: "onToday", type: "() => void" },
     { name: "todayLabel", type: "ReactNode", default: "'today'" },
+    {
+      name: "linkComponent",
+      type: "React.ElementType",
+      description:
+        "pass your router's Link (e.g. next/link) to render prev/next/today + the view switcher as prefetched client-side links instead of callback buttons — much faster period-switching on server-rendered (force-dynamic) routes. Provide the *Href props too.",
+    },
+    { name: "prevHref", type: "string", description: "href for the previous period (with linkComponent)." },
+    { name: "nextHref", type: "string", description: "href for the next period." },
+    { name: "todayHref", type: "string", description: "href for the current period." },
+    { name: "viewHref", type: "(view: CalendarView) => string", description: "maps a view to its href; each switcher segment becomes a prefetched link." },
+    { name: "prefetch", type: "boolean", description: "forwarded to linkComponent (e.g. next/link's prefetch) for every control." },
     { name: "className", type: "string" },
   ],
 });
