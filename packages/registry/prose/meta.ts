@@ -40,10 +40,17 @@ export default defineComponent({
         "anchor component for internal links (relative, /…, #…) — pass your router's link for client-side navigation. external links (http(s)://, mailto:, …) always render a plain <a>; http(s) opens in a new tab.",
     },
     {
+      name: "imageTheme",
+      type: '"light" | "dark"',
+      default: '"light"',
+      description:
+        "which variant to render for images with a light/dark pair (files named <name>-light.<ext> / <name>-dark.<ext>). a -light/-dark-suffixed src resolves to this theme; unsuffixed srcs are untouched. defaults to light; a dark site passes \"dark\". the exported resolveThemeImageSrc(src, theme) helper does the swap.",
+    },
+    {
       name: "resolveImageSrc",
       type: "(src: string) => string",
       description:
-        "maps each image src to the src actually rendered (e.g. swap foo-light.png ↔ foo-dark.png theme variants). runs after imageBaseUrl resolution.",
+        "escape hatch mapping each image src to what's rendered. runs after imageBaseUrl and imageTheme resolution.",
     },
   ],
 });
