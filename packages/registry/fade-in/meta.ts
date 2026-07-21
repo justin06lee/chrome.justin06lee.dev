@@ -13,7 +13,7 @@ export default defineComponent({
     { name: "delay", type: "number", default: "0", description: "delay before the animation starts, in seconds." },
     { name: "y", type: "number", default: "-10", description: "starting vertical offset in px (animates to 0)." },
     { name: "x", type: "number", default: "0", description: "starting horizontal offset in px (animates to 0)." },
-    { name: "duration", type: "number", default: "0.4", description: "animation duration in seconds." },
+    { name: "duration", type: "number", default: "0.8", description: "animation duration in seconds." },
     { name: "className", type: "string" },
     { name: "children", type: "ReactNode" },
   ],
