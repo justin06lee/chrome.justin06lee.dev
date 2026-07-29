@@ -72,6 +72,17 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   "now-playing-bar": () => import("../../../../../packages/registry/now-playing-bar/demo"),
   "sprite-scrubber": () => import("../../../../../packages/registry/sprite-scrubber/demo"),
   "tag-input": () => import("../../../../../packages/registry/tag-input/demo"),
+  "stat-tile": () => import("../../../../../packages/registry/stat-tile/demo"),
+  "bar-list": () => import("../../../../../packages/registry/bar-list/demo"),
+  sparkline: () => import("../../../../../packages/registry/sparkline/demo"),
+  streak: () => import("../../../../../packages/registry/streak/demo"),
+  toast: () => import("../../../../../packages/registry/toast/demo"),
+  "break-overlay": () => import("../../../../../packages/registry/break-overlay/demo"),
+  "lane-bar": () => import("../../../../../packages/registry/lane-bar/demo"),
+  clock: () => import("../../../../../packages/registry/clock/demo"),
+  "timer-ring": () => import("../../../../../packages/registry/timer-ring/demo"),
+  progress: () => import("../../../../../packages/registry/progress/demo"),
+  "interval-picker": () => import("../../../../../packages/registry/interval-picker/demo"),
 };
 
 // Components that need the full wide canvas — size-adjustable ones (editor,
