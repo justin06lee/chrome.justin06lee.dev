@@ -61,10 +61,31 @@
     ]
   },
   {
+    "name": "bar-list",
+    "type": "registry:ui",
+    "description": "ranked horizontal bar list — each row's proportional bar is the row's own background, with the label on the left and the value right-aligned. rows can link out or fire a click handler; per-item colors are opt-in and tinted back so labels stay legible.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "breadcrumb",
     "type": "registry:ui",
     "description": "breadcrumb trail from caller-supplied items; the last crumb is the muted current page. framework-agnostic links via linkComponent. ships a crumbsFromPath helper.",
     "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "break-overlay",
+    "type": "registry:ui",
+    "description": "full-screen rest overlay with a large live countdown and resume / extend / skip actions. traps focus, locks scroll, and only escapes when you let it.",
+    "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "registryDependencies": [
@@ -132,6 +153,15 @@
     "description": "wrapper that renders every text glyph inside it as shimmering chrome foil.",
     "dependencies": [],
     "registryDependencies": []
+  },
+  {
+    "name": "clock",
+    "type": "registry:ui",
+    "description": "live clock — thin-stroke analog face, tabular-nums digital readout, or both. any iana time zone via intl, optional sweep second hand. ssr-safe: renders a stable midnight form until mounted.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "code-block",
@@ -346,6 +376,17 @@
     ]
   },
   {
+    "name": "interval-picker",
+    "type": "registry:ui",
+    "description": "duration picker for \"every n minutes\" settings — quick presets in a roving-tabindex radiogroup plus a stepper for anything in between. always emits a plain minute count.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "intro",
     "type": "registry:ui",
     "description": "full-screen intro overlay: a hero holds on top while lines take turns in a fixed slot beneath it, then the whole scene fades out. skippable, with a play-once localStorage gate.",
@@ -360,6 +401,15 @@
     "name": "kbd",
     "type": "registry:ui",
     "description": "a macos-style keycap: mono glyph on a faint raised cap with a heavier bottom edge. compose combos by placing several side by side.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "lane-bar",
+    "type": "registry:ui",
+    "description": "multi-lane sibling of now-playing-bar: several activities running in parallel, each with a live elapsed timer and its own action slot, all driven by one shared tick.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -435,6 +485,15 @@
     "name": "pfp",
     "type": "registry:ui",
     "description": "profile-picture tile: an image framed in a bordered square that tilts in 3d on hover with a thick white cartoon glint sweeping diagonally across it. frame the subject with x/y/scale; size it via className.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "progress",
+    "type": "registry:ui",
+    "description": "linear progress bar — square, three track heights, bare or outlined. determinate from value/max, or an indeterminate sweep for unknown durations. honors prefers-reduced-motion.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -539,6 +598,15 @@
     ]
   },
   {
+    "name": "sparkline",
+    "type": "registry:ui",
+    "description": "tiny inline svg trend line — 80x24 by default so it sits in a line of text. linear or catmull-rom smooth, optional area fill and square point markers, no chart library and no dependencies.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "sprite-scrubber",
     "type": "registry:ui",
     "description": "scrub through a sprite-sheet grid by dragging across it — pointer x maps to a frame index.",
@@ -551,6 +619,27 @@
     "name": "stack",
     "type": "registry:ui",
     "description": "stacked paper card with hovered fan-out spring animation.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "stat-tile",
+    "type": "registry:ui",
+    "description": "big-number kpi tile — mono uppercase label, one headline figure with an optional unit, a delta chip that turns red only when the change is the bad one, plus footnote, icon and a slot for an inline sparkline. server-renderable; opts into count-up when animated.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils",
+      "count-up"
+    ]
+  },
+  {
+    "name": "streak",
+    "type": "registry:ui",
+    "description": "streak indicator — the current unbroken run, an optional all-time best, and a compact strip of recent hit/miss day cells so a near-miss stays visible. one sr-only sentence carries the whole thing to screen readers.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -596,6 +685,27 @@
     "type": "registry:ui",
     "description": "day schedule — a 24h vertical axis with positioned event blocks and an optional live now-line. blocks placed by minutes-of-day; supports clickable blocks, multiple labeled tracks on one axis, streamed marker slots, and opt-in drag editing. generalized from the justin06lee.dev day view.",
     "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "timer-ring",
+    "type": "registry:ui",
+    "description": "circular progress ring driven by stroke-dasharray. takes a value/max pair, or an endsAt deadline it counts down to on its own clock, with the remaining time in the center.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "toast",
+    "type": "registry:ui",
+    "description": "stacked, auto-dismissing notifications. a ToastProvider plus a useToast() hook, with pause-on-hover, a polite live region, and six anchor corners.",
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]

@@ -1,0 +1,18 @@
+{
+  "name": "streak",
+  "type": "registry:ui",
+  "description": "streak indicator — the current unbroken run, an optional all-time best, and a compact strip of recent hit/miss day cells so a near-miss stays visible. one sr-only sentence carries the whole thing to screen readers.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "streak.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type StreakProps = {\n  /** Days (or whatever `unit` is) in the current unbroken run. */\n  current: number;\n  /** The all-time best run. Rendered as a quiet comparison when set. */\n  best?: number;\n  /** Recent history, most recent LAST — one cell per entry, true = hit. */\n  days?: boolean[];\n  /** Mono uppercase kicker. Default \"streak\". */\n  label?: ReactNode;\n  /** Singular noun for the run; an \"s\" is appended when `current` isn't 1. Default \"day\". */\n  unit?: string;\n  className?: string;\n};\n\n/** Naive English plural — enough for \"day\"/\"week\"; pass a pre-pluralized unit otherwise. */\nfunction plural(unit: string, n: number): string {\n  return n === 1 ? unit : `${unit}s`;\n}\n\n/**\n * Streak indicator: the current run, an optional best, and a compact strip of\n * recent day cells. The strip is the point — a number alone can't show that the\n * run nearly broke twice last week.\n */\nexport function Streak({\n  current,\n  best,\n  days,\n  label = \"streak\",\n  unit = \"day\",\n  className,\n}: StreakProps) {\n  const hits = days?.reduce((n, day) => (day ? n + 1 : n), 0) ?? 0;\n  const summary = days\n    ? `${current} ${plural(unit, current)} in a row${best === undefined ? \"\" : `, best ${best} ${plural(unit, best)}`}. last ${days.length} ${plural(unit, days.length)}: ${hits} hit, ${days.length - hits} missed.`\n    : `${current} ${plural(unit, current)} in a row${best === undefined ? \"\" : `, best ${best} ${plural(unit, best)}`}.`;\n\n  return (\n    <div\n      className={cn(\n        \"flex flex-col gap-3 border border-white/10 bg-[#0a0a0a] p-4\",\n        className,\n      )}\n    >\n      <span className=\"font-mono text-[11px] uppercase tracking-[0.18em] text-white/40\">\n        {label}\n      </span>\n\n      <p className=\"sr-only\">{summary}</p>\n\n      <div aria-hidden className=\"flex items-baseline gap-2\">\n        <span className=\"text-3xl leading-none tracking-tight text-white tabular-nums\">\n          {current}\n        </span>\n        <span className=\"font-mono text-xs text-white/40\">\n          {plural(unit, current)} in a row\n        </span>\n      </div>\n\n      {days && days.length > 0 ? (\n        <div aria-hidden className=\"flex flex-wrap items-center gap-[3px]\">\n          {days.map((hit, i) => (\n            <span\n              key={i}\n              className={cn(\"size-2.5\", hit ? \"bg-white/70\" : \"bg-white/[0.08]\")}\n            />\n          ))}\n        </div>\n      ) : null}\n\n      {best !== undefined ? (\n        <span\n          aria-hidden\n          className=\"font-mono text-[11px] uppercase tracking-[0.18em] text-white/30 tabular-nums\"\n        >\n          best {best} {plural(unit, best)}\n        </span>\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "streak.tsx"
+    }
+  ]
+}
