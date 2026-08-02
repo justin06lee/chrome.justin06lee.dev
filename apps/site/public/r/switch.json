@@ -1,0 +1,18 @@
+{
+  "name": "switch",
+  "type": "registry:ui",
+  "description": "instant on/off toggle with role=\"switch\", for settings that take effect the moment they move — as opposed to checkbox, which states an intent a submit later commits. square track, square knob.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "switch.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type SwitchSize = \"sm\" | \"md\";\n\nexport type SwitchProps = {\n  checked: boolean;\n  onChange: (checked: boolean) => void;\n  /** Text beside the track. Clicking it toggles, like a real label. */\n  label?: React.ReactNode;\n  /** Second line under the label. */\n  description?: React.ReactNode;\n  /** Put the track before the label instead of after it. */\n  labelPosition?: \"start\" | \"end\";\n  size?: SwitchSize;\n  disabled?: boolean;\n  /** Accessible name when there is no visible `label`. */\n  ariaLabel?: string;\n  className?: string;\n};\n\nconst SIZE = {\n  sm: { track: \"h-4 w-7\", knob: \"size-3\", travel: \"translate-x-3\" },\n  md: { track: \"h-5 w-9\", knob: \"size-4\", travel: \"translate-x-4\" },\n} as const;\n\n/**\n * Instant on/off toggle.\n *\n * Distinct from `checkbox`, which states an intent that a submit later\n * commits; a switch takes effect the moment it moves, which is why it carries\n * `role=\"switch\"` and reads as \"on\"/\"off\" rather than \"checked\".\n *\n * Square track, square knob — the pill shape every other library uses is the\n * one thing that would make it look imported from somewhere else.\n */\nexport function Switch({\n  checked,\n  onChange,\n  label,\n  description,\n  labelPosition = \"end\",\n  size = \"md\",\n  disabled = false,\n  ariaLabel,\n  className,\n}: SwitchProps) {\n  const dimensions = SIZE[size];\n\n  const track = (\n    <span\n      aria-hidden\n      className={cn(\n        \"relative shrink-0 border transition-colors\",\n        dimensions.track,\n        checked ? \"border-white bg-white/20\" : \"border-white/25 bg-transparent\",\n        !disabled && \"group-hover:border-white/50\",\n      )}\n    >\n      <span\n        className={cn(\n          \"absolute left-0.5 top-1/2 -translate-y-1/2 transition-transform duration-150 ease-out\",\n          \"motion-reduce:transition-none\",\n          dimensions.knob,\n          checked ? `${dimensions.travel} bg-white` : \"translate-x-0 bg-white/40\",\n        )}\n      />\n    </span>\n  );\n\n  const text =\n    label || description ? (\n      <span className=\"flex min-w-0 flex-col gap-0.5 text-left\">\n        {label ? <span className=\"text-sm text-white\">{label}</span> : null}\n        {description ? (\n          <span className=\"text-[13px] leading-relaxed text-white/50\">{description}</span>\n        ) : null}\n      </span>\n    ) : null;\n\n  return (\n    <button\n      type=\"button\"\n      role=\"switch\"\n      aria-checked={checked}\n      aria-label={label ? undefined : ariaLabel}\n      disabled={disabled}\n      onClick={() => onChange(!checked)}\n      className={cn(\n        \"group flex items-center gap-3\",\n        \"focus:outline-none focus-visible:ring-1 focus-visible:ring-white/50\",\n        disabled && \"cursor-not-allowed opacity-40\",\n        labelPosition === \"start\" && \"flex-row-reverse justify-between\",\n        className,\n      )}\n    >\n      {track}\n      {text}\n    </button>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "switch.tsx"
+    }
+  ]
+}

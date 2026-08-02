@@ -11,6 +11,17 @@
     ]
   },
   {
+    "name": "add-to-calendar",
+    "type": "registry:ui",
+    "description": "\"add to calendar\" for a confirmed booking: google, outlook, office 365 and yahoo as links, plus a generated .ics for everything else. the ics is built in-component (rfc 5545 folding and escaping included) so it works with no backend; icsHref overrides it when the server owns the canonical file. exports buildIcs and calendarUrl.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "article",
     "type": "registry:ui",
     "description": "article reading layout — back link, banner, title, date + tags, then a body slot with staggered fade-ins. pair with prose for the markdown body.",
@@ -47,6 +58,17 @@
     "type": "registry:ui",
     "description": "scrollable image/asset sidebar. drag a row into a textarea or click insert; optional drop zone for uploads.",
     "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "availability-grid",
+    "type": "registry:ui",
+    "description": "the weekly \"when am i free\" editor: a switch per day plus any number of time windows, with copy-to-open-days. inverted and overlapping windows are flagged inline and never silently corrected — rewriting what someone typed is how you ship a schedule they didn't ask for. exports isAvailabilityValid for the save button.",
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]
@@ -125,6 +147,17 @@
       "utils",
       "segmented",
       "button"
+    ]
+  },
+  {
+    "name": "callout",
+    "type": "registry:ui",
+    "description": "inline notice attached to the thing it's about — the counterpart to toast, which interrupts from a corner and leaves. aria role follows severity: danger asserts, warn and success announce politely, a plain note stays silent.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
     ]
   },
   {
@@ -233,6 +266,17 @@
     ]
   },
   {
+    "name": "date-strip",
+    "type": "registry:ui",
+    "description": "horizontal run of days — the linear counterpart to calendar's month grid, for when the next opening matters more than which week it's in. availability is a dot, not a number; a known count of zero disables the day while an absent count leaves it alone, so a loading strip never claims the week is empty.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "desk",
     "type": "registry:ui",
     "description": "the full markdown workbench: toolbar, image sidebar, split editor with a two-way synced preview, and floating drawing windows. bring your own markdown renderer; backend ops are callbacks.",
@@ -242,6 +286,15 @@
       "asset-sidebar",
       "editor-toolbar",
       "drawing-window",
+      "utils"
+    ]
+  },
+  {
+    "name": "detail-list",
+    "type": "registry:ui",
+    "description": "label/value metadata as a real <dl>, in row, two-column grid or stacked layouts. for the handful of unrelated facts about one thing — the case stat-tile (one number) and manager-table (many identical rows) both miss. server-renderable.",
+    "dependencies": [],
+    "registryDependencies": [
       "utils"
     ]
   },
@@ -290,9 +343,27 @@
     ]
   },
   {
+    "name": "empty-state",
+    "type": "registry:ui",
+    "description": "the \"nothing here\" panel — icon, title, reason, and the action that would fix it. dashed border by default, matching the library's existing signal for a slot that could hold something but doesn't. server-renderable.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "fade-in",
     "type": "registry:ui",
     "description": "fade + translate a node in on mount. pure css keyframe with per-instance delay/offset; stagger a list via the staggerDelay helper. honors prefers-reduced-motion.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "field",
+    "type": "registry:ui",
+    "description": "label, control, hint and error as one accessible unit. the render-prop form hands the control its id, aria-describedby, aria-invalid and required already computed, so a field is announced correctly without matching ids by hand. an error replaces the hint rather than stacking under it.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -516,6 +587,15 @@
     ]
   },
   {
+    "name": "radio-group",
+    "type": "registry:ui",
+    "description": "single-choice group with a proper roving tabindex — arrows move focus and selection, wrap at the ends and skip disabled options, and the group is one tab stop. \"cards\" variant adds a description line and a trailing meta slot for choosing between things rather than values.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "rainbow",
     "type": "registry:ui",
     "description": "wrapper that cycles every text character inside it through a staggered rainbow.",
@@ -587,6 +667,24 @@
     ]
   },
   {
+    "name": "skeleton",
+    "type": "registry:ui",
+    "description": "loading placeholder in block, text and circle shapes. shimmer keyframes ship inline via a hoisted style tag, so there is nothing to wire into globals.css. under reduced motion the sweep stops but the block stays — removing it would collapse the layout it exists to reserve.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "slot-picker",
+    "type": "registry:ui",
+    "description": "column or grid of bookable times with a two-step confirm: picking a slot splits the row so the confirm button lands under the cursor that just chose the time, making the commit deliberate and a mis-tap free. one tab stop with arrow-key movement, because a day can hold thirty slots.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "socials",
     "type": "registry:ui",
     "description": "row of social links from a links map — only supplied platforms render. tooltip on hover; the email entry copies to clipboard.",
@@ -637,9 +735,29 @@
     ]
   },
   {
+    "name": "stepper",
+    "type": "registry:ui",
+    "description": "numbered progress rail for a multi-step flow. unlike tabs — peers you can visit in any order — a stepper asserts sequence: it renders as an ordered list, marks the active step with aria-current, and only makes already-completed steps clickable.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "streak",
     "type": "registry:ui",
     "description": "streak indicator — the current unbroken run, an optional all-time best, and a compact strip of recent hit/miss day cells so a near-miss stays visible. one sr-only sentence carries the whole thing to screen readers.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "switch",
+    "type": "registry:ui",
+    "description": "instant on/off toggle with role=\"switch\", for settings that take effect the moment they move — as opposed to checkbox, which states an intent a submit later commits. square track, square knob.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -694,6 +812,17 @@
     "type": "registry:ui",
     "description": "circular progress ring driven by stroke-dasharray. takes a value/max pair, or an endsAt deadline it counts down to on its own clock, with the remaining time in the center.",
     "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "timezone-select",
+    "type": "registry:ui",
+    "description": "searchable iana timezone picker that shows what time it actually is in each zone, sorted by utc offset. combobox covers searchable select in general; this is the case where the label alone can't answer the question — you're choosing \"the one where it's 4pm now\". clock starts null and fills in after mount so ssr and hydration agree.",
+    "dependencies": [
+      "lucide-react"
+    ],
     "registryDependencies": [
       "utils"
     ]
