@@ -83,12 +83,32 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   "timer-ring": () => import("../../../../../packages/registry/timer-ring/demo"),
   progress: () => import("../../../../../packages/registry/progress/demo"),
   "interval-picker": () => import("../../../../../packages/registry/interval-picker/demo"),
+  field: () => import("../../../../../packages/registry/field/demo"),
+  "radio-group": () => import("../../../../../packages/registry/radio-group/demo"),
+  switch: () => import("../../../../../packages/registry/switch/demo"),
+  callout: () => import("../../../../../packages/registry/callout/demo"),
+  "empty-state": () => import("../../../../../packages/registry/empty-state/demo"),
+  skeleton: () => import("../../../../../packages/registry/skeleton/demo"),
+  "detail-list": () => import("../../../../../packages/registry/detail-list/demo"),
+  stepper: () => import("../../../../../packages/registry/stepper/demo"),
+  "slot-picker": () => import("../../../../../packages/registry/slot-picker/demo"),
+  "date-strip": () => import("../../../../../packages/registry/date-strip/demo"),
+  "timezone-select": () => import("../../../../../packages/registry/timezone-select/demo"),
+  "availability-grid": () => import("../../../../../packages/registry/availability-grid/demo"),
+  "add-to-calendar": () => import("../../../../../packages/registry/add-to-calendar/demo"),
 };
 
 // Components that need the full wide canvas — size-adjustable ones (editor,
 // desk) and grid layouts that cramp at reading width; everything else renders
 // at reading width.
-const WIDE_PREVIEW = new Set(["editor", "desk", "article-list", "gallery"]);
+const WIDE_PREVIEW = new Set([
+  "editor",
+  "desk",
+  "article-list",
+  "gallery",
+  "availability-grid",
+  "detail-list",
+]);
 
 // Popup-driven components (dropdown panels) need to leak outside the preview
 // and example frames instead of getting clipped by them.

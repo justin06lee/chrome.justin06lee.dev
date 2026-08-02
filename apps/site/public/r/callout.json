@@ -1,0 +1,20 @@
+{
+  "name": "callout",
+  "type": "registry:ui",
+  "description": "inline notice attached to the thing it's about — the counterpart to toast, which interrupts from a corner and leaves. aria role follows severity: danger asserts, warn and success announce politely, a plain note stays silent.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "callout.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  CircleAlert,\n  CircleCheck,\n  Info,\n  TriangleAlert,\n  X,\n  type LucideIcon,\n} from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type CalloutVariant = \"note\" | \"success\" | \"warn\" | \"danger\";\n\nexport type CalloutProps = {\n  variant?: CalloutVariant;\n  /** Bold first line. Omit for a single-line callout. */\n  title?: React.ReactNode;\n  children?: React.ReactNode;\n  /** Replaces the variant's default icon; pass null to drop it entirely. */\n  icon?: LucideIcon | null;\n  /** Adds a close button. Purely presentational — you own the visibility. */\n  onDismiss?: () => void;\n  /** Trailing slot under the copy, e.g. a retry button. */\n  action?: React.ReactNode;\n  className?: string;\n};\n\nconst VARIANT: Record<\n  CalloutVariant,\n  { icon: LucideIcon; box: string; mark: string; role: \"status\" | \"alert\" | undefined }\n> = {\n  // Only danger and warn spend colour; the rest stay on the opacity ladder, so\n  // a page full of notes doesn't turn into a traffic light.\n  note: { icon: Info, box: \"border-white/15 bg-white/[0.03]\", mark: \"text-white/40\", role: undefined },\n  success: { icon: CircleCheck, box: \"border-white/20 bg-white/5\", mark: \"text-white/70\", role: \"status\" },\n  warn: {\n    icon: TriangleAlert,\n    box: \"border-amber-400/40 bg-amber-400/[0.07]\",\n    mark: \"text-amber-300/80\",\n    role: \"status\",\n  },\n  danger: {\n    icon: CircleAlert,\n    box: \"border-red-400/60 bg-red-400/10\",\n    mark: \"text-red-300\",\n    role: \"alert\",\n  },\n};\n\n/**\n * Inline notice attached to the thing it's about — the counterpart to `toast`,\n * which interrupts from a corner and leaves. A callout stays put, so it suits\n * the standing caveats a form or a page needs to carry.\n *\n * `role` follows severity rather than being fixed: danger asserts, warn and\n * success announce politely, and a plain note says nothing at all, because a\n * page of decorative notes shouldn't flood the buffer.\n */\nexport function Callout({\n  variant = \"note\",\n  title,\n  children,\n  icon,\n  onDismiss,\n  action,\n  className,\n}: CalloutProps) {\n  const config = VARIANT[variant];\n  const Icon = icon === null ? null : (icon ?? config.icon);\n\n  return (\n    <div\n      role={config.role}\n      className={cn(\"flex items-start gap-3 border p-4\", config.box, className)}\n    >\n      {Icon ? (\n        <Icon aria-hidden className={cn(\"mt-0.5 size-4 shrink-0\", config.mark)} strokeWidth={1.5} />\n      ) : null}\n\n      <div className=\"flex min-w-0 flex-1 flex-col gap-1.5\">\n        {title ? <p className=\"text-sm text-white\">{title}</p> : null}\n        {children ? (\n          <div className=\"text-[13px] leading-relaxed text-white/60\">{children}</div>\n        ) : null}\n        {action ? <div className=\"pt-1\">{action}</div> : null}\n      </div>\n\n      {onDismiss ? (\n        <button\n          type=\"button\"\n          onClick={onDismiss}\n          aria-label=\"dismiss\"\n          className={cn(\n            \"-m-1 shrink-0 p-1 text-white/40 transition-colors hover:text-white\",\n            \"focus:outline-none focus-visible:ring-1 focus-visible:ring-white/50\",\n          )}\n        >\n          <X aria-hidden className=\"size-3.5\" strokeWidth={1.5} />\n        </button>\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "callout.tsx"
+    }
+  ]
+}

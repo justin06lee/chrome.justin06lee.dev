@@ -1,0 +1,18 @@
+{
+  "name": "empty-state",
+  "type": "registry:ui",
+  "description": "the \"nothing here\" panel — icon, title, reason, and the action that would fix it. dashed border by default, matching the library's existing signal for a slot that could hold something but doesn't. server-renderable.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "empty-state.tsx",
+      "content": "import * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type EmptyStateSize = \"sm\" | \"md\" | \"lg\";\n\nexport type EmptyStateProps = {\n  /** One lowercase line saying what isn't here. */\n  title: React.ReactNode;\n  /** Why it's empty, or what to do about it. */\n  description?: React.ReactNode;\n  /** Decorative mark above the title — a lucide icon, ascii, anything. */\n  icon?: React.ReactNode;\n  /** Primary action, usually a Button. */\n  action?: React.ReactNode;\n  /** Quieter escape hatch beside the action. */\n  secondaryAction?: React.ReactNode;\n  size?: EmptyStateSize;\n  /** Draw the dashed container. Off when the parent already has a border. */\n  bordered?: boolean;\n  className?: string;\n};\n\nconst SIZE: Record<EmptyStateSize, { pad: string; title: string; gap: string }> = {\n  sm: { pad: \"px-6 py-8\", title: \"text-sm\", gap: \"gap-2\" },\n  md: { pad: \"px-8 py-14\", title: \"text-base\", gap: \"gap-3\" },\n  lg: { pad: \"px-8 py-24\", title: \"text-lg\", gap: \"gap-4\" },\n};\n\n/**\n * The \"nothing here\" panel — no results, no bookings yet, everything filtered\n * out. Every list in the library was hand-rolling this, and the hand-rolled\n * ones kept forgetting that empty-because-new and empty-because-filtered want\n * different copy and different actions.\n *\n * Dashed by default, which is the library's existing signal for a slot that\n * could hold something but doesn't (see the `dashed` button variant).\n */\nexport function EmptyState({\n  title,\n  description,\n  icon,\n  action,\n  secondaryAction,\n  size = \"md\",\n  bordered = true,\n  className,\n}: EmptyStateProps) {\n  const dimensions = SIZE[size];\n\n  return (\n    <div\n      className={cn(\n        \"flex flex-col items-center justify-center text-center\",\n        dimensions.pad,\n        dimensions.gap,\n        bordered && \"border border-dashed border-white/15\",\n        className,\n      )}\n    >\n      {icon ? (\n        <div aria-hidden className=\"text-white/25\">\n          {icon}\n        </div>\n      ) : null}\n\n      <p className={cn(\"text-white\", dimensions.title)}>{title}</p>\n\n      {description ? (\n        <p className=\"max-w-sm text-[13px] leading-relaxed text-white/45\">{description}</p>\n      ) : null}\n\n      {action || secondaryAction ? (\n        <div className=\"mt-2 flex flex-wrap items-center justify-center gap-2\">\n          {action}\n          {secondaryAction}\n        </div>\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "empty-state.tsx"
+    }
+  ]
+}
