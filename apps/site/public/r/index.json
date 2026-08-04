@@ -54,6 +54,15 @@
     ]
   },
   {
+    "name": "ascii-shader",
+    "type": "registry:ui",
+    "description": "ascii fragment shader — supply (x, y, t) => luminance and it paints a character grid. the general form of what donut does for one fixed torus. one string assigned to textContent per frame, capped fps, paused off-screen by an IntersectionObserver, and static under reduced motion. ships plasma, ripple and tunnel presets.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "asset-sidebar",
     "type": "registry:ui",
     "description": "scrollable image/asset sidebar. drag a row into a textarea or click insert; optional drop zone for uploads.",
@@ -545,6 +554,15 @@
     ]
   },
   {
+    "name": "marquee",
+    "type": "registry:ui",
+    "description": "infinite scrolling ticker band. speed is px/s and the duration is derived from the measured content width, so a short label and a long sentence travel at the same rate. the copy count is computed from the container width rather than hardcoded, so narrow content never leaves a hole. static under reduced motion.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "menu",
     "type": "registry:ui",
     "description": "action dropdown: a trigger opening a list of items, each running its onSelect. optional selected markers (e.g. a sort menu). behavior split into a headless useMenu hook.",
@@ -583,6 +601,15 @@
     "name": "now-playing-bar",
     "type": "registry:ui",
     "description": "sticky bottom bar for a running activity: live elapsed timer and an action slot. omit startedAt for an idle state.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "pencil-rule",
+    "type": "registry:ui",
+    "description": "a rule that draws itself with a pencil riding the leading edge. the stroke is a scaled element rather than an animated width, so it composites and never causes layout; the pencil shares the stroke's timing function, which is what keeps the nib pinned to the end of the line. draws on scroll-into-view by default. under reduced motion the finished rule renders immediately and the pencil never appears.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -753,6 +780,15 @@
     "name": "stack",
     "type": "registry:ui",
     "description": "stacked paper card with hovered fan-out spring animation.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "stamp",
+    "type": "registry:ui",
+    "description": "rubber-stamp overlay — mono uppercase inside a double rule, rotated off square, optionally distressed. unlike badge, which is a flat chip in a row of metadata, a stamp is an assertion applied on top of something: it rotates, it overlaps, it sits over the document it marks. the distress is a turbulence mask, so it inherits the ink colour and loads nothing.",
     "dependencies": [],
     "registryDependencies": [
       "utils"

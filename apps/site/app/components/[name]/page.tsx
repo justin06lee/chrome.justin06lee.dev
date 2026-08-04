@@ -100,6 +100,10 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   hazard: () => import("../../../../../packages/registry/hazard/demo"),
   dimension: () => import("../../../../../packages/registry/dimension/demo"),
   grain: () => import("../../../../../packages/registry/grain/demo"),
+  "ascii-shader": () => import("../../../../../packages/registry/ascii-shader/demo"),
+  marquee: () => import("../../../../../packages/registry/marquee/demo"),
+  stamp: () => import("../../../../../packages/registry/stamp/demo"),
+  "pencil-rule": () => import("../../../../../packages/registry/pencil-rule/demo"),
 };
 
 // Components that need the full wide canvas — size-adjustable ones (editor,
