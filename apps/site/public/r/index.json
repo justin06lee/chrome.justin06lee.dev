@@ -92,6 +92,15 @@
     ]
   },
   {
+    "name": "blueprint",
+    "type": "registry:ui",
+    "description": "engineering graph-paper substrate — minor/major grid, corner registration marks, edge fade, and an optional pointer crosshair with a live coordinate readout. four stacked linear-gradients rather than a tiled image, so it stays crisp at any zoom and costs no request.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "breadcrumb",
     "type": "registry:ui",
     "description": "breadcrumb trail from caller-supplied items; the last crumb is the muted current page. framework-agnostic links via linkComponent. ships a crumbsFromPath helper.",
@@ -306,6 +315,15 @@
     "registryDependencies": []
   },
   {
+    "name": "dimension",
+    "type": "registry:ui",
+    "description": "architect's dimension line — witness lines, arrow / tick / dot caps, and the measurement sitting in a break in the rule. every part inherits currentColor, so recolouring the whole annotation is one prop. horizontal or vertical.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "donut",
     "type": "registry:ui",
     "description": "spinning ascii torus baked off-thread in a shared web worker and replayed as a seamless loop. multiple donuts share one bake.",
@@ -407,6 +425,24 @@
       "badge",
       "menu",
       "chrome"
+    ]
+  },
+  {
+    "name": "grain",
+    "type": "registry:ui",
+    "description": "paper / film texture overlay — speckle, fibrous paper stock, or a dot screen. the texture is an inline feTurbulence data uri rather than a bundled png, so it is a few hundred bytes and resolution-independent. pointer-events-none and aria-hidden, so it can sit over live ui at any z-index.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "hazard",
+    "type": "registry:ui",
+    "description": "diagonal caution-stripe tape — a band that reads as a boundary rather than a border, plus a HazardFrame that tapes the edges of any block. hard-stop repeating gradients stay knife-sharp at any pitch, and the optional march animates by exactly one pitch so the loop is seamless.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
     ]
   },
   {
