@@ -107,6 +107,19 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   dropzone: () => import("../../../../../packages/registry/dropzone/demo"),
   docket: () => import("../../../../../packages/registry/docket/demo"),
   pagination: () => import("../../../../../packages/registry/pagination/demo"),
+  "album-art": () => import("../../../../../packages/registry/album-art/demo"),
+  "sound-bars": () => import("../../../../../packages/registry/sound-bars/demo"),
+  playhead: () => import("../../../../../packages/registry/playhead/demo"),
+  waveform: () => import("../../../../../packages/registry/waveform/demo"),
+  spectrum: () => import("../../../../../packages/registry/spectrum/demo"),
+  transport: () => import("../../../../../packages/registry/transport/demo"),
+  volume: () => import("../../../../../packages/registry/volume/demo"),
+  "track-list": () => import("../../../../../packages/registry/track-list/demo"),
+  lyrics: () => import("../../../../../packages/registry/lyrics/demo"),
+  "live-badge": () => import("../../../../../packages/registry/live-badge/demo"),
+  vinyl: () => import("../../../../../packages/registry/vinyl/demo"),
+  "avatar-stack": () => import("../../../../../packages/registry/avatar-stack/demo"),
+  shelf: () => import("../../../../../packages/registry/shelf/demo"),
 };
 
 // Components that need the full wide canvas — size-adjustable ones (editor,
@@ -119,6 +132,9 @@ const WIDE_PREVIEW = new Set([
   "gallery",
   "availability-grid",
   "detail-list",
+  "spectrum",
+  "waveform",
+  "shelf",
 ]);
 
 // Popup-driven components (dropdown panels) need to leak outside the preview
