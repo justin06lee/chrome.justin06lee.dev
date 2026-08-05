@@ -104,6 +104,9 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   marquee: () => import("../../../../../packages/registry/marquee/demo"),
   stamp: () => import("../../../../../packages/registry/stamp/demo"),
   "pencil-rule": () => import("../../../../../packages/registry/pencil-rule/demo"),
+  dropzone: () => import("../../../../../packages/registry/dropzone/demo"),
+  docket: () => import("../../../../../packages/registry/docket/demo"),
+  pagination: () => import("../../../../../packages/registry/pagination/demo"),
 };
 
 // Components that need the full wide canvas — size-adjustable ones (editor,

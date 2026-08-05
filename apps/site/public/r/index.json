@@ -333,6 +333,15 @@
     ]
   },
   {
+    "name": "docket",
+    "type": "registry:ui",
+    "description": "work order / docket — mono header with a reference, label-value rows, a slot for a stamp, and an optional tear-off stub below a perforation. detail-list renders the same pairs, but a docket is the document around them: numbered, marked, and torn. the notches are opaque circles in the page colour rather than a mask, because masking the card to cut real holes also masks the border.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "donut",
     "type": "registry:ui",
     "description": "spinning ascii torus baked off-thread in a shared web worker and replayed as a seamless loop. multiple donuts share one bake.",
@@ -346,6 +355,18 @@
     "dependencies": [],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "dropzone",
+    "type": "registry:ui",
+    "description": "standalone drag-and-drop upload zone — validates a drop against accept/maxSize/maxFiles and hands you File[], with optional rows showing size, upload progress and errors. stateless by design: upload transport is yours. drag depth is counted rather than flagged, so the highlight doesn't strobe when the pointer crosses a child, and the zone is a real button so click, enter and space all open the picker.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils",
+      "progress"
     ]
   },
   {
@@ -607,6 +628,17 @@
     ]
   },
   {
+    "name": "pagination",
+    "type": "registry:ui",
+    "description": "page navigation with boundary pages, a sibling window and ellipsis gaps, plus a compact prev/next variant. the window shifts rather than shrinking at the ends, so the control keeps a constant width as you page through it, and a gap that would elide exactly one page renders that page instead. the range logic ships as a separate tested module.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "pencil-rule",
     "type": "registry:ui",
     "description": "a rule that draws itself with a pencil riding the leading edge. the stroke is a scaled element rather than an animated width, so it composites and never causes layout; the pencil shares the stroke's timing function, which is what keeps the nib pinned to the end of the line. draws on scroll-into-view by default. under reduced motion the finished rule renders immediately and the pencil never appears.",
@@ -857,7 +889,7 @@
   {
     "name": "textarea",
     "type": "registry:ui",
-    "description": "minimal multiline input. matches input — thin border, square corners, vertical resize.",
+    "description": "minimal multiline input. matches input — thin border, square corners, vertical resize. optional live character counter that reads '120 / 500' against maxLength and warns as it fills.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
