@@ -54,6 +54,15 @@
     ]
   },
   {
+    "name": "ascii-shader",
+    "type": "registry:ui",
+    "description": "ascii fragment shader — supply (x, y, t) => luminance and it paints a character grid. the general form of what donut does for one fixed torus. one string assigned to textContent per frame, capped fps, paused off-screen by an IntersectionObserver, and static under reduced motion. ships plasma, ripple and tunnel presets.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "asset-sidebar",
     "type": "registry:ui",
     "description": "scrollable image/asset sidebar. drag a row into a textarea or click insert; optional drop zone for uploads.",
@@ -86,6 +95,15 @@
     "name": "bar-list",
     "type": "registry:ui",
     "description": "ranked horizontal bar list — each row's proportional bar is the row's own background, with the label on the left and the value right-aligned. rows can link out or fire a click handler; per-item colors are opt-in and tinted back so labels stay legible.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "blueprint",
+    "type": "registry:ui",
+    "description": "engineering graph-paper substrate — minor/major grid, corner registration marks, edge fade, and an optional pointer crosshair with a live coordinate readout. four stacked linear-gradients rather than a tiled image, so it stays crisp at any zoom and costs no request.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -306,6 +324,24 @@
     "registryDependencies": []
   },
   {
+    "name": "dimension",
+    "type": "registry:ui",
+    "description": "architect's dimension line — witness lines, arrow / tick / dot caps, and the measurement sitting in a break in the rule. every part inherits currentColor, so recolouring the whole annotation is one prop. horizontal or vertical.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "docket",
+    "type": "registry:ui",
+    "description": "work order / docket — mono header with a reference, label-value rows, a slot for a stamp, and an optional tear-off stub below a perforation. detail-list renders the same pairs, but a docket is the document around them: numbered, marked, and torn. the notches are opaque circles in the page colour rather than a mask, because masking the card to cut real holes also masks the border.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "donut",
     "type": "registry:ui",
     "description": "spinning ascii torus baked off-thread in a shared web worker and replayed as a seamless loop. multiple donuts share one bake.",
@@ -319,6 +355,18 @@
     "dependencies": [],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "dropzone",
+    "type": "registry:ui",
+    "description": "standalone drag-and-drop upload zone — validates a drop against accept/maxSize/maxFiles and hands you File[], with optional rows showing size, upload progress and errors. stateless by design: upload transport is yours. drag depth is counted rather than flagged, so the highlight doesn't strobe when the pointer crosses a child, and the zone is a real button so click, enter and space all open the picker.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils",
+      "progress"
     ]
   },
   {
@@ -407,6 +455,24 @@
       "badge",
       "menu",
       "chrome"
+    ]
+  },
+  {
+    "name": "grain",
+    "type": "registry:ui",
+    "description": "paper / film texture overlay — speckle, fibrous paper stock, or a dot screen. the texture is an inline feTurbulence data uri rather than a bundled png, so it is a few hundred bytes and resolution-independent. pointer-events-none and aria-hidden, so it can sit over live ui at any z-index.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "hazard",
+    "type": "registry:ui",
+    "description": "diagonal caution-stripe tape — a band that reads as a boundary rather than a border, plus a HazardFrame that tapes the edges of any block. hard-stop repeating gradients stay knife-sharp at any pitch, and the optional march animates by exactly one pitch so the loop is seamless.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
     ]
   },
   {
@@ -509,6 +575,15 @@
     ]
   },
   {
+    "name": "marquee",
+    "type": "registry:ui",
+    "description": "infinite scrolling ticker band. speed is px/s and the duration is derived from the measured content width, so a short label and a long sentence travel at the same rate. the copy count is computed from the container width rather than hardcoded, so narrow content never leaves a hole. static under reduced motion.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "menu",
     "type": "registry:ui",
     "description": "action dropdown: a trigger opening a list of items, each running its onSelect. optional selected markers (e.g. a sort menu). behavior split into a headless useMenu hook.",
@@ -547,6 +622,26 @@
     "name": "now-playing-bar",
     "type": "registry:ui",
     "description": "sticky bottom bar for a running activity: live elapsed timer and an action slot. omit startedAt for an idle state.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "pagination",
+    "type": "registry:ui",
+    "description": "page navigation with boundary pages, a sibling window and ellipsis gaps, plus a compact prev/next variant. the window shifts rather than shrinking at the ends, so the control keeps a constant width as you page through it, and a gap that would elide exactly one page renders that page instead. the range logic ships as a separate tested module.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "pencil-rule",
+    "type": "registry:ui",
+    "description": "a rule that draws itself with a pencil riding the leading edge. the stroke is a scaled element rather than an animated width, so it composites and never causes layout; the pencil shares the stroke's timing function, which is what keeps the nib pinned to the end of the line. draws on scroll-into-view by default. under reduced motion the finished rule renders immediately and the pencil never appears.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -723,6 +818,15 @@
     ]
   },
   {
+    "name": "stamp",
+    "type": "registry:ui",
+    "description": "rubber-stamp overlay — mono uppercase inside a double rule, rotated off square, optionally distressed. unlike badge, which is a flat chip in a row of metadata, a stamp is an assertion applied on top of something: it rotates, it overlaps, it sits over the document it marks. the distress is a turbulence mask, so it inherits the ink colour and loads nothing.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "stat-tile",
     "type": "registry:ui",
     "description": "big-number kpi tile — mono uppercase label, one headline figure with an optional unit, a delta chip that turns red only when the change is the bad one, plus footnote, icon and a slot for an inline sparkline. server-renderable; opts into count-up when animated.",
@@ -785,7 +889,7 @@
   {
     "name": "textarea",
     "type": "registry:ui",
-    "description": "minimal multiline input. matches input — thin border, square corners, vertical resize.",
+    "description": "minimal multiline input. matches input — thin border, square corners, vertical resize. optional live character counter that reads '120 / 500' against maxLength and warns as it fills.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
