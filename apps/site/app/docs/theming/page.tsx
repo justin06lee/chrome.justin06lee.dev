@@ -71,8 +71,8 @@ export default function Theming() {
         <h2 className="text-lg text-white">editing safely</h2>
         <p>
           edit any token freely. re-running <code>init</code> replaces only
-          what&apos;s between <code>/* @chrome:theme */</code> and{" "}
-          <code>/* @chrome:end */</code> — everything outside the fence is
+          what&apos;s between <code>{"/* @chrome:theme */"}</code> and{" "}
+          <code>{"/* @chrome:end */"}</code> — everything outside the fence is
           untouched. if you want your token edits to survive re-init too, move
           them below the fence; later rules win.
         </p>
