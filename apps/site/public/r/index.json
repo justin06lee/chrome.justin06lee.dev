@@ -209,6 +209,28 @@
     ]
   },
   {
+    "name": "chat-composer",
+    "type": "registry:ui",
+    "description": "the line you type into, under a chat-log. split from the log rather than bundled with it because the two have different reasons to re-render — the log repaints on every arriving message, the composer only on your own keystrokes — and because a read-only room is a real state: render the log without this and there is nothing to disable or explain. owns the draft and nothing else; onSend may be async, and a rejected send hands the sentence back rather than losing it, because losing a typed sentence to a dropped request is the one failure a chat box must not have.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "chat-log",
+    "type": "registry:ui",
+    "description": "an append-only stream of messages that follows the newest one — unless the reader has scrolled up to read something, in which case it holds still and offers a jump back. track-list and article-list render a collection that happens to be ordered; this is a *stream*, and its whole contract is what happens when content arrives while you're looking at it, which is a behaviour neither of those has and neither should grow. groups consecutive messages from one sender, marks the viewer's own, and announces additions via role=log.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "checkbox",
     "type": "registry:ui",
     "description": "square checkbox with a check-on-fill. wraps a native checkbox so it works in forms; thin border, no corners, fills white with a black check when checked.",
