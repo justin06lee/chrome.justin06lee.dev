@@ -20,6 +20,8 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   button: () => import("../../../../../packages/registry/button/demo"),
   calendar: () => import("../../../../../packages/registry/calendar/demo"),
   card: () => import("../../../../../packages/registry/card/demo"),
+  "chat-composer": () => import("../../../../../packages/registry/chat-composer/demo"),
+  "chat-log": () => import("../../../../../packages/registry/chat-log/demo"),
   checkbox: () => import("../../../../../packages/registry/checkbox/demo"),
   chrome: () => import("../../../../../packages/registry/chrome/demo"),
   "code-block": () => import("../../../../../packages/registry/code-block/demo"),
