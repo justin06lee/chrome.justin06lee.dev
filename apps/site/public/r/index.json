@@ -22,6 +22,17 @@
     ]
   },
   {
+    "name": "album-art",
+    "type": "registry:ui",
+    "description": "square cover tile with a real fallback state — expired cdn links and art-less tracks are the norm in music apis, so onError swaps to a disc glyph without changing the tile's footprint. pass an array of urls for a playlist mosaic (halves, half-plus-quarters, or a grid), and bleed to throw the cover's colour onto the page behind it.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "article",
     "type": "registry:ui",
     "description": "article reading layout — back link, banner, title, date + tags, then a body slot with staggered fade-ins. pair with prose for the markdown body.",
@@ -80,6 +91,16 @@
     ],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "avatar-stack",
+    "type": "registry:ui",
+    "description": "overlapping square tiles for \"who else is here\" — initials when there's no image, a name pill on hover, and an overflow counter as the last tile rather than a line of text. pass total when people is a fetched slice and it counts the ones you never loaded. pfp is the single 3d-tilt portrait; this is the crowd.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "tooltip"
     ]
   },
   {
@@ -553,6 +574,15 @@
     ]
   },
   {
+    "name": "live-badge",
+    "type": "registry:ui",
+    "description": "\"happening right now\" — a pulsing dot, a word, and an optional detail. badge says what a thing is; this says what it is doing at this second, across four fixed states, with role=status so going live is announced. the pulse is an expanding ring rather than a blinking dot, and drops out under reduced motion.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "login-form",
     "type": "registry:ui",
     "description": "styled credential form with loading / error / rate-limited states and enter-to-submit. transport-agnostic via an injected onSubmit; behavior split into a headless useLoginForm hook. rate limiting and lockout belong on the consumer's backend.",
@@ -560,6 +590,16 @@
     "registryDependencies": [
       "utils",
       "input"
+    ]
+  },
+  {
+    "name": "lyrics",
+    "type": "registry:ui",
+    "description": "time-synced lyrics with the current line lit and the rest receding. shares playhead's clock, so lines advance between polls; auto-scroll centres the active line and stands down for eight seconds after you scroll by hand. ships parseLrc() for .lrc sheets, and renders unsynced lyrics as a plain sheet.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils",
+      "playhead"
     ]
   },
   {
@@ -657,6 +697,15 @@
     ]
   },
   {
+    "name": "playhead",
+    "type": "registry:ui",
+    "description": "playback scrubber with elapsed / total times, drag-and-key seeking, and a clock of its own — give it startedAt and it extrapolates between polls, so a remotely-sourced position moves smoothly instead of stepping. progress covers a bare determinate bar; this one knows about time.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "progress",
     "type": "registry:ui",
     "description": "linear progress bar — square, three track heights, bare or outlined. determinate from value/max, or an indeterminate sweep for unknown durations. honors prefers-reduced-motion.",
@@ -742,6 +791,17 @@
     ]
   },
   {
+    "name": "shelf",
+    "type": "registry:ui",
+    "description": "horizontally scrolling row of cards — the browsable counterpart to gallery's searchable grid. arrows appear only once the row genuinely overflows (measured, not assumed) and disable at their end; scrolling stays native, so trackpad, touch and keyboard all work untouched.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "showcase",
     "type": "registry:ui",
     "description": "framed preview container with a dotted background, optional label, caption, and note. exports a Row helper for explicit row breaks.",
@@ -791,9 +851,27 @@
     ]
   },
   {
+    "name": "sound-bars",
+    "type": "registry:ui",
+    "description": "the little dancing meter that marks the row currently playing. pure css, no state — each bar's period and phase come from its index, so the pattern is identical on the server and the client. paused and reduced-motion hold resting heights rather than flattening.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "sparkline",
     "type": "registry:ui",
     "description": "tiny inline svg trend line — 80x24 by default so it sits in a line of text. linear or catmull-rom smooth, optional area fill and square point markers, no chart library and no dependencies.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "spectrum",
+    "type": "registry:ui",
+    "description": "live frequency analyser off a web audio AnalyserNode (or any sample callback). canvas, logarithmically-spaced columns, instant attack and gradual decay so it reads as loudness instead of strobing. waveform is the static counterpart — a shape that never repaints.",
     "dependencies": [],
     "registryDependencies": [
       "utils"
@@ -962,6 +1040,30 @@
     ]
   },
   {
+    "name": "track-list",
+    "type": "registry:ui",
+    "description": "queue, history or tracklist — title / artist / duration rows with the current one marked by a live sound-bars meter in place of its number, so nothing reflows when playback moves. each row is one real control: a link with href, a button with onSelect, inert otherwise.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils",
+      "sound-bars",
+      "album-art"
+    ]
+  },
+  {
+    "name": "transport",
+    "type": "registry:ui",
+    "description": "playback controls — skip, play/pause, shuffle and repeat. every control appears only when handed a callback, so the same component covers a full player and a listen-only page with nothing but a play button. repeat cycles off → all → one and announces the mode it moves to.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "utils",
     "type": "registry:lib",
     "description": "the cn() helper. clsx + tailwind-merge.",
@@ -970,5 +1072,34 @@
       "tailwind-merge"
     ],
     "registryDependencies": []
+  },
+  {
+    "name": "vinyl",
+    "type": "registry:ui",
+    "description": "a record on a platter — grooves as one repeating-radial-gradient, album art in the centre label, optional tonearm. pausing sets animation-play-state so the record holds where it stopped instead of snapping to twelve o'clock. round on purpose: it's the object, not a corner radius.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "volume",
+    "type": "registry:ui",
+    "description": "level-reflecting icon that mutes, plus a filled slider. range is the general-purpose slider; this is the specific case — muting keeps the value untouched so unmuting restores exactly where you were, and the track can collapse to just the icon until hovered.",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "waveform",
+    "type": "registry:ui",
+    "description": "a track's amplitude envelope with the played portion filled in, seekable by click. bars are elements rather than a canvas — crisp at every dpr, hoverable, and the fill is a css transition instead of a repaint loop. ships samplePeaks() to downsample raw pcm.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
   }
 ]
