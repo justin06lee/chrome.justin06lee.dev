@@ -122,6 +122,7 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   vinyl: () => import("../../../../../packages/registry/vinyl/demo"),
   "avatar-stack": () => import("../../../../../packages/registry/avatar-stack/demo"),
   shelf: () => import("../../../../../packages/registry/shelf/demo"),
+  salon: () => import("../../../../../packages/registry/salon/demo"),
 };
 
 // Components that need the full wide canvas — size-adjustable ones (editor,
@@ -137,6 +138,7 @@ const WIDE_PREVIEW = new Set([
   "spectrum",
   "waveform",
   "shelf",
+  "salon",
 ]);
 
 // Popup-driven components (dropdown panels) need to leak outside the preview
