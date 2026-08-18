@@ -38,6 +38,13 @@ export default function ButtonDemo() {
           href="https://example.com"
         />
         <Button
+          variant="ghost"
+          icon={ArrowDown}
+          label="sign out"
+          tooltip="tooltip below"
+          tooltipSide="bottom"
+        />
+        <Button
           variant="link"
           icon={Copy}
           tooltip="Copy email"

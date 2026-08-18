@@ -31,6 +31,13 @@ export default defineComponent({
       description: "white slide-up pill shown on hover.",
     },
     {
+      name: "tooltipSide",
+      type: "'top' | 'bottom'",
+      default: "'top'",
+      description:
+        "side the tooltip pill appears on. the pill is not portaled, so a button near the top of the viewport (a header, a navbar) clips an upward pill — pass 'bottom' there.",
+    },
+    {
       name: "label",
       type: "string",
       description: "aria-label override; required for icon-only buttons.",
