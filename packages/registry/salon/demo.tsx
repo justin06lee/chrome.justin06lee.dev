@@ -31,8 +31,9 @@ export default function SalonDemo() {
     <div className="flex w-full flex-col gap-4">
       <Salon items={ITEMS} targetRowHeight={200} ariaLabel="works on the wall" />
       <p className="text-[13px] text-white/40">
-        every piece keeps its own proportions; each row is justified to fill the
-        width. narrow the window and the hang reflows. two pieces link out.
+        every piece keeps its own proportions; rows sit at the target height and
+        end at their own width — a ragged right edge. narrow the window and the
+        hang reflows. two pieces link out.
       </p>
     </div>
   );

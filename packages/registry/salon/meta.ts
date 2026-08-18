@@ -4,7 +4,7 @@ export default defineComponent({
   name: "salon",
   type: "registry:ui",
   description:
-    "a salon hang: a wall of images shown at their own aspect ratios, packed into justified rows that each fill the width (the standard greedy justified-gallery algorithm, with a sparse trailing row left-aligned at the target height instead of ballooned into a billboard). it isn't `gallery` (the uniform searchable card grid — every project the same card sized to a column), `shelf` (one horizontal scrolling row you skim), or `showcase` (a single framed preview): a salon keeps every piece's real proportions and makes the varied hang itself the point, so reach for it when the images are the content and their shapes carry meaning. the row-packing geometry ships as a separate tested module.",
+    "a salon hang: a wall of images shown at their own aspect ratios, laid into ragged rows. every row sits at the target height (pieces keep their aspect, so widths vary) and wraps when the next piece would run past the container; rows are not stretched to a common width, so each ends at its own natural width — a ragged right edge — and one row's length never forces the others wider or narrower. the only piece ever resized is a lone one wider than the container, scaled down to fit; nothing is cropped. it isn't `gallery` (the uniform searchable card grid — every project the same card sized to a column), `shelf` (one horizontal scrolling row you skim), or `showcase` (a single framed preview): a salon keeps every piece's real proportions and makes the varied hang itself the point, so reach for it when the images are the content and their shapes carry meaning. the row-packing geometry ships as a separate tested module.",
   dependencies: [],
   registryDependencies: ["utils"],
   files: [
@@ -23,16 +23,9 @@ export default defineComponent({
       name: "targetRowHeight",
       type: "number",
       default: "260",
-      description: "ideal row height in px before a row is justified to fill the width.",
+      description: "height every row is laid at; pieces keep their aspect, so their widths vary.",
     },
     { name: "gap", type: "number", default: "12", description: "gap between pieces and rows in px." },
-    {
-      name: "maxRowHeight",
-      type: "number",
-      default: "targetRowHeight * 1.5",
-      description:
-        "how tall a trailing, un-fillable row may grow before it stops stretching and left-aligns at the target height.",
-    },
     {
       name: "maxWidth",
       type: "number",
