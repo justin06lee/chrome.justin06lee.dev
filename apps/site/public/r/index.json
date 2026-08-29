@@ -659,7 +659,7 @@
   {
     "name": "navbar",
     "type": "registry:ui",
-    "description": "fixed top nav with inline desktop links and a hamburger-driven slide-in panel below md. routes are caller-supplied; behavior split into a headless useNavbar hook.",
+    "description": "fixed top nav with inline desktop links and a hamburger-driven slide-in panel below md. routes are caller-supplied; behavior split into a headless useNavbar hook. because it is position:fixed it owns its entrance animation via `entrance` — a transformed wrapper would become its containing block and render it at the wrapper's width.",
     "dependencies": [
       "lucide-react",
       "motion"
