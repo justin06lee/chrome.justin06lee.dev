@@ -639,7 +639,7 @@
   {
     "name": "marquee",
     "type": "registry:ui",
-    "description": "infinite scrolling ticker band. speed is px/s and the duration is derived from the measured content width, so a short label and a long sentence travel at the same rate. the copy count is computed from the container width rather than hardcoded, so narrow content never leaves a hole. static under reduced motion.",
+    "description": "infinite scrolling band, for a ticker or a row of pieces. speed is px/s and the duration is derived from the measured content width, so a short label and a long sentence travel at the same rate. the copy count is computed from the container width rather than hardcoded, so narrow content never leaves a hole. only the first copy is real to assistive tech and the keyboard (repeats are aria-hidden and inert), it pauses on hover and on focus-within so a link you tabbed to holds still, and under reduced motion it becomes a plain horizontal scroller of one copy so nothing past the edge is lost.",
     "dependencies": [],
     "registryDependencies": [
       "utils"

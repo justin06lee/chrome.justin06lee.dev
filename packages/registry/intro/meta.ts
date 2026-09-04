@@ -12,6 +12,7 @@ export default defineComponent({
     { name: "lines", type: "ReactNode[]", required: true, description: "lines shown one at a time in a fixed slot under the hero, in order." },
     { name: "hero", type: "ReactNode", description: "optional visual rendered above the lines for the whole intro (e.g. ascii art)." },
     { name: "speed", type: "number", default: "1", description: "playback speed multiplier — 2 plays the sequence twice as fast." },
+    { name: "onExit", type: "() => void", description: "called once when the overlay starts fading out (also on skip); mount the page beneath here so it comes up under the fade." },
     { name: "onComplete", type: "() => void", description: "called once after the overlay finishes fading out (also on skip)." },
     { name: "skippable", type: "boolean", default: "true", description: "whether to show the skip button." },
     { name: "skipLabel", type: "string", default: "'skip'", description: "label for the skip button." },
