@@ -701,6 +701,15 @@
     ]
   },
   {
+    "name": "pane",
+    "type": "registry:ui",
+    "description": "a window onto content taller than the room you want to give it: the pane scrolls, not the page. what a section becomes when it would otherwise push everything below it off the end of the document — a growing wall of images, a long log, a list with no natural end. it isn't `shelf` (the horizontal errand: a row of cards you skim, sized by the shelf and paged by arrows) — a pane keeps its content exactly as given and only bounds how much of it you see. the thin scrollbar is on by default and is the affordance, written against a class so it survives an app-wide `*::-webkit-scrollbar { display: none }`; scroll chaining is deliberately left alone so the page keeps moving at the end of the pane; the edge is faded only where the content actually continues, measured with a ResizeObserver, and the pane is a tab stop only while it overflows.",
+    "dependencies": [],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "pencil-rule",
     "type": "registry:ui",
     "description": "a rule that draws itself with a pencil riding the leading edge. the stroke is a scaled element rather than an animated width, so it composites and never causes layout; the pencil shares the stroke's timing function, which is what keeps the nib pinned to the end of the line. draws on scroll-into-view by default. under reduced motion the finished rule renders immediately and the pencil never appears.",
