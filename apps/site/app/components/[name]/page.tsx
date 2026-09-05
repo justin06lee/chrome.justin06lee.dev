@@ -108,6 +108,7 @@ const DEMOS: Record<string, () => Promise<{ default: ComponentType }>> = {
   "pencil-rule": () => import("../../../../../packages/registry/pencil-rule/demo"),
   dropzone: () => import("../../../../../packages/registry/dropzone/demo"),
   docket: () => import("../../../../../packages/registry/docket/demo"),
+  pane: () => import("../../../../../packages/registry/pane/demo"),
   pagination: () => import("../../../../../packages/registry/pagination/demo"),
   "album-art": () => import("../../../../../packages/registry/album-art/demo"),
   "sound-bars": () => import("../../../../../packages/registry/sound-bars/demo"),
